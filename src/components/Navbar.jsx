@@ -33,13 +33,14 @@ export default function Navbar() {
       <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex-1 md:flex md:items-center md:gap-12">
-            <Link className="block text-teal-600" href="/">
+            <Link className="block" href="/">
               <span className="sr-only">Home</span>
               <Image
                 src="/img/logo.jpg"
                 alt="Maithil Milan"
                 width={200}
                 height={200}
+                className="sm:w-1/3 md:w-full"
               />
             </Link>
           </div>
@@ -111,41 +112,27 @@ export default function Navbar() {
                   </div>
                 </>
               ) : (
-                <div className="sm:flex sm:gap-4 hidden md:block">
-                  <button
-                    onClick={loginWithGoogle}
-                    className="bg-[#fba536] px-4 py-2 rounded-md text-white font-semibold hover:bg-[#fb8b36] transition duration-150 ease-in-out flex items-center"
-                  >
-                    Continue With
-                    <Image
-                      src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
-                      alt="google"
-                      width={20}
-                      height={20}
-                      className="ml-2"
-                    />
+                <>
+                  <div className="sm:flex sm:gap-4 hidden md:block">
+                    <button
+                      onClick={loginWithGoogle}
+                      className="bg-[#fba536] px-4 py-2 rounded-md text-white font-semibold hover:bg-[#fb8b36] transition duration-150 ease-in-out flex items-center"
+                    >
+                      Continue With
+                      <Image
+                        src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
+                        alt="google"
+                        width={20}
+                        height={20}
+                        className="ml-2"
+                      />
+                    </button>
+                  </div>
+                  <button className="md:hidden text-sm bg-[#fba536] px-4 py-2 rounded-md text-white font-semibold hover:bg-[#fb8b36] transition duration-150 ease-in-out">
+                    Register
                   </button>
-                </div>
+                </>
               )}
-
-              <div className="block md:hidden">
-                <button className="rounded bg-gray-100 p-2 text-gray-600 transition hover:text-gray-600/75">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="size-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  </svg>
-                </button>
-              </div>
             </div>
           </div>
         </div>
