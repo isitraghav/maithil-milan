@@ -39,7 +39,7 @@ export default function Navbar() {
                 src="/img/logo.jpg"
                 alt="Maithil Milan"
                 width={200}
-                height={200}
+                height={20}
                 className="sm:w-1/3 md:w-full"
               />
             </Link>
@@ -70,6 +70,7 @@ export default function Navbar() {
                       >
                         <span className="sr-only">Menu</span>
                         <Image
+                          loading="eager"
                           src={user.image}
                           alt={user.name}
                           width={30}
@@ -129,7 +130,12 @@ export default function Navbar() {
                       />
                     </button>
                   </div>
-                  <button className="md:hidden text-sm bg-[#fba536] px-4 py-2 rounded-md text-white font-semibold hover:bg-[#fb8b36] transition duration-150 ease-in-out">
+                  <button
+                    onClick={() => {
+                      loginWithGoogle();
+                    }}
+                    className="md:hidden text-sm bg-[#fba536] px-4 py-2 rounded-md text-white font-semibold hover:bg-[#fb8b36] transition duration-150 ease-in-out"
+                  >
                     Register
                   </button>
                 </>
