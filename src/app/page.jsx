@@ -4,10 +4,12 @@ import Image from "next/image";
 import KeenSlider from "keen-slider";
 import "keen-slider/keen-slider.min.css";
 import { CiLock, CiSquareCheck } from "react-icons/ci";
+import { IoMdClose } from "react-icons/io";
 
 const SliderSection = () => {
   const sliderRef = useRef(null);
   const [slider, setSlider] = useState(null);
+  const [modalOpened, setModalOpened] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -48,6 +50,84 @@ const SliderSection = () => {
 
   return (
     <>
+      <div className={`relative ${!modalOpened ? "hidden" : ""}`}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-filter backdrop-blur-sm md:backdrop-blur-xl text-white">
+          <div className="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:items-center lg:px-8">
+            <div className="flex items-center justify-center flex-col text-center ltr:sm:text-left rtl:sm:text-right w-full">
+              <div className="w-full flex flex-col items-center justify-center">
+                <div className="border border-white/30 rounded-xl p-4">
+                  <h1 className="text-xl font-extrabold pb-2">
+                    Let's find your match
+                  </h1>
+                  <div>
+                    <label htmlFor="gender" className="block text-lg text-left">
+                      Looking for:
+                    </label>
+                    <select
+                      className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      name="Gender"
+                      id="gender"
+                    >
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+
+                  <div className="mt-4 flex gap-1">
+                    <div className="w-1/2">
+                      <label htmlFor="age" className="block text-lg text-left">
+                        From Age:
+                      </label>
+                      <select
+                        className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        name="Age"
+                        id="age"
+                      >
+                        {Array.from({ length: 51 }, (_, index) => (
+                          <option key={index} value={index + 20}>
+                            {index + 20}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="w-1/2">
+                      <label htmlFor="age" className="block text-lg text-left">
+                        To:
+                      </label>
+                      <select
+                        className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        name="Age"
+                        id="age"
+                      >
+                        {Array.from({ length: 51 }, (_, index) => (
+                          <option key={index} value={index + 20}>
+                            {index + 20}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <button
+                      className="bg-rose-700 w-full text-white px-4 py-2 rounded-md mt-4"
+                      onClick={() => setModalOpened(false)}
+                    >
+                      Search
+                    </button>
+                  </div>
+                </div>
+                <button
+                  className="absolute font-bold font-serif top-0 right-0 p-2"
+                  onClick={() => setModalOpened(false)}
+                >
+                  <IoMdClose size={32} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <section
         style={{
           background: "url('/img/bnr.jpg')",
@@ -70,104 +150,29 @@ const SliderSection = () => {
                 </p>
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-4 text-center">
-                <div className="rounded-lg bg-black backdrop-filter backdrop-blur-sm bg-opacity-70 px-4 py-6">
-                  <form action="get" onSubmit={(e) => e.preventDefault()}>
-                    <div className="grid lg:flex grid-cols-1 gap-4 md:grid-cols-2 md:gap-8">
-                      <div>
-                        <label className="block mb-2 text-white">
-                          Looking for a
-                        </label>
-                        <select
-                          className="bg-white border border-gray-300 rounded-lg px-3 py-2 w-full"
-                          defaultValue="2"
-                        >
-                          <option value="1">Man</option>
-                          <option value="2">Woman</option>
-                        </select>
-                      </div>
-                      <div className="md:col-span-2">
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                          <div>
-                            <label className="block mb-2 text-white">Age</label>
-                            <select
-                              className="bg-white border border-gray-300 rounded-lg px-3 py-2 w-full"
-                              defaultValue="20"
-                            >
-                              {Array.from({ length: 54 }, (_, index) => (
-                                <option key={index} value={index + 20}>
-                                  {index + 20}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                          <div>
-                            <label className="block mb-2 text-white">To</label>
-                            <select
-                              className="bg-white border border-gray-300 rounded-lg px-3 py-2 w-full"
-                              defaultValue="23"
-                            >
-                              {Array.from({ length: 54 }, (_, index) => (
-                                <option key={index} value={index + 20}>
-                                  {index + 20}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block mb-2 text-white">
-                          Of Religion
-                        </label>
-                        <select
-                          className="bg-white border border-gray-300 rounded-lg px-3 py-2 w-full"
-                          defaultValue=""
-                        >
-                          <option value="">Select</option>
-                          <option value="Hindu">Hindu</option>
-                          <option value="Muslim">Muslim</option>
-                          <option value="Skih">Skih</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block mb-2 text-white">
-                          Mother tongue
-                        </label>
-                        <select
-                          className="bg-white border border-gray-300 rounded-lg px-3 py-2 w-full"
-                          defaultValue=""
-                        >
-                          <option value="">Select</option>
-                          <option value="Hindi">Hindi</option>
-                          <option value="English">English</option>
-                        </select>
-                      </div>
-                      <div className="md:col-span-2">
-                        <label className="block mb-2 d-block text-white">
-                          &nbsp;
-                        </label>
-                        <button className="btn bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg w-full">
-                          SEARCH
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-                </div>
+              <div className="mt-8 flex flex-wrap justify-center gap-4">
+                <button
+                  onClick={() => {
+                    setModalOpened(true);
+                  }}
+                  className="block w-full rounded-lg bg-rose-700 px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-800 focus:outline-none focus:ring active:bg-rose-500 sm:w-auto"
+                >
+                  Get started
+                </button>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="h-[70vh] flex items-center justify-center">
+      <section className="md:h-[70vh] flex items-center justify-center">
         <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-center md:gap-8">
             <div>
               <div className="max-w-lg md:max-w-none">
                 <h2 className="text-2xl font-semibold text-gray-900 sm:text-3xl">
-                  <CiSquareCheck className="inline-block pb-2" size={40} />
-                  A matrimony that delivers.
+                  <CiSquareCheck className="inline-block pb-2" size={40} />A
+                  matrimony that delivers.
                 </h2>
 
                 <p className="mt-4 text-gray-700">
@@ -192,7 +197,7 @@ const SliderSection = () => {
         </div>
       </section>
 
-      <section className="h-[70vh] flex items-center justify-center">
+      <section className="md:h-[70vh] flex items-center justify-center">
         <div className="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-center md:gap-8">
             <div>
