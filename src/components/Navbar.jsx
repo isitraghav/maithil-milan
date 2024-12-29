@@ -24,7 +24,7 @@ export default function Navbar() {
 
   async function loginWithGoogle() {
     await signIn("google", {
-      callbackUrl: "/signon",
+      callbackUrl: "/profile",
     });
   }
 

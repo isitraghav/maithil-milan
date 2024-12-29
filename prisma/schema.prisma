@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,13 +8,29 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id               String       @id @default(cuid())
+  name             String?
+  email            String?      @unique
+  emailVerified    DateTime?
+  image            String?
+  accounts         Account[]
+  sessions         Session[]
+  profile          Profile?
+  preferences      Preferences?
+  matches          Match[]      @relation("UserMatches")
+  matchedWith      Match[]      @relation("MatchedUsers")
+  sentMessages     Message[]    @relation("SentMessages")
+  receivedMessages Message[]    @relation("ReceivedMessages")
+}
+
+model Match {
+  id            String   @id @default(cuid())
+  userId        String
+  matchedUserId String
+  status        String   @default("Pending") // other values: Accepted, Declined
+  createdAt     DateTime @default(now())
+  user          User     @relation("UserMatches", fields: [userId], references: [id], onDelete: Cascade)
+  matchedUser   User     @relation("MatchedUsers", fields: [matchedUserId], references: [id], onDelete: Cascade)
 }
 
 model Account {
@@ -55,4 +65,45 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Profile {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  fullName      String
+  dateOfBirth   DateTime
+  gender        String
+  religion      String?
+  caste         String?
+  motherTongue  String
+  education     String?
+  profession    String?
+  income        Int?
+  height        Float? // in centimeters
+  maritalStatus String   @default("Never Married") // other values: Divorced, Widowed
+  bio           String?
+  photos        String[] // URLs of photos
+  user          User     @relation(fields: [id], references: [id], onDelete: Cascade)
+}
+
+model Preferences {
+  id                 String  @id @default(cuid())
+  userId             String  @unique
+  minAge             Int
+  maxAge             Int
+  preferredReligion  String?
+  preferredCaste     String?
+  preferredEducation String?
+  preferredHeight    Float? // minimum height in cm
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  content    String
+  sentAt     DateTime @default(now())
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
 }
