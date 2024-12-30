@@ -77,8 +77,9 @@ export async function getUserProfile() {
 }
 
 export async function updateuserprofilepic(url) {
+  console.log("Updating user profile picture:", url);
   const user = (await auth()).user;
-  console.log("Updating user profile picture:", user.email);
+  console.log("User email:", user.email);
 
   await prisma.user.update({
     where: {
@@ -87,5 +88,24 @@ export async function updateuserprofilepic(url) {
     data: {
       image: url,
     },
+  }).then(() => {
+    console.log("User profile picture updated successfully.");
+  });
+}
+
+export async function getuserprofilepic() {
+  return new Promise(async (accept, reject) => {
+    const user = (await auth()).user;
+    console.log("Fetching user profile picture:", user.email);
+
+    await prisma.user
+      .findUnique({
+        where: {
+          email: user.email,
+        },
+      })
+      .then((data) => {
+        accept(data.image);
+      });
   });
 }
