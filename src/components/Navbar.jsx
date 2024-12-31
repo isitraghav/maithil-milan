@@ -18,6 +18,7 @@ export default function Navbar() {
       } else {
         setLoggedin(true);
         setUser(session.user);
+        console.log(session.user)
       }
     });
   }, []);
@@ -69,7 +70,7 @@ export default function Navbar() {
                         className="h-full p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700"
                       >
                         <span className="sr-only">Menu</span>
-                        <Image
+                        <img
                           loading="eager"
                           src={user.image}
                           alt={user.name}

@@ -4,7 +4,6 @@ import {
   createOrUpdateProfile,
   getuserdata,
   getUserProfile,
-  getuserprofilepic,
   updateuserprofilepic,
 } from "./server";
 import { PiPencil, PiSpinnerLight, PiWarningBold } from "react-icons/pi";
@@ -20,14 +19,14 @@ const ProfilePage = () => {
     new Date().toISOString().split("T")[0]
   );
   const [gender, setGender] = useState("Male");
-  const [motherTongue, setmotherTongue] = useState("Hindi");
+  const [motherTongue, setmotherTongue] = useState("Maithili");
   const [religion, setReligion] = useState("Hindu");
   const [caste, setCaste] = useState("Brahmin");
   const [education, setEducation] = useState("");
   const [profession, setProfession] = useState("");
   const [height, setHeight] = useState(168);
   const [maritalStatus, setMaritalStatus] = useState("Unmarried");
-  const [profilePic, setProfilePic] = useState(null);
+  const [profilePic, setProfilePic] = useState("/img/user.webp");
   const [userphotos, setuserphotos] = useState([]);
   const [age, setAge] = useState(22);
 
@@ -54,12 +53,9 @@ const ProfilePage = () => {
         setProfession(data.profession || "");
         setHeight(data.height || 0);
         setMaritalStatus(data.maritalStatus || "Unmarried");
-        setProfilePic(data.profilePic || null);
         setuserphotos(data.photos || []);
         setAge(data.age);
-        getuserprofilepic().then((res) => {
-          setProfilePic(res);
-        });
+        setProfilePic(data.image || "/img/user.webp");
       } else {
         console.log("no existing user profile was found");
         getuserdata().then((res) => {
@@ -84,7 +80,6 @@ const ProfilePage = () => {
         client.uploadFile(file, { onProgress }).then(async (file) => {
           const profilePicUrl = `https://ucarecdn.com/${file.uuid}/-/scale_crop/550x550/center/`;
           setProfilePic(profilePicUrl);
-          await updateuserprofilepic(profilePicUrl);
         });
       };
       reader.readAsDataURL(file);
@@ -187,6 +182,19 @@ const ProfilePage = () => {
                 placeholder="Enter your age"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 onChange={(e) => {
+                  if (e.target.value < 0) {
+                    setAge(0);
+                    return;
+                  }
+                  if (e.target.value === 0 || e.target.value === "") {
+                    setAge(0);
+                    return;
+                  }
+                  if (e.target.value > 100) {
+                    setAge(100);
+                    return;
+                  }
+
                   const today = new Date();
                   const birthYear =
                     today.getFullYear() - e.target.valueAsNumber;
@@ -259,6 +267,7 @@ const ProfilePage = () => {
                 id="motherTongue"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               >
+                <option value="Maithili">Maithili</option>
                 <option value="Hindi">Hindi</option>
                 <option value="English">English</option>
               </select>
@@ -535,6 +544,7 @@ const ProfilePage = () => {
               maritalStatus: maritalStatus,
               photos: userphotos,
               age: Number(age),
+              image: profilePic,
             };
 
             console.log(awd);

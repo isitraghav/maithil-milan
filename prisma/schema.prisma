@@ -73,6 +73,7 @@ model Profile {
   fullName      String
   dateOfBirth   DateTime
   gender        String
+  image         String? @default("/img/user.webp")
   age           Int
   religion      String?
   caste         String?

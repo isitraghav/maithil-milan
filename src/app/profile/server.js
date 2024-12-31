@@ -79,46 +79,10 @@ export async function getUserProfile() {
   });
 }
 
-export async function updateuserprofilepic(url) {
-  console.log("Updating user profile picture:", url);
-  const user = (await auth()).user;
-  console.log("User email:", user.email);
-
-  await prisma.user
-    .update({
-      where: {
-        email: user.email,
-      },
-      data: {
-        image: url,
-      },
-    })
-    .then(() => {
-      console.log("User profile picture updated successfully.");
-    });
-}
-
 export async function getuserdata() {
   console.log("no user found, returning user's data for autofilling");
   return new Promise(async (accept, reject) => {
     const user = (await auth()).user;
     accept(user);
-  });
-}
-
-export async function getuserprofilepic() {
-  return new Promise(async (accept, reject) => {
-    const user = (await auth()).user;
-    console.log("Fetching user profile picture:", user.email);
-
-    await prisma.user
-      .findUnique({
-        where: {
-          email: user.email,
-        },
-      })
-      .then((data) => {
-        accept(data.image);
-      });
   });
 }
