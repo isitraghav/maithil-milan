@@ -87,12 +87,19 @@ export default function Navbar() {
                       role="menu"
                     >
                       <div className="p-2">
-                        <Link
+                      <Link
                           href="/profile"
                           className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                           role="menuitem"
                         >
                           View Profile
+                        </Link>
+                        <Link
+                          href="/search"
+                          className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+                          role="menuitem"
+                        >
+                          Search Your Match
                         </Link>
                       </div>
 

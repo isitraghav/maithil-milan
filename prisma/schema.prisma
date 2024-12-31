@@ -73,14 +73,14 @@ model Profile {
   fullName      String
   dateOfBirth   DateTime
   gender        String
+  age           Int
   religion      String?
   caste         String?
-  motherTongue  String
+  motherTongue  String?
   education     String?
   profession    String?
-  income        Int?
-  height        Float? // in centimeters
-  maritalStatus String   @default("Never Married") // other values: Divorced, Widowed
+  height        Int?     @default(168)
+  maritalStatus String   @default("Unmarried")
   bio           String?
   photos        String[] // URLs of photos
   user          User     @relation(fields: [id], references: [id], onDelete: Cascade)

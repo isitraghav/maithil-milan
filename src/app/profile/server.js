@@ -72,6 +72,9 @@ export async function getUserProfile() {
         data = data;
         console.log("User profile fetched:", data);
         resolve(data);
+      })
+      .catch((error) => {
+        reject(error);
       });
   });
 }
@@ -81,15 +84,25 @@ export async function updateuserprofilepic(url) {
   const user = (await auth()).user;
   console.log("User email:", user.email);
 
-  await prisma.user.update({
-    where: {
-      email: user.email,
-    },
-    data: {
-      image: url,
-    },
-  }).then(() => {
-    console.log("User profile picture updated successfully.");
+  await prisma.user
+    .update({
+      where: {
+        email: user.email,
+      },
+      data: {
+        image: url,
+      },
+    })
+    .then(() => {
+      console.log("User profile picture updated successfully.");
+    });
+}
+
+export async function getuserdata() {
+  console.log("no user found, returning user's data for autofilling");
+  return new Promise(async (accept, reject) => {
+    const user = (await auth()).user;
+    accept(user);
   });
 }
 

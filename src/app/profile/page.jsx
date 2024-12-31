@@ -1,53 +1,70 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import {
   createOrUpdateProfile,
+  getuserdata,
   getUserProfile,
   getuserprofilepic,
   updateuserprofilepic,
 } from "./server";
-import { auth } from "@/auth";
-import { PiImage, PiPencil, PiSpinnerLight } from "react-icons/pi";
+import { PiPencil, PiSpinnerLight, PiWarningBold } from "react-icons/pi";
 import { UploadClient } from "@uploadcare/upload-client";
-import { IoMdAddCircleOutline, IoMdClose } from "react-icons/io";
+import { IoMdClose } from "react-icons/io";
 import { LuImagePlus } from "react-icons/lu";
+import Swal from "sweetalert2";
 
 const ProfilePage = () => {
   const [data, setData] = useState({});
   const [name, setName] = useState("");
-  const [dateofbirth, setDateofbirth] = useState(new Date());
+  const [dateofbirth, setDateofbirth] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [gender, setGender] = useState("Male");
   const [motherTongue, setmotherTongue] = useState("Hindi");
   const [religion, setReligion] = useState("Hindu");
   const [caste, setCaste] = useState("Brahmin");
   const [education, setEducation] = useState("");
   const [profession, setProfession] = useState("");
-  const [income, setIncome] = useState(0);
+  const [height, setHeight] = useState(168);
+  const [maritalStatus, setMaritalStatus] = useState("Unmarried");
   const [profilePic, setProfilePic] = useState(null);
   const [userphotos, setuserphotos] = useState([]);
+  const [age, setAge] = useState(22);
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    getUserProfile().then((data) => {
+    getUserProfile().then(async (data) => {
       setLoading(false);
       if (data) {
+        console.log(data);
         setData(data);
         setName(data.fullName || "");
-        setDateofbirth(new Date(data.dateOfBirth) || new Date());
+        setDateofbirth(
+          data.dateOfBirth
+            ? new Date(data.dateOfBirth).toISOString().split("T")[0]
+            : new Date().toISOString().split("T")[0]
+        );
         setGender(data.gender || "Male");
         setReligion(data.religion || "Hindu");
         setCaste(data.caste || "Brahmin");
         setmotherTongue(data.motherTongue || "Hindi");
         setEducation(data.education || "");
         setProfession(data.profession || "");
-        setIncome(data.income || 0);
+        setHeight(data.height || 0);
+        setMaritalStatus(data.maritalStatus || "Unmarried");
         setProfilePic(data.profilePic || null);
         setuserphotos(data.photos || []);
+        setAge(data.age);
         getuserprofilepic().then((res) => {
           setProfilePic(res);
+        });
+      } else {
+        console.log("no existing user profile was found");
+        getuserdata().then((res) => {
+          setName(res.name || "");
+          setProfilePic(res.image || "/img/user.webp");
         });
       }
     });
@@ -118,7 +135,7 @@ const ProfilePage = () => {
         <div className="flex flex-col items-center">
           <div className="relative">
             <img
-              src={profilePic || "https://via.placeholder.com/150"}
+              src={profilePic || "/img/user.webp"}
               alt="User Avatar"
               className="rounded-full w-32 h-32 mb-4"
             />
@@ -139,20 +156,52 @@ const ProfilePage = () => {
         />
 
         <div className="flex flex-col gap-2">
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            placeholder="Enter your name"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            onChange={(e) => setName(e.target.value)}
-          />
+          <div className="flex gap-2">
+            <div className="w-1/2 lg:w-3/4 md:w-2/3">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                placeholder="Enter your name"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="w-1/2 lg:w-1/4 md:w-1/3">
+              <label
+                htmlFor="age"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Age
+              </label>
+              <input
+                type="number"
+                id="age"
+                value={age || ""}
+                placeholder="Enter your age"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                onChange={(e) => {
+                  const today = new Date();
+                  const birthYear =
+                    today.getFullYear() - e.target.valueAsNumber;
+                  const birthDate = new Date(
+                    birthYear,
+                    today.getMonth(),
+                    today.getDate()
+                  );
+                  const formattedDate = birthDate.toISOString().split("T")[0];
+                  setDateofbirth(formattedDate);
+                  setAge(e.target.valueAsNumber);
+                }}
+              />
+            </div>
+          </div>
 
           <div className="flex w-full gap-2">
             <div className="md:w-1/2">
@@ -164,12 +213,11 @@ const ProfilePage = () => {
               </label>
               <input
                 type="date"
-                value={new Intl.DateTimeFormat("en-CA").format(
-                  new Date(dateofbirth)
-                )}
+                value={dateofbirth}
                 id="dateofbirth"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 onChange={(e) => {
+                  console.log(e.target.value);
                   setDateofbirth(e.target.value);
                 }}
               />
@@ -317,20 +365,42 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          <label
-            htmlFor="income"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Income
-          </label>
-          <input
-            type="number"
-            value={income}
-            id="income"
-            placeholder="Enter your income"
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            onChange={(e) => setIncome(e.target.value)}
-          />
+          <div className="w-full flex gap-2">
+            <div className="w-1/2">
+              <label
+                htmlFor="height"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Height (in cm)
+              </label>
+              <input
+                type="number"
+                value={height}
+                id="height"
+                placeholder="Enter your height"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                onChange={(e) => setHeight(e.target.value)}
+              />
+            </div>
+            <div className="w-1/2">
+              <label
+                htmlFor="maritalStatus"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Marital Status
+              </label>
+              <select
+                id="maritalStatus"
+                value={maritalStatus}
+                onChange={(e) => setMaritalStatus(e.target.value)}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+                <option value="Unmarried">Unmarried</option>
+                <option value="Divorced">Divorced</option>
+                <option value="Widowed">Widowed</option>
+              </select>
+            </div>
+          </div>
 
           {photosLoading ? (
             <div>
@@ -352,9 +422,7 @@ const ProfilePage = () => {
                   <span
                     className="block h-4 rounded-full bg-indigo-600 text-center"
                     style={{ width: `${progress}%` }}
-                  >
-                    {" "}
-                  </span>
+                  ></span>
                 </span>
               </div>
             </div>
@@ -390,6 +458,7 @@ const ProfilePage = () => {
                         <div className="relative">
                           <img
                             src={pic}
+                            draggable="false"
                             className="rounded-lg aspect-square h-24 w-24 object-cover"
                             key={index}
                             alt=""
@@ -426,10 +495,31 @@ const ProfilePage = () => {
             </div>
           )}
         </div>
+        {!(name && dateofbirth && gender && age && profilePic) && (
+          <div className="text-center text-yellow-900 flex center-all">
+            <PiWarningBold size={24} />
+            Complete at least 30% profile to get matches
+          </div>
+        )}
 
         <button
           onClick={async (event) => {
             const btn = event.target;
+            const errors = [];
+            if (!name) errors.push("Full name");
+            if (!age) errors.push("Age");
+            if (!gender) errors.push("Gender");
+
+            if (errors.length) {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: `Please fill in your ${errors.join(
+                  ", "
+                )} to save your profile.`,
+              });
+              return;
+            }
             btn.textContent = "Saving...";
             btn.disabled = true;
             let awd = {
@@ -441,18 +531,29 @@ const ProfilePage = () => {
               caste: caste,
               education: education,
               profession: profession,
-              income: Number(income),
+              height: Number(height),
+              maritalStatus: maritalStatus,
               photos: userphotos,
+              age: Number(age),
             };
 
             console.log(awd);
-            await createOrUpdateProfile(awd);
-            btn.textContent = "Saved Changed!";
+            try {
+              await createOrUpdateProfile(awd);
+            } catch (error) {
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: error.message,
+              });
+            } finally {
+              btn.textContent = "Saved Changed!";
 
-            setTimeout(() => {
-              btn.textContent = "Save Profile";
-              btn.disabled = false;
-            }, 2300);
+              setTimeout(() => {
+                btn.textContent = "Save Profile";
+                btn.disabled = false;
+              }, 2300);
+            }
           }}
           type="submit"
           className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
