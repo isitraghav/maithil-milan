@@ -2,8 +2,81 @@
 import { useState } from "react";
 import { searchMatch } from "./server";
 import CardSearch from "@/components/CardSearch";
+import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
+
+function Pagination({ context }) {
+  const {
+    page,
+    setPage,
+    searchResults,
+    setSearchResults,
+    reqOptions,
+    setReqOptions,
+  } = context;
+  if (searchResults.length === 0) return null;
+  return (
+    <div className="flex justify-center p-2">
+      {page !== 1 && (
+        <button
+          onClick={async () => {
+            let awd = reqOptions;
+            awd.page = page - 1;
+            setPage(page - 1);
+            setReqOptions(awd);
+
+            console.log("searching with", awd);
+
+            await searchMatch(awd).then((data) => {
+              setSearchResults(data);
+            });
+          }}
+          className="p-2 center-all gap-2 bg-[#ffffff] border-2 border-[#dce1e6] rounded-lg"
+        >
+          <IoMdArrowBack /> Back
+        </button>
+      )}
+      <div className={`m-auto ${page !== 1 ? "" : "pl-[77px]"}`}>
+        <p className="p-2 center-all gap-2 bg-[#ffffff] border-2 border-[#dce1e6] rounded-lg">
+          Page {page}
+        </p>
+      </div>
+      <button
+        onClick={async (e) => {
+          let awd = reqOptions;
+          awd.page = page + 1;
+
+          let btn = e.target;
+          btn.disabled = true;
+
+          console.log("searching with", awd);
+
+          await searchMatch(awd).then((data) => {
+            if (data.length > 0) {
+              setPage(page + 1);
+              setReqOptions(awd);
+              setSearchResults(data);
+            } else {
+              btn.textContent = "No more results";
+              btn.disabled = true;
+              setTimeout(() => {
+                btn.textContent = "Forward";
+                btn.disabled = false;
+              }, 2500);
+            }
+            btn.disabled = false;
+          });
+        }}
+        className="p-2 center-all gap-2 bg-[#ffffff] border-2 border-[#dce1e6] rounded-lg"
+      >
+        Forward
+        <IoMdArrowForward />
+      </button>
+    </div>
+  );
+}
 
 export default function Search() {
+  const [reqOptions, setReqOptions] = useState({});
   const [age, setAge] = useState(22);
   const [age2, setAge2] = useState(25);
   const [religion, setReligion] = useState("Hindu");
@@ -11,18 +84,56 @@ export default function Search() {
   const [maritalStatus, setMaritalStatus] = useState("Unmarried");
   const [height, setHeight] = useState(160);
   const [searchResults, setSearchResults] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   return (
     <div className="flex justify-center items-center">
-      <div className="md:w-1/2 w-full mt-3 h-screen">
-        <div className="text-2xl font-bold p-2">Find Your Perfect Match</div>
+      <div className="sm:w-full md:w-1/2 mt-3 h-screen">
+        <div className="text-2xl p-2 pb-0">Find Your Perfect Match</div>
+        <div className="text-sm text-gray-500 p-2 pt-1">
+          Find your perfect match based on your preferences
+        </div>
+
+        {searchResults.length !== 0 && (
+          <div className="pl-2">
+            <button
+              onClick={async () => {
+                setSearchResults([]);
+              }}
+              className="mt-4 p-2 font-bold text-white bg-[#007bff] rounded-lg hover:bg-[#0056b3] transition duration-150 ease-in-out"
+            >
+              Search Again
+            </button>
+          </div>
+        )}
+        <Pagination
+          context={{
+            page,
+            setPage,
+            searchResults,
+            setSearchResults,
+            reqOptions,
+            setReqOptions,
+          }}
+        />
+
         {searchResults.length > 0 ? (
-          <div className="m-2">
-            {searchResults.map((result) => (
-              <div key={result.id}>
-                <CardSearch key={result.id} result={result} />
-              </div>
-            ))}
+          <div
+            className={
+              searchResults.length > 1
+                ? "columns-1 sm:columns-2 gap-4 space-y-4 p-4"
+                : "columns-1 gap-4 space-y-4 p-4"
+            }
+          >
+            {searchResults.map((result) => {
+              result.photos = [result.image, ...result.photos];
+              return (
+                <div key={result.id}>
+                  <CardSearch key={result.id} result={result} />
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="w-full p-2">
@@ -167,10 +278,12 @@ export default function Search() {
                         caste,
                         maritalStatus,
                         height,
+                        page,
+                        pageSize,
                       };
 
-                      console.log("searching with", awd);
-
+                      setReqOptions(awd);
+                      console.log("searching with", reqOptions);
                       btn.textContent = "Searching...";
                       setTimeout(() => {
                         btn.textContent = "Search";
@@ -190,6 +303,16 @@ export default function Search() {
             </div>
           </div>
         )}
+        <Pagination
+          context={{
+            page,
+            setPage,
+            searchResults,
+            setSearchResults,
+            reqOptions,
+            setReqOptions,
+          }}
+        />
       </div>
     </div>
   );

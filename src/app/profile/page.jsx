@@ -145,6 +145,7 @@ const ProfilePage = () => {
 
         <input
           type="file"
+          accept="image/*"
           id="profilePic"
           onChange={handleFileUpload}
           className="hidden"
@@ -446,6 +447,7 @@ const ProfilePage = () => {
               <input
                 type="file"
                 name="addimage"
+                accept="image/*"
                 id="addimage"
                 className="hidden"
                 multiple={true}

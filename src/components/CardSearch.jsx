@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { LuShieldCheck } from "react-icons/lu";
 
@@ -7,11 +8,12 @@ export default function CardSearch({ result }) {
 
   useEffect(() => {
     if (isSlideshowRunning) {
+      console.log("running");
       const interval = setInterval(() => {
         setCurrentPhotoIndex(
           (prevIndex) => (prevIndex + 1) % result.photos.length
         );
-      }, 3000);
+      }, 1200);
 
       return () => clearInterval(interval);
     }
@@ -23,16 +25,16 @@ export default function CardSearch({ result }) {
 
   const handleMouseLeave = () => {
     setIsSlideshowRunning(false);
+    setCurrentPhotoIndex(0);
   };
 
   const handleClick = () => {
     setIsSlideshowRunning(!isSlideshowRunning);
   };
 
-  console.log(result);
   return (
     <div
-      className="group rounded-lg w-1/2 relative block bg-black"
+      className="group min-h-[55vh] rounded-lg relative block bg-black"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
@@ -48,16 +50,17 @@ export default function CardSearch({ result }) {
           </div>
         </div>
       </div>
-      <div className="relative rounded-lg">
+      <div className="min-h-[55vh] relative rounded-lg">
         <p className="text-md w-8 h-8 center-all text-green-300 bg-black bg-opacity-10 text-center backdrop-filter backdrop-blur-sm rounded-lg ">
-          {!result.isverifed && (
+          {result.isverifed && (
             <>
               <LuShieldCheck size={22} className="inline-block" />
             </>
           )}
         </p>
-        <div className="mt-32 bg-black bg-opacity-30 backdrop-filter backdrop-blur-md rounded sm:mt-48 lg:mt-64">
-          <div className="transform  transition-all px-3 py-1.5 translate-y-0  opacity-100">
+        <div className="m-auto"></div>
+        <div className="absolute inset-x-0 bottom-0 bg-black bg-opacity-30 backdrop-filter backdrop-blur-md rounded">
+          <div className="px-3 py-1.5">
             <p className="text-sm text-white flex items-center gap-2">
               <span className="text-sm md:text-lg">{result.fullName},</span>
               <span className="text-sm">{result.age}</span>
@@ -69,6 +72,11 @@ export default function CardSearch({ result }) {
                 </span>
               </p>
             )}
+            <Link href={`/profile/${result.id}`}>
+              <button className="text-sm bg-[#b0772b] rounded-lg mb-1 mt-2 px-2 text-white flex items-center gap-2">
+                View Profile
+              </button>
+            </Link>
           </div>
         </div>
       </div>

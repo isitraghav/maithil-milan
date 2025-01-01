@@ -8,6 +8,8 @@ export async function searchMatch({
   caste,
   height,
   maritalStatus,
+  page,
+  pageSize,
 }) {
   return new Promise(async (resolve, reject) => {
     let where = {
@@ -31,8 +33,11 @@ export async function searchMatch({
 
     const data = await prisma.profile.findMany({
       where,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
     });
     console.log(data);
     resolve(data);
   });
 }
+
