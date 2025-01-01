@@ -1,3 +1,4 @@
+"use server";
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 
@@ -34,6 +35,49 @@ export async function getUserProfile(userid) {
       .catch((error) => {
         console.error("Error fetching user data:", error.message);
         reject(error);
+      });
+  });
+}
+
+export async function sendMatchingRequest(receiverId) {
+  console.log("Sending matching request to ", receiverId);
+  return new Promise(async (resolve, reject) => {
+    let userEmail = (await auth()).user.email;
+    await prisma.user
+      .findUnique({
+        where: {
+          email: userEmail,
+        },
+        select: {
+          id: true,
+        },
+      })
+      .then(async (data) => {
+        console.log("userid", data.id);
+        console.log("receiverId", receiverId);
+        try {
+          await prisma.match.create({
+            data: {
+              status: "Pending",
+              createdAt: new Date(),
+              user: {
+                connect: {
+                  id: data.id,
+                },
+              },
+              matchedUser: {
+                connect: {
+                  id: receiverId,
+                },
+              },
+            },
+          });
+        } catch (error) {
+          resolve(1);
+          console.error("Error sending matching request:", error.message);
+        } finally {
+          resolve(0);
+        }
       });
   });
 }

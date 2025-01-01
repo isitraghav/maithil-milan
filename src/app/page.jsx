@@ -5,11 +5,21 @@ import KeenSlider from "keen-slider";
 import "keen-slider/keen-slider.min.css";
 import { CiLock, CiSquareCheck } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const SliderSection = () => {
   const sliderRef = useRef(null);
   const [slider, setSlider] = useState(null);
   const [modalOpened, setModalOpened] = useState(false);
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session) {
+      location.href = "/dashboard";
+    }
+  }, [session]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -110,7 +120,11 @@ const SliderSection = () => {
                   <div>
                     <button
                       className="bg-rose-700 w-full text-white px-4 py-2 rounded-md mt-4"
-                      onClick={() => setModalOpened(false)}
+                      onClick={async () => {
+                        await signIn("google", {
+                          callbackUrl: "/profile",
+                        });
+                      }}
                     >
                       Search
                     </button>
