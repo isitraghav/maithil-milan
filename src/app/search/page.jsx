@@ -89,7 +89,7 @@ export default function Search() {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="sm:w-full md:w-1/2 mt-3 h-screen">
+      <div className="sm:w-full md:w-2/3 mt-3 h-screen">
         <div className="text-2xl p-2 pb-0">Find Your Perfect Match</div>
         <div className="text-sm text-gray-500 p-2 pt-1">
           Find your perfect match based on your preferences

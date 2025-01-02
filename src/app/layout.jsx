@@ -2,6 +2,7 @@ import "./globals.css";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { SessionProvider } from "next-auth/react";
+import Sidebar from "@/components/Sidebar";
 export const metadata = {
   title: "Maithil Milan",
   description:
@@ -16,7 +17,7 @@ export default function RootLayout({ children }) {
       <body>
         <SessionProvider>
           <Navbar />
-          {children}
+          <Sidebar children={children} />
           <Footer />
         </SessionProvider>
       </body>
