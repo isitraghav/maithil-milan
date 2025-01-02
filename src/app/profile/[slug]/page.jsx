@@ -94,8 +94,10 @@ export default function UserProfilePage({ params }) {
                 let btn = e.target;
                 btn.textContent = "Sending Request...";
                 await sendMatchingRequest(userid).then((e) => {
-                  if (resizeBy.code == 0) {
+                  if (e == 0) {
                     btn.textContent = "Request Sent";
+                  } else if (e == 2) {
+                    btn.textContent = "Request Already Sent";
                   } else {
                     btn.textContent = "Error Sending Request";
                   }

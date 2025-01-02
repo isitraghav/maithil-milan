@@ -34,7 +34,7 @@ export async function getsidebarnotifications() {
     await prisma.match
       .findMany({
         where: {
-          userId: userData.id,
+          matchedUserId: userData.id,
         },
       })
       .then((data) => {
@@ -53,3 +53,4 @@ export async function getsidebarnotifications() {
     resolve(userData);
   });
 }
+

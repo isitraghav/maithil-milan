@@ -43,6 +43,8 @@ export async function sendMatchingRequest(receiverId) {
   console.log("Sending matching request to ", receiverId);
   return new Promise(async (resolve, reject) => {
     let userEmail = (await auth()).user.email;
+    // Check if there is an existing matching request
+
     await prisma.user
       .findUnique({
         where: {
@@ -55,6 +57,20 @@ export async function sendMatchingRequest(receiverId) {
       .then(async (data) => {
         console.log("userid", data.id);
         console.log("receiverId", receiverId);
+
+        const existingRequest = await prisma.match.findFirst({
+          where: {
+            userId: data.id,
+            matchedUserId: receiverId,
+          },
+        });
+
+        if (existingRequest) {
+          console.log("Matching request already exists");
+          resolve(2);
+          return;
+        }
+
         try {
           await prisma.match.create({
             data: {
@@ -73,8 +89,8 @@ export async function sendMatchingRequest(receiverId) {
             },
           });
         } catch (error) {
-          resolve(1);
           console.error("Error sending matching request:", error.message);
+          resolve(1);
         } finally {
           resolve(0);
         }
