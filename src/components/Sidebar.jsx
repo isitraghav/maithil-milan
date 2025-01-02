@@ -115,7 +115,7 @@ export default function Sidebar({ children }) {
             </ul>
           </div>
         )}
-        <div className={loggedin ? "w-3/4" : "w-full"}>{children}</div>
+        <div className={loggedin ? "w-5/6 md:w-3/4" : "w-full"}>{children}</div>
       </div>
     </>
   );

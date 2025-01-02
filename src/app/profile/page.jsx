@@ -115,14 +115,14 @@ const ProfilePage = () => {
   if (loading) {
     return (
       <>
-        <div className="m-auto w-full">
+        <div className="m-auto h-full w-full">
           <PiSpinnerLight size={40} className="animate-spin w-full h-98" />
         </div>
       </>
     );
   } else {
     return (
-      <div className="p-8 max-w-2xl mx-auto">
+      <div className="p-8 pr-0.5 pl-2 md:pr-8 max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-4">
           {name ? "Profile" : "Complete Your Profile"}
         </h1>
@@ -213,7 +213,7 @@ const ProfilePage = () => {
           </div>
 
           <div className="flex w-full gap-2">
-            <div className="md:w-1/2">
+            <div className="w-1/2 md:w-1/2">
               <label
                 htmlFor="dateofbirth"
                 className="block text-sm font-medium text-gray-700"
