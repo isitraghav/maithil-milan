@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CiLogout } from "react-icons/ci";
+import GoogleLoginButton from "./googleLoginButton";
 
 export default function Navbar() {
   const [loggedin, setLoggedin] = useState(false);
@@ -18,16 +19,10 @@ export default function Navbar() {
       } else {
         setLoggedin(true);
         setUser(session.user);
-        console.log(session.user)
+        console.log(session.user);
       }
     });
   }, []);
-
-  async function loginWithGoogle() {
-    await signIn("google", {
-      callbackUrl: "/profile",
-    });
-  }
 
   return (
     <header className="bg-white">
@@ -88,7 +83,7 @@ export default function Navbar() {
                       role="menu"
                     >
                       <div className="p-2">
-                      <Link
+                        <Link
                           href="/profile"
                           className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                           role="menuitem"
@@ -123,29 +118,8 @@ export default function Navbar() {
               ) : (
                 <>
                   <div className="sm:flex sm:gap-4 hidden md:block">
-                    <button
-                      onClick={loginWithGoogle}
-                      className="bg-[#fba536] px-4 py-2 rounded-md text-white font-semibold hover:bg-[#fb8b36] transition duration-150 ease-in-out flex items-center"
-                    >
-                      Continue With
-                      <Image
-                        loading="eager"
-                        src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
-                        alt="google"
-                        width={20}
-                        height={20}
-                        className="ml-2"
-                      />
-                    </button>
+                    <GoogleLoginButton />
                   </div>
-                  <button
-                    onClick={() => {
-                      loginWithGoogle();
-                    }}
-                    className="md:hidden text-sm bg-[#fba536] px-4 py-2 rounded-md text-white font-semibold hover:bg-[#fb8b36] transition duration-150 ease-in-out"
-                  >
-                    Register
-                  </button>
                 </>
               )}
             </div>

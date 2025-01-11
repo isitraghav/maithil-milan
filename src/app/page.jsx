@@ -7,6 +7,7 @@ import { CiLock, CiSquareCheck } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import GoogleLoginButton from "@/components/googleLoginButton";
 
 const SliderSection = () => {
   const sliderRef = useRef(null);
@@ -144,7 +145,7 @@ const SliderSection = () => {
 
       <section
         style={{
-          background: "url('/img/bnr.jpg')",
+          background: "url('/img/bnr.webp')",
         }}
         className="relative bg-cover bg-center bg-no-repeat"
       >
@@ -202,7 +203,7 @@ const SliderSection = () => {
               <Image
                 width={500}
                 height={200}
-                src="/img/bride.jpg"
+                src="/img/bride.webp"
                 className="rounded-xl object-cover h-[300px]"
                 alt=""
               />
@@ -242,7 +243,7 @@ const SliderSection = () => {
         </div>
       </section>
 
-      <section className="bg-gray-50">
+      <section className="s">
         <div className="mx-auto max-w-[1340px] px-4 py-12 sm:px-6 lg:me-0 lg:py-16 lg:pe-0 lg:ps-8 xl:py-24">
           <div className="max-w-7xl items-end justify-between sm:flex sm:pe-6 lg:pe-8">
             <h2 className="max-w-xl text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
@@ -364,6 +365,95 @@ const SliderSection = () => {
           </div>
         </div>
       </section>
+
+      <div className="w-full flex center-all">
+        <div className="bg-white md:mx-4 md:w-11/12 w-full rounded-lg mx-auto px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">
+              Trusted by Thousands
+            </h2>
+
+            <p className="mt-4 text-gray-500 sm:text-xl">
+              Maithil Milan is a trusted platform for thousands of people
+              worldwide. Our platform is designed to provide a seamless and
+              efficient way to find your perfect match, with features such as
+              automated matching, messaging, and relationship management.
+            </p>
+          </div>
+
+          <dl className="mt-6 flex flex-wrap center-all gap-4 sm:mt-8">
+            <div className="flex flex-col w-full md:w-1/4 rounded-lg bg-gray-100 px-4 py-8 text-center">
+              <dt className="order-last text-lg font-medium text-gray-500">
+                Users
+              </dt>
+
+              <dd className="text-4xl font-extrabold text-[#be123c] md:text-5xl">
+                18,000
+              </dd>
+            </div>
+
+            <div className="flex flex-col w-full md:w-1/4 rounded-lg bg-gray-100 px-4 py-8 text-center">
+              <dt className="order-last text-lg font-medium text-gray-500">
+                Users Matched
+              </dt>
+
+              <dd className="text-4xl font-extrabold text-[#be123c] md:text-5xl">
+                11,000
+              </dd>
+            </div>
+
+            <div className="flex flex-col w-full md:w-1/4 rounded-lg bg-gray-100 px-4 py-8 text-center">
+              <dt className="order-last text-lg font-medium text-gray-500">
+                Website visits
+              </dt>
+
+              <dd className="text-4xl font-extrabold text-[#be123c] md:text-5xl">
+                19,000
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <div className="w-full px-2 md:px-0 flex center-all">
+        <section className="w-full md:w-11/12 mx-auto">
+          <div className="py-8">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <div className="bg-[#f9a949] p-8 md:p-12 lg:px-16 lg:py-24 flex center-all rounded-xl">
+                <div className="mx-auto max-w-xl text-center">
+                  <h2 className="text-2xl md:text-4xl font-bold text-white">
+                    Get started today
+                  </h2>
+
+                  <p className="hidden text-white/90 sm:mt-4 sm:block">
+                    Find your perfect match with Maithil Milan.
+                  </p>
+
+                  <div className="mt-4 md:mt-8">
+                    <div className="inline-block rounded px-12 py-3 text-sm font-medium transition hover:bg-transparent hover:text-white focus:outline-none focus:ring focus:ring-yellow-400">
+                      <GoogleLoginButton />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-1 lg:grid-cols-2">
+                <img
+                  alt=""
+                  src="https://images.unsplash.com/photo-1621274790572-7c32596bc67f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=654&q=80"
+                  className="h-40 rounded-xl w-full object-cover sm:h-56 md:h-full"
+                />
+
+                <img
+                  alt=""
+                  src="https://images.unsplash.com/photo-1567168544813-cc03465b4fa8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=774&q=80"
+                  className="h-40 rounded-xl block md:hidden lg:block w-full object-cover sm:h-56 md:h-full"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </>
   );
 };
