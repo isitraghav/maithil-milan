@@ -6,7 +6,7 @@ export async function getsidebarnotifications() {
   return new Promise(async (resolve, reject) => {
     const user = (await auth()).user;
     let userData = {
-      id: getUserId(),
+      id: await getUserId(),
     };
     //no of matches sent to the user
     await prisma.match
@@ -181,7 +181,7 @@ export async function handleMatchingRequest(matchId, action) {
   return new Promise(async (resolve, reject) => {
     try {
       let result = false;
-
+      console.log("Handling matching request:", matchId, action);
       if (action === "Accepted") {
         result = await approveMatchingRequest(matchId);
       } else if (action === "Declined") {

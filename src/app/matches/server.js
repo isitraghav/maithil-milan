@@ -5,10 +5,10 @@ import { getUserId } from "@/components/server";
 const { auth } = require("@/auth");
 const { prisma } = require("@/prisma");
 
-export async function getUserMatches() {
+export async function getAcceptedMatches() {
   return new Promise(async (resolve, reject) => {
     let userData = {
-      id: getUserId(),
+      id: await getUserId(),
     };
 
     //Accepted matches
@@ -17,6 +17,13 @@ export async function getUserMatches() {
         where: {
           status: "Accepted",
           OR: [{ userId: userData.id }, { matchedUserId: userData.id }],
+        },
+        include: {
+          user: {
+            include: {
+              profile: true,
+            },
+          },
         },
       })
       .then(async (data) => {

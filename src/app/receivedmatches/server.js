@@ -8,7 +8,7 @@ const { prisma } = require("@/prisma");
 export async function getreceivedmatches() {
   return new Promise(async (resolve, reject) => {
     let userData = {
-      id: getUserId(),
+      id: await getUserId(),
     };
 
     await prisma.match
@@ -26,6 +26,7 @@ export async function getreceivedmatches() {
         },
       })
       .then(async (data) => {
+        console.log("Received matches:", data);
         userData["matches"] = data;
         resolve(userData);
       });

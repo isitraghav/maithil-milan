@@ -10,7 +10,7 @@ export default function Footer() {
           <div>
             <div>
               <Image
-                src="/img/logo.jpg"
+                src="/img/logo.png"
                 alt="Maithil Milan"
                 width={200}
                 height={200}

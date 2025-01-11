@@ -67,13 +67,13 @@ export async function getUserProfile(userid) {
 export async function sendMatchingRequest(receiverId) {
   console.log("Sending matching request to ", receiverId);
   return new Promise(async (resolve, reject) => {
-    getUserId().then(async (data) => {
-      console.log("userid", id);
+    await getUserId().then(async (data) => {
+      console.log("userid", data);
       console.log("receiverId", receiverId);
 
       const existingRequest = await prisma.match.findFirst({
         where: {
-          userId: data.id,
+          userId: data,
           matchedUserId: receiverId,
         },
       });
@@ -91,7 +91,7 @@ export async function sendMatchingRequest(receiverId) {
             createdAt: new Date(),
             user: {
               connect: {
-                id: data.id,
+                id: data,
               },
             },
             matchedUser: {

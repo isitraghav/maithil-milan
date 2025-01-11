@@ -37,7 +37,7 @@ export default function Navbar() {
             <Link className="block" href="/">
               <span className="sr-only">Home</span>
               <Image
-                src="/img/logo.jpg"
+                src="/img/logo.png"
                 alt="Maithil Milan"
                 width={200}
                 height={20}

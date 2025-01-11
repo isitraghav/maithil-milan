@@ -555,6 +555,8 @@ const ProfilePage = () => {
                 title: "Age Restriction",
                 text: "You must be at least 18 years old to create a profile.",
               });
+              btn.textContent = "Save Profile";
+              btn.disabled = false;
               return;
             }
 
