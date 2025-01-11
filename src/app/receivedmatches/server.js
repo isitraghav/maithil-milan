@@ -5,27 +5,28 @@ import { getUserId } from "@/components/server";
 const { auth } = require("@/auth");
 const { prisma } = require("@/prisma");
 
-export async function getUserMatches() {
+export async function getreceivedmatches() {
   return new Promise(async (resolve, reject) => {
     let userData = {
       id: getUserId(),
     };
 
-    //Accepted matches
     await prisma.match
       .findMany({
         where: {
-          status: "Accepted",
-          OR: [{ userId: userData.id }, { matchedUserId: userData.id }],
+          matchedUserId: userData.id,
+          status: "Pending",
+        },
+        include: {
+          user: {
+            include: {
+              profile: true,
+            },
+          },
         },
       })
       .then(async (data) => {
         userData["matches"] = data;
-      })
-      .catch((error) => {
-        console.error("Error fetching matches:", error.message);
-      })
-      .finally(() => {
         resolve(userData);
       });
   });

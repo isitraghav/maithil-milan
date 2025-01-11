@@ -1,5 +1,6 @@
 "use server";
 import { auth } from "@/auth";
+import { getUserId } from "@/components/server";
 import { prisma } from "@/prisma";
 
 export async function getUserProfile(userid) {
@@ -23,9 +24,33 @@ export async function getUserProfile(userid) {
               email: data.email,
             },
           })
-          .then((data) => {
+          .then(async (data) => {
             console.log("User profile fetched:", data);
-            resolve(data);
+            let userid = await getUserId();
+            await prisma.match
+              .findMany({
+                where: {
+                  OR: [
+                    {
+                      AND: {
+                        userId: userid,
+                        matchedUserId: data.id,
+                      },
+                    },
+                    {
+                      AND: {
+                        userId: data.id,
+                        matchedUserId: userid,
+                      },
+                    },
+                  ],
+                },
+              })
+              .then((data_) => {
+                console.log("User matches fetched:", data_);
+                data["matches"] = data_[0];
+                resolve(data);
+              });
           })
           .catch((error) => {
             console.error("Error fetching user profile:", error.message);
@@ -42,58 +67,46 @@ export async function getUserProfile(userid) {
 export async function sendMatchingRequest(receiverId) {
   console.log("Sending matching request to ", receiverId);
   return new Promise(async (resolve, reject) => {
-    let userEmail = (await auth()).user.email;
-    // Check if there is an existing matching request
+    getUserId().then(async (data) => {
+      console.log("userid", id);
+      console.log("receiverId", receiverId);
 
-    await prisma.user
-      .findUnique({
+      const existingRequest = await prisma.match.findFirst({
         where: {
-          email: userEmail,
+          userId: data.id,
+          matchedUserId: receiverId,
         },
-        select: {
-          id: true,
-        },
-      })
-      .then(async (data) => {
-        console.log("userid", data.id);
-        console.log("receiverId", receiverId);
+      });
 
-        const existingRequest = await prisma.match.findFirst({
-          where: {
-            userId: data.id,
-            matchedUserId: receiverId,
-          },
-        });
+      if (existingRequest) {
+        console.log("Matching request already exists");
+        resolve(2);
+        return;
+      }
 
-        if (existingRequest) {
-          console.log("Matching request already exists");
-          resolve(2);
-          return;
-        }
-
-        try {
-          await prisma.match.create({
-            data: {
-              status: "Pending",
-              createdAt: new Date(),
-              user: {
-                connect: {
-                  id: data.id,
-                },
-              },
-              matchedUser: {
-                connect: {
-                  id: receiverId,
-                },
+      try {
+        await prisma.match.create({
+          data: {
+            status: "Pending",
+            createdAt: new Date(),
+            user: {
+              connect: {
+                id: data.id,
               },
             },
-          });
-        } catch (error) {
-          console.error("Error sending matching request:", error.message);
-          resolve(1);
-        } finally {
-          resolve(0);
-        }
-      });
+            matchedUser: {
+              connect: {
+                id: receiverId,
+              },
+            },
+          },
+        });
+      } catch (error) {
+        console.error("Error sending matching request:", error.message);
+        resolve(1);
+      } finally {
+        resolve(0);
+      }
+    });
   });
 }

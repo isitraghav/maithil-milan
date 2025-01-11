@@ -143,15 +143,15 @@ export default function Search() {
                 <input
                   type="number"
                   value={age}
-                  onChange={(e) => setAge(e.target.value)}
+                  onChange={(e) => setAge(Number(e.target.value))}
                   className="h-10 w-16 rounded border-gray-200 text-center sm:text-sm"
                 />
                 <span className="text-xl">to</span>
                 <input
                   type="number"
                   value={age2}
-                  onChange={(e) => setAge2(e.target.value)}
-                  className="h-10 w-16 rounded border-gray-200 text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
+                  onChange={(e) => setAge2(Number(e.target.value))}
+                  className="h-10 w-16 rounded border-gray-200 text-center sm:text-sm"
                 />
               </div>
               <div className="mt-2 w-full">

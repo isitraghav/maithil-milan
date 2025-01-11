@@ -26,7 +26,6 @@ export default function Sidebar({ children }) {
       setLoggedin(true);
       getsidebarnotifications().then((data) => {
         setUserData(data);
-        console.log(data);
       });
     }
   }, [status, session, hasRun]);
@@ -86,7 +85,7 @@ export default function Sidebar({ children }) {
 
               <li>
                 <Link
-                  href="/matches"
+                  href="/receivedmatches"
                   className="group flex items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700"
                 >
                   <span className="text-sm flex gap-2 font-medium">

@@ -3,6 +3,28 @@ import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 
 export async function createOrUpdateProfile(profileData = {}) {
+  // Validation
+  if (!profileData.dateOfBirth) {
+    throw new Error("Date of birth is required");
+  }
+
+  if (!profileData.fullName) {
+    throw new Error("Name is required");
+  }
+
+  if (!profileData.religion) {
+    throw new Error("Religion is required");
+  }
+
+  if (profileData.dateOfBirth) {
+    const age = Math.floor(
+      (new Date().getTime() - new Date(profileData.dateOfBirth).getTime()) /
+        (1000 * 60 * 60 * 24 * 365.25)
+    );
+    if (age < 18) {
+      throw new Error("You must be at least 18 years old to create a profile");
+    }
+  }
   const email = (await auth()).user.email;
   profileData["email"] = email;
   console.log("user data input: ", profileData);

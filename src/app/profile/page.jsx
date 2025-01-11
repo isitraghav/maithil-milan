@@ -28,7 +28,6 @@ const ProfilePage = () => {
   const [maritalStatus, setMaritalStatus] = useState("Unmarried");
   const [profilePic, setProfilePic] = useState("/img/user.webp");
   const [userphotos, setuserphotos] = useState([]);
-  const [age, setAge] = useState(22);
 
   const [loading, setLoading] = useState(true);
 
@@ -54,7 +53,6 @@ const ProfilePage = () => {
         setHeight(data.height || 0);
         setMaritalStatus(data.maritalStatus || "Unmarried");
         setuserphotos(data.photos || []);
-        setAge(data.age);
         setProfilePic(data.image || "/img/user.webp");
       } else {
         console.log("no existing user profile was found");
@@ -153,7 +151,7 @@ const ProfilePage = () => {
 
         <div className="flex flex-col gap-2">
           <div className="flex gap-2">
-            <div className="w-1/2 lg:w-3/4 md:w-2/3">
+            <div className="w-full">
               <label
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
@@ -169,7 +167,7 @@ const ProfilePage = () => {
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            <div className="w-1/2 lg:w-1/4 md:w-1/3">
+            {/* <div className="w-1/2 lg:w-1/4 md:w-1/3">
               <label
                 htmlFor="age"
                 className="block text-sm font-medium text-gray-700"
@@ -209,7 +207,7 @@ const ProfilePage = () => {
                   setAge(e.target.valueAsNumber);
                 }}
               />
-            </div>
+            </div> */}
           </div>
 
           <div className="flex w-full gap-2">
@@ -506,7 +504,7 @@ const ProfilePage = () => {
             </div>
           )}
         </div>
-        {!(name && dateofbirth && gender && age && profilePic) && (
+        {!(name && dateofbirth && gender && profilePic) && (
           <div className="text-center text-yellow-900 flex center-all">
             <PiWarningBold size={24} />
             Complete at least 30% profile to get matches
@@ -518,9 +516,8 @@ const ProfilePage = () => {
             const btn = event.target;
             const errors = [];
             if (!name) errors.push("Full name");
-            if (!age) errors.push("Age");
             if (!gender) errors.push("Gender");
-
+            if (!dateofbirth) errors.push("Date of birth");
             if (errors.length) {
               Swal.fire({
                 icon: "error",
@@ -531,6 +528,7 @@ const ProfilePage = () => {
               });
               return;
             }
+
             btn.textContent = "Saving...";
             btn.disabled = true;
             let awd = {
@@ -545,9 +543,20 @@ const ProfilePage = () => {
               height: Number(height),
               maritalStatus: maritalStatus,
               photos: userphotos,
-              age: Number(age),
+              age: Math.floor(
+                (new Date().getTime() - new Date(dateofbirth).getTime()) /
+                  (1000 * 60 * 60 * 24 * 365.25)
+              ),
               image: profilePic,
             };
+            if (awd.age < 18) {
+              Swal.fire({
+                icon: "error",
+                title: "Age Restriction",
+                text: "You must be at least 18 years old to create a profile.",
+              });
+              return;
+            }
 
             console.log(awd);
             try {

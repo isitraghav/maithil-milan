@@ -19,8 +19,12 @@ export async function searchMatch({
         where: {
           email: userEmail,
         },
+        include: {
+          profile: true,
+        },
       })
       .then(async (res) => {
+        console.log("res", res);
         let where = {
           NOT: {
             email: userEmail,
@@ -33,7 +37,6 @@ export async function searchMatch({
             gte: height,
           },
           maritalStatus,
-          gender: "Female",
         };
 
         if (caste !== "Any") {
@@ -44,10 +47,10 @@ export async function searchMatch({
           where.religion = religion;
         }
 
-        if (res.gender === "Female") {
-          where.gender = "Male";
+        if (res.profile.gender == "Female") {
+          where["gender"] = "Male";
         } else {
-          where.gender = "Female";
+          where["gender"] = "Female";
         }
 
         console.log(where);
