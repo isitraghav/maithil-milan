@@ -1,6 +1,10 @@
 "use server";
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
+import { createWriteStream, existsSync, mkdirSync } from "fs";
+import path from "path";
+import sharp from "sharp";
+import { v4 } from "uuid";
 
 export async function createOrUpdateProfile(profileData = {}) {
   // Validation
@@ -108,3 +112,32 @@ export async function getuserdata() {
     accept(user);
   });
 }
+
+export async function uploadFile(file) {
+  const uploadDir = path.join(process.cwd(), "/public/uploads");
+
+  // Ensure the upload directory exists
+  if (!existsSync(uploadDir)) {
+    mkdirSync(uploadDir, { recursive: true });
+  }
+
+  // Read the file buffer from the uploaded file
+  const fileBuffer = await file.arrayBuffer();
+  const inputBuffer = Buffer.from(fileBuffer);
+
+  // Generate unique file name and path
+  const fileName = `${v4()}.webp`;
+  const filePath = path.join(uploadDir, fileName);
+
+  try {
+    await sharp(inputBuffer)
+      .webp({ quality: 80 }) // Adjust quality as needed
+      .toFile(filePath);
+
+    return { filePath: `/uploads/${fileName}` }; // Return the public URL
+  } catch (error) {
+    console.error("Error saving file:", error);
+    throw new Error("File upload failed");
+  }
+}
+

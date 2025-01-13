@@ -45,7 +45,7 @@ export default function Dashboard() {
                 <img
                   src={userData?.image}
                   alt={userData?.fullName}
-                  className="rounded-full mb-4 sm:mb-0 sm:mr-6 border-4 border-[#f8a845] w-38 aspect-square object-cover"
+                  className="rounded-full w-24 mb-4 sm:mb-0 sm:mr-6 border-4 border-[#f8a845] aspect-square object-cover"
                 />
                 <div>
                   <h3 className="text-xl font-medium text-gray-800">
@@ -90,13 +90,14 @@ export default function Dashboard() {
                 key={profile.id}
                 className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow duration-200"
               >
-                <div className="flex items-center mb-4">
-                  <Image
+                <Link
+                  href={`/profile/${profile.id}`}
+                  className="flex items-center mb-4"
+                >
+                  <img
                     src={profile.image}
                     alt={profile.fullName}
-                    width={64}
-                    height={64}
-                    className="rounded-full mr-4"
+                    className="rounded-full mr-4 w-16 aspect-square object-cover"
                   />
                   <div>
                     <h4 className="font-medium text-lg text-gray-800">
@@ -106,7 +107,7 @@ export default function Dashboard() {
                       {profile.age} years, {profile.profession}
                     </p>
                   </div>
-                </div>
+                </Link>
                 <p className="text-gray-600 mb-4">
                   {profile.height} cm, {profile.education}
                 </p>

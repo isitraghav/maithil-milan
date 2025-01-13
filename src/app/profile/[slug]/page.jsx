@@ -25,13 +25,13 @@ export default function UserProfilePage({ params }) {
     fetchData();
   }, []);
   return (
-    <>
+    <div className="flex flex-col items-center justify-center">
       {userData.id ? (
         <div className="flex flex-col items-center justify-center p-4 space-y-2 mb-10">
           <img
             src={userData.image}
             alt={userData.fullName}
-            className="w-40 h-40 rounded-full mb-4"
+            className="w-40 object-cover aspect-square h-40 rounded-full mb-4"
           />
           <div className="flow-root w-full">
             <dl className="-my-3 divide-y divide-gray-100 text-sm">
@@ -185,9 +185,9 @@ export default function UserProfilePage({ params }) {
 
               {userData?.photos?.length > 0 && (
                 <div className="embla rounded-md" ref={emblaRef}>
-                  <div className="embla__container h-48 w-96">
+                  <div className="embla__container max-w-96 h-80">
                     {userData?.photos?.map((photo, index) => (
-                      <div key={index} className="embla__slide ">
+                      <div key={index} className="embla__slide mr-2">
                         <img
                           src={photo}
                           className="object-cover h-full w-full rounded-xl"
@@ -223,6 +223,6 @@ export default function UserProfilePage({ params }) {
           <PiSpinnerLight size={40} className="animate-spin w-full h-98" />
         </div>
       )}
-    </>
+    </div>
   );
 }

@@ -5,12 +5,14 @@ import {
   getuserdata,
   getUserProfile,
   updateuserprofilepic,
+  uploadFile,
 } from "./server";
 import { PiPencil, PiSpinnerLight, PiWarningBold } from "react-icons/pi";
 import { UploadClient } from "@uploadcare/upload-client";
 import { IoMdClose } from "react-icons/io";
 import { LuImagePlus } from "react-icons/lu";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 const ProfilePage = () => {
   const [data, setData] = useState({});
@@ -66,23 +68,18 @@ const ProfilePage = () => {
   }, []);
 
   const client = new UploadClient({ publicKey: "83f044eb917deb6811d5" });
-  function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const onProgress = ({ isComputable, value }) => {
-          console.log(isComputable, value);
-        };
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
 
-        client.uploadFile(file, { onProgress }).then(async (file) => {
-          const profilePicUrl = `https://ucarecdn.com/${file.uuid}/-/scale_crop/550x550/center/`;
-          setProfilePic(profilePicUrl);
-        });
-      };
-      reader.readAsDataURL(file);
+    if (!file) {
+      alert("Please select a file!");
+      return;
     }
-  }
+    await uploadFile(file).then((res) => {
+      console.log(res);
+      setProfilePic(res.filePath);
+    });
+  };
 
   const [photosLoading, setPhotosLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -90,22 +87,10 @@ const ProfilePage = () => {
     console.log(e.target.files);
 
     const files = e.target.files;
-    const onProgress = ({ isComputable, value }) => {
-      setPhotosLoading(true);
-      console.log(isComputable, Math.floor(value * 100));
-      setProgress(Math.floor(value * 100));
-      if (value == 1) {
-        setPhotosLoading(false);
-      }
-    };
-
     Array.from(files).map(async (file) => {
-      await client.uploadFile(file, { onProgress }).then((file) => {
-        console.log(file);
-        setuserphotos((prevPhotos) => [
-          ...prevPhotos,
-          `https://ucarecdn.com/${file.uuid}/`,
-        ]);
+      await uploadFile(file).then((res) => {
+        console.log(res);
+        setuserphotos((prev) => [...prev, res.filePath]);
       });
     });
   }
@@ -130,7 +115,7 @@ const ProfilePage = () => {
             <img
               src={profilePic || "/img/user.webp"}
               alt="User Avatar"
-              className="rounded-full w-32 h-32 mb-4"
+              className="rounded-full aspect-square object-cover w-32 h-32 mb-4"
             />
             <label
               htmlFor="profilePic"
