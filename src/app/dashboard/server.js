@@ -87,7 +87,7 @@ export async function checkProfileCompletion() {
         completionPercentage: completionPercentage,
       });
     } catch (error) {
-      console.error(error);
+      console.log(error);
       reject(error);
     }
   });

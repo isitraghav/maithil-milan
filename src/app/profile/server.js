@@ -114,7 +114,7 @@ export async function getuserdata() {
 }
 
 export async function uploadFile(file) {
-  const uploadDir = path.join(process.cwd(), "/public/uploads");
+  const uploadDir = path.join(process.cwd(), "/uploads");
 
   // Ensure the upload directory exists
   if (!existsSync(uploadDir)) {
@@ -134,7 +134,7 @@ export async function uploadFile(file) {
       .webp({ quality: 80 }) // Adjust quality as needed
       .toFile(filePath);
 
-    return { filePath: `/uploads/${fileName}` }; // Return the public URL
+    return { filePath: `/api/uploads/${fileName}` }; // Return the public URL
   } catch (error) {
     console.error("Error saving file:", error);
     throw new Error("File upload failed");
