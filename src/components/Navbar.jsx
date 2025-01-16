@@ -84,18 +84,18 @@ export default function Navbar() {
                     >
                       <div className="p-2">
                         <Link
-                          href="/profile"
+                          href="/faqs"
                           className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                           role="menuitem"
                         >
-                          View Profile
+                          FAQs
                         </Link>
                         <Link
-                          href="/search"
+                          href="/privacy"
                           className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
                           role="menuitem"
                         >
-                          Search Your Match
+                          Privacy Policy
                         </Link>
                       </div>
 
