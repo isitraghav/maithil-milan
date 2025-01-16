@@ -30,6 +30,8 @@ const ProfilePage = () => {
   const [maritalStatus, setMaritalStatus] = useState("Unmarried");
   const [profilePic, setProfilePic] = useState("/img/user.webp");
   const [userphotos, setuserphotos] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [uploadingPics, setUploadingPics] = useState(false);
 
   const [loading, setLoading] = useState(true);
 
@@ -67,32 +69,46 @@ const ProfilePage = () => {
     console.log(data);
   }, []);
 
-  const client = new UploadClient({ publicKey: "83f044eb917deb6811d5" });
+  // const client = new UploadClient({ publicKey: "83f044eb917deb6811d5" });
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
 
     if (!file) {
-      alert("Please select a file!");
+      await Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please select a file to upload.",
+      });
       return;
     }
+    setUploading(true);
     await uploadFile(file).then((res) => {
       console.log(res);
       setProfilePic(res.filePath);
+      setUploading(false);
     });
+    setUploading(false);
   };
 
-  const [photosLoading, setPhotosLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
   function handleuserphotoupload(e) {
-    console.log(e.target.files);
-
     const files = e.target.files;
-    Array.from(files).map(async (file) => {
-      await uploadFile(file).then((res) => {
-        console.log(res);
-        setuserphotos((prev) => [...prev, res.filePath]);
-      });
-    });
+    const upload = async (files) => {
+      if (files.length === 0) {
+        setUploadingPics(false);
+        return;
+      }
+      setUploadingPics(true);
+      const file = files[0];
+      await uploadFile(file)
+        .then((res) => {
+          console.log(res);
+          setuserphotos((prev) => [...prev, res.filePath]);
+        })
+        .then(() => {
+          upload(Array.from(files).slice(1));
+        });
+    };
+    upload(Array.from(files));
   }
 
   if (loading) {
@@ -112,17 +128,28 @@ const ProfilePage = () => {
 
         <div className="flex flex-col items-center">
           <div className="relative">
-            <img
-              src={profilePic || "/img/user.webp"}
-              alt="User Avatar"
-              className="rounded-full aspect-square object-cover w-32 h-32 mb-4"
-            />
-            <label
-              htmlFor="profilePic"
-              className="absolute bottom-0 right-0 bg-gray-800 rounded-full p-1"
-            >
-              <PiPencil size={20} className="text-white" />
-            </label>
+            {uploading ? (
+              <>
+                <div className="grid place-items-center">
+                  <PiSpinnerLight size={40} className="animate-spin " />{" "}
+                  Uploading
+                </div>
+              </>
+            ) : (
+              <>
+                <img
+                  src={profilePic || "/img/user.webp"}
+                  alt="User Avatar"
+                  className="rounded-full aspect-square object-cover w-32 h-32 mb-4"
+                />
+                <label
+                  htmlFor="profilePic"
+                  className="absolute bottom-0 right-0 bg-gray-800 rounded-full p-1"
+                >
+                  <PiPencil size={20} className="text-white" />
+                </label>
+              </>
+            )}
           </div>
         </div>
 
@@ -395,38 +422,23 @@ const ProfilePage = () => {
             </div>
           </div>
 
-          {photosLoading ? (
+          {uploadingPics ? (
             <div>
-              <div>
-                <span id="ProgressLabel" className="sr-only">
-                  Loading
-                </span>
-
-                <span
-                  role="progressbar"
-                  aria-labelledby="ProgressLabel"
-                  aria-valuenow={progress}
-                  className="relative block rounded-full bg-gray-200"
-                >
-                  <span className="absolute inset-0 flex items-center justify-center text-[10px]/4">
-                    <span className="font-bold text-white"> {progress} </span>
-                  </span>
-
-                  <span
-                    className="block h-4 rounded-full bg-indigo-600 text-center"
-                    style={{ width: `${progress}%` }}
-                  ></span>
-                </span>
+              <div
+                htmlFor="addimage"
+                className="border-2 border-dashed rounded-lg  aspect-square h-24 grid place-items-center"
+              >
+                <PiSpinnerLight
+                  size={40}
+                  className="animate-spin w-full h-98"
+                />
+                <div className="text-xs text-center px-3">
+                  Uploading Your Images
+                </div>
               </div>
             </div>
           ) : (
             <div className="m-2">
-              {/* <label
-              htmlFor="addimage"
-              className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Upload Photots
-            </label> */}
               <input
                 type="file"
                 name="addimage"

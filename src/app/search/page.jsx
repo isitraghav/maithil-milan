@@ -3,6 +3,7 @@ import { useState } from "react";
 import { searchMatch } from "./server";
 import CardSearch from "@/components/CardSearch";
 import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
+import Swal from "sweetalert2";
 
 function Pagination({ context }) {
   const {
@@ -290,6 +291,13 @@ export default function Search() {
                       }, 2000);
                       await searchMatch(awd).then((data) => {
                         setSearchResults(data);
+                        if (data.length === 0) {
+                          Swal.fire({
+                            icon: "error",
+                            title: "No results found",
+                            text: "Try changing your search criteria",
+                          });
+                        }
                         console.log(data);
                         btn.textContent = "Search";
                       });
