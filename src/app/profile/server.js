@@ -131,7 +131,7 @@ export async function uploadFile(file) {
 
   try {
     await sharp(inputBuffer)
-      .webp({ quality: 80 }) // Adjust quality as needed
+      .webp({ quality: 60 }) // Adjust quality as needed
       .toFile(filePath);
 
     return { filePath: `/api/uploads/${fileName}` }; // Return the public URL

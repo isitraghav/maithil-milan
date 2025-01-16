@@ -3,7 +3,7 @@ import path from "path";
 
 export async function GET(req, { params }) {
   const { filename } = await params;
-  console.log("file requested");
+  console.log("File requested:", filename);
 
   // Path to the uploads directory
   const uploadsDir = path.join(process.cwd(), "uploads");
@@ -11,14 +11,18 @@ export async function GET(req, { params }) {
 
   try {
     // Check if file exists
-    const fileContent = fs.readFileSync(filePath);
+    await fs.promises.access(filePath);
 
-    return new Response(fileContent, {
+    // Create a readable stream to serve the file
+    const fileStream = fs.createReadStream(filePath);
+
+    return new Response(fileStream, {
       headers: {
         "Content-Type": "image/webp",
       },
     });
   } catch (error) {
+    console.error("Error serving file:", error);
     return new Response("File not found", { status: 404 });
   }
 }
