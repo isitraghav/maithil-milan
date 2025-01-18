@@ -25,6 +25,10 @@ export async function searchMatch({
       })
       .then(async (res) => {
         console.log("res", res);
+        if (res == null) {
+          resolve(2);
+          return;
+        }
         let where = {
           NOT: {
             email: userEmail,

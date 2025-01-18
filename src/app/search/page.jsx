@@ -290,6 +290,14 @@ export default function Search() {
                         btn.textContent = "Search";
                       }, 2000);
                       await searchMatch(awd).then((data) => {
+                        if (data == 2) {
+                          Swal.fire({
+                            icon: "error",
+                            title: "Incomplete Profile",
+                            text: "Please complete your profile before searching for a match",
+                          });
+                          return;
+                        }
                         setSearchResults(data);
                         if (data.length === 0) {
                           Swal.fire({

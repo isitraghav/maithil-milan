@@ -24,9 +24,15 @@ export async function getAcceptedMatches() {
               profile: true,
             },
           },
+          matchedUser: {
+            include: {
+              profile: true,
+            },
+          },
         },
       })
       .then(async (data) => {
+        console.log("Accepted matches:", data);
         userData["matches"] = data;
       })
       .catch((error) => {

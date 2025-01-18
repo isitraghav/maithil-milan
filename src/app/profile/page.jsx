@@ -426,11 +426,11 @@ const ProfilePage = () => {
             <div>
               <div
                 htmlFor="addimage"
-                className="border-2 border-dashed rounded-lg  aspect-square h-24 grid place-items-center"
+                className="border-2 border-dashed rounded-lg  aspect-square m-2 mt-3 h-24 grid place-items-center"
               >
                 <PiSpinnerLight
                   size={40}
-                  className="animate-spin w-full h-98"
+                  className="animate-spin"
                 />
                 <div className="text-xs text-center px-3">
                   Uploading Your Images
@@ -546,11 +546,11 @@ const ProfilePage = () => {
               ),
               image: profilePic,
             };
-            if (awd.age < 18) {
+            if (awd.age < 21) {
               Swal.fire({
                 icon: "error",
                 title: "Age Restriction",
-                text: "You must be at least 18 years old to create a profile.",
+                text: "You must be at least 21 years old to create a profile.",
               });
               btn.textContent = "Save Profile";
               btn.disabled = false;

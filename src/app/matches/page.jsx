@@ -10,15 +10,26 @@ export default function MatchesPage() {
   useEffect(() => {
     getAcceptedMatches().then(async (data) => {
       if (data) {
+        console.log("data", data);
         let modifiedMatches = [];
         data.matches.forEach((match) => {
-          modifiedMatches = [
-            ...modifiedMatches,
-            {
-              id: match.user.id,
-              ...match.user.profile,
-            },
-          ];
+          if (match.user.id == data.id) {
+            modifiedMatches = [
+              ...modifiedMatches,
+              {
+                id: match.matchedUser.id,
+                ...match.matchedUser.profile,
+              },
+            ];
+          } else if (match.matchedUser.id == data.id) {
+            modifiedMatches = [
+              ...modifiedMatches,
+              {
+                id: match.user.id,
+                ...match.user.profile,
+              },
+            ];
+          }
         });
         console.log("modifiedMatches: ", modifiedMatches);
         setMatchDetails(modifiedMatches);

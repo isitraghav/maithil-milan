@@ -68,15 +68,30 @@ export async function sendMatchingRequest(receiverId) {
   console.log("Sending matching request to ", receiverId);
   return new Promise(async (resolve, reject) => {
     await getUserId().then(async (data) => {
+      if (data === receiverId) {
+        console.log("Cannot send matching request to yourself");
+        resolve(3);
+        return;
+      }
       console.log("userid", data);
       console.log("receiverId", receiverId);
 
       const existingRequest = await prisma.match.findFirst({
         where: {
-          userId: data,
-          matchedUserId: receiverId,
+          OR: [
+            {
+              userId: data,
+              matchedUserId: receiverId,
+            },
+            {
+              userId: receiverId,
+              matchedUserId: data,
+            },
+          ],
         },
       });
+
+      console.log("existingRequest", existingRequest);
 
       if (existingRequest) {
         console.log("Matching request already exists");

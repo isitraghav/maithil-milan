@@ -18,8 +18,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 0px;
+  height: 5px;
   margin-left: -8px;
   -webkit-appearance: none;
   appearance: none;
@@ -53,4 +53,9 @@ body {
 
 .center-all {
   @apply flex justify-center items-center;
+}
+
+*{
+  scroll-behavior: smooth;
+  transition: all 0.3s ease-out;
 }
