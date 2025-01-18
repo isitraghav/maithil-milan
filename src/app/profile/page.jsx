@@ -13,6 +13,7 @@ import { IoMdClose } from "react-icons/io";
 import { LuImagePlus } from "react-icons/lu";
 import Swal from "sweetalert2";
 import axios from "axios";
+import { getCityFromCoordinates } from "../dashboard/server";
 
 const ProfilePage = () => {
   const [data, setData] = useState({});
@@ -32,6 +33,8 @@ const ProfilePage = () => {
   const [userphotos, setuserphotos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadingPics, setUploadingPics] = useState(false);
+  const [city, setCity] = useState("");
+  const [coordinates, setCoordinates] = useState({});
 
   const [loading, setLoading] = useState(true);
 
@@ -54,6 +57,11 @@ const ProfilePage = () => {
         setmotherTongue(data.motherTongue || "Hindi");
         setEducation(data.education || "");
         setProfession(data.profession || "");
+        setCoordinates({
+          latitude: data.latitude || 0,
+          longitude: data.longitude || 0,
+        });
+        setCity(data.city || "");
         setHeight(data.height || 0);
         setMaritalStatus(data.maritalStatus || "Unmarried");
         setuserphotos(data.photos || []);
@@ -69,7 +77,6 @@ const ProfilePage = () => {
     console.log(data);
   }, []);
 
-  // const client = new UploadClient({ publicKey: "83f044eb917deb6811d5" });
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
 
@@ -179,47 +186,34 @@ const ProfilePage = () => {
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            {/* <div className="w-1/2 lg:w-1/4 md:w-1/3">
+            <div className="w-1/2 lg:w-1/4 md:w-1/3">
               <label
-                htmlFor="age"
+                htmlFor="city"
                 className="block text-sm font-medium text-gray-700"
               >
-                Age
+                City
               </label>
-              <input
-                type="number"
-                id="age"
-                value={age || ""}
-                placeholder="Enter your age"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                onChange={(e) => {
-                  if (e.target.value < 0) {
-                    setAge(0);
-                    return;
-                  }
-                  if (e.target.value === 0 || e.target.value === "") {
-                    setAge(0);
-                    return;
-                  }
-                  if (e.target.value > 100) {
-                    setAge(100);
-                    return;
-                  }
-
-                  const today = new Date();
-                  const birthYear =
-                    today.getFullYear() - e.target.valueAsNumber;
-                  const birthDate = new Date(
-                    birthYear,
-                    today.getMonth(),
-                    today.getDate()
-                  );
-                  const formattedDate = birthDate.toISOString().split("T")[0];
-                  setDateofbirth(formattedDate);
-                  setAge(e.target.valueAsNumber);
+              <button
+                type="button"
+                id="city"
+                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                onClick={() => {
+                  navigator.geolocation.getCurrentPosition(async (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setCoordinates({ latitude, longitude });
+                    console.log(coordinates);
+                    await getCityFromCoordinates(latitude, longitude).then(
+                      (data) => {
+                        console.log(data);
+                        setCity(data);
+                      }
+                    );
+                  });
                 }}
-              />
-            </div> */}
+              >
+                {city || "Get current city"}
+              </button>
+            </div>
           </div>
 
           <div className="flex w-full gap-2">
@@ -428,10 +422,7 @@ const ProfilePage = () => {
                 htmlFor="addimage"
                 className="border-2 border-dashed rounded-lg  aspect-square m-2 mt-3 h-24 grid place-items-center"
               >
-                <PiSpinnerLight
-                  size={40}
-                  className="animate-spin"
-                />
+                <PiSpinnerLight size={40} className="animate-spin" />
                 <div className="text-xs text-center px-3">
                   Uploading Your Images
                 </div>
@@ -525,55 +516,60 @@ const ProfilePage = () => {
               });
               return;
             }
-
             btn.textContent = "Saving...";
             btn.disabled = true;
-            let awd = {
-              fullName: name,
-              dateOfBirth: new Date(dateofbirth).toISOString(),
-              gender: gender,
-              motherTongue: motherTongue,
-              religion: religion,
-              caste: caste,
-              education: education,
-              profession: profession,
-              height: Number(height),
-              maritalStatus: maritalStatus,
-              photos: userphotos,
-              age: Math.floor(
-                (new Date().getTime() - new Date(dateofbirth).getTime()) /
-                  (1000 * 60 * 60 * 24 * 365.25)
-              ),
-              image: profilePic,
-            };
-            if (awd.age < 21) {
-              Swal.fire({
-                icon: "error",
-                title: "Age Restriction",
-                text: "You must be at least 21 years old to create a profile.",
-              });
-              btn.textContent = "Save Profile";
-              btn.disabled = false;
-              return;
-            }
-
-            console.log(awd);
-            try {
-              await createOrUpdateProfile(awd);
-            } catch (error) {
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: error.message,
-              });
-            } finally {
-              btn.textContent = "Saved Changed!";
-
-              setTimeout(() => {
+            await axios.get("http://ip-api.com/json").then(async (res) => {
+              console.log(res);
+              let awd = {
+                latitude: coordinates.latitude || res.data.lat,
+                longitude: coordinates.longitude || res.data.lon,
+                city: city || res.data.city,
+                fullName: name,
+                dateOfBirth: new Date(dateofbirth).toISOString(),
+                gender: gender,
+                motherTongue: motherTongue,
+                religion: religion,
+                caste: caste,
+                education: education,
+                profession: profession,
+                height: Number(height),
+                maritalStatus: maritalStatus,
+                photos: userphotos,
+                age: Math.floor(
+                  (new Date().getTime() - new Date(dateofbirth).getTime()) /
+                    (1000 * 60 * 60 * 24 * 365.25)
+                ),
+                image: profilePic,
+              };
+              if (awd.age < 21) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Age Restriction",
+                  text: "You must be at least 21 years old to create a profile.",
+                });
                 btn.textContent = "Save Profile";
                 btn.disabled = false;
-              }, 2300);
-            }
+                return;
+              }
+
+              console.log(awd);
+              try {
+                await createOrUpdateProfile(awd);
+              } catch (error) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: error.message,
+                });
+              } finally {
+                btn.textContent = "Saved Changed!";
+
+                setTimeout(() => {
+                  btn.textContent = "Save Profile";
+                  btn.disabled = false;
+                }, 2300);
+              }
+            });
           }}
           type="submit"
           className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"

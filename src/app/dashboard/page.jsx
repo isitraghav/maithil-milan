@@ -3,7 +3,7 @@ import Image from "next/image";
 import { CiStar } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import { LuThumbsUp } from "react-icons/lu";
-import { checkProfileCompletion, getRecomendations } from "./server";
+import { checkProfileCompletion, getRecommendations } from "./server";
 import { useEffect, useState } from "react";
 import { handleMatchingRequest } from "@/components/server";
 import Swal from "sweetalert2";
@@ -21,7 +21,7 @@ export default function Dashboard() {
       console.log(data);
       setUserData(data.data);
     });
-    getRecomendations().then((data) => {
+    getRecommendations().then((data) => {
       console.log(data);
       setRecomendations(data);
     });
