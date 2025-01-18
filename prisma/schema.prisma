@@ -78,6 +78,7 @@ model Profile {
   religion      String?
   caste         String?
   motherTongue  String?
+  phone         String?
   latitude      Float?
   longitude     Float?
   city          String?

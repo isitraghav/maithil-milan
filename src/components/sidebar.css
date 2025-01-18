@@ -4,6 +4,6 @@ li a {
 
 li a:hover {
   background-color: #f0f0f0; /* Change to desired hover background color */
-  transform: scale(1.05); /* Slightly enlarge the link on hover */
+  transform: scale(1.02); /* Slightly enlarge the link on hover */
 }
 

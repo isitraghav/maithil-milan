@@ -5,7 +5,9 @@
 body {
   background: #f1f1f1;
 }
-
+p, span {
+  word-break: break-all;
+}
 .embla {
   overflow: hidden;
 }
@@ -55,7 +57,7 @@ body {
   @apply flex justify-center items-center;
 }
 
-*{
+* {
   scroll-behavior: smooth;
   transition: all 0.3s ease-out;
 }

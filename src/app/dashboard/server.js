@@ -90,6 +90,7 @@ export async function checkProfileCompletion() {
         "gender",
         "image",
         "religion",
+        "phone",
         "caste",
         "motherTongue",
         "education",

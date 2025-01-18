@@ -185,12 +185,12 @@ export default function UserProfilePage({ params }) {
 
               {userData?.photos?.length > 0 && (
                 <div className="embla rounded-md" ref={emblaRef}>
-                  <div className="embla__container max-w-96 h-80">
+                  <div className="embla__container">
                     {userData?.photos?.map((photo, index) => (
                       <div key={index} className="embla__slide mr-2">
                         <img
                           src={photo}
-                          className="object-cover h-full w-full rounded-xl"
+                          className="object-cover h-[30vh] w-64 rounded-xl"
                           alt={userData.fullName}
                         />
                       </div>

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { LuUser, LuUserRound } from "react-icons/lu";
+import { PiPhoneCall } from "react-icons/pi";
 
 export default function AcceptedMatchCard({ result }) {
   console.log("result: ", result);
@@ -15,16 +17,27 @@ export default function AcceptedMatchCard({ result }) {
         <div className="flex flex-col">
           <div>{result.fullName}</div>
           <div className="text-sm text-gray-500">
-            {result.age} year old {result.profession}
+            {result.age} year old from {result.city}
+          </div>
+          <div>
+            <span className="text-xs text-gray-500">
+              Profession: {result.profession}
+            </span>
           </div>
         </div>
         <div></div>
-        <div className="ml-auto flex justify-center items-center">
+        <div className="ml-0 md:ml-auto flex justify-center gap-2 items-center">
+          <a
+            href={result.phone.startsWith("+") ? `tel:${result.phone}` : `tel:+91${result.phone}`}
+            className="bg-[#007bff] flex gap-2 center-all text-white mr-auto px-2.5 py-1 rounded-lg"
+          >
+            <PiPhoneCall size={20} /> Call
+          </a>
           <Link
             href={`/profile/${result.id}`}
-            className="bg-[#007bff] text-white px-2.5 py-1 rounded-lg"
+            className="bg-[#007bff] flex gap-2 center-all text-white px-2.5 py-1 rounded-lg"
           >
-            Profile
+            <LuUserRound size={20} /> Profile
           </Link>
         </div>
       </div>

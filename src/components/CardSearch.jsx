@@ -25,7 +25,7 @@ export default function CardSearch({ result, mode }) {
           <h4 className="font-medium text-lg text-gray-800">
             {result.fullName}
           </h4>
-          <p className="text-gray-600">
+          <p className="text-gray-600 wrap-text">
             {result.age} years, {result.profession}
           </p>
         </div>

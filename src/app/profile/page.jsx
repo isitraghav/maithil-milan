@@ -35,6 +35,7 @@ const ProfilePage = () => {
   const [uploadingPics, setUploadingPics] = useState(false);
   const [city, setCity] = useState("");
   const [coordinates, setCoordinates] = useState({});
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const [loading, setLoading] = useState(true);
 
@@ -56,6 +57,7 @@ const ProfilePage = () => {
         setCaste(data.caste || "Brahmin");
         setmotherTongue(data.motherTongue || "Hindi");
         setEducation(data.education || "");
+        setPhoneNumber(data.phone || "");
         setProfession(data.profession || "");
         setCoordinates({
           latitude: data.latitude || 0,
@@ -196,22 +198,37 @@ const ProfilePage = () => {
               <button
                 type="button"
                 id="city"
-                className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                onClick={() => {
-                  navigator.geolocation.getCurrentPosition(async (position) => {
-                    const { latitude, longitude } = position.coords;
-                    setCoordinates({ latitude, longitude });
-                    console.log(coordinates);
-                    await getCityFromCoordinates(latitude, longitude).then(
-                      (data) => {
-                        console.log(data);
+                className="mt-1 text-xs md:text-md w-full px-3 py-3 md:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-[#ffffff]"
+                onClick={(event) => {
+                  event.target.textContent = "Loading...";
+                  navigator.geolocation.getCurrentPosition(
+                    async (position) => {
+                      const { latitude, longitude } = position.coords;
+                      setCoordinates({ latitude, longitude });
+                      try {
+                        const data = await getCityFromCoordinates(
+                          latitude,
+                          longitude
+                        );
                         setCity(data);
+                        event.target.textContent = data;
+                      } catch (error) {
+                        console.error("Error fetching city:", error);
+                        event.target.textContent = "Error";
                       }
-                    );
-                  });
+                    },
+                    (error) => {
+                      Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: error.message,
+                      });
+                      event.target.textContent = "Error";
+                    }
+                  );
                 }}
               >
-                {city || "Get current city"}
+                {city || "Get city"}
               </button>
             </div>
           </div>
@@ -415,6 +432,24 @@ const ProfilePage = () => {
               </select>
             </div>
           </div>
+          <div>
+            <div className="w-full">
+              <label
+                htmlFor="phoneNumber"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={phoneNumber}
+                id="phoneNumber"
+                placeholder="Enter your phone number"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+            </div>
+          </div>
 
           {uploadingPics ? (
             <div>
@@ -506,6 +541,9 @@ const ProfilePage = () => {
             if (!name) errors.push("Full name");
             if (!gender) errors.push("Gender");
             if (!dateofbirth) errors.push("Date of birth");
+            console.log(city);
+            if (!city || city === "Unknown City") errors.push("City");
+
             if (errors.length) {
               Swal.fire({
                 icon: "error",
@@ -535,6 +573,7 @@ const ProfilePage = () => {
                 height: Number(height),
                 maritalStatus: maritalStatus,
                 photos: userphotos,
+                phone: phoneNumber,
                 age: Math.floor(
                   (new Date().getTime() - new Date(dateofbirth).getTime()) /
                     (1000 * 60 * 60 * 24 * 365.25)
