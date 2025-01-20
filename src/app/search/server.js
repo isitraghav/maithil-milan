@@ -3,69 +3,63 @@ import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 
 export async function searchMatch({
+  name,
   age,
   age2,
-  religion,
-  caste,
-  height,
-  maritalStatus,
-  page,
-  pageSize,
+  religion = "Any",
+  caste = "Any",
+  height = 1,
+  maritalStatus = "Unmarried",
+  page = 1,
+  pageSize = 10,
 }) {
-  let userEmail = (await auth()).user.email;
+  console.log("searching for matches", {
+    name,
+    age,
+    age2,
+    religion,
+    caste,
+    height,
+    maritalStatus,
+    page,
+    pageSize,
+  });
   return new Promise(async (resolve, reject) => {
-    await prisma.user
-      .findUnique({
-        where: {
-          email: userEmail,
-        },
-        include: {
-          profile: true,
-        },
-      })
-      .then(async (res) => {
-        console.log("res", res);
-        if (res == null) {
-          resolve(2);
-          return;
-        }
-        let where = {
-          NOT: {
-            email: userEmail,
-          },
-          age: {
-            gte: age,
-            lte: age2,
-          },
-          height: {
-            gte: height,
-          },
-          maritalStatus,
-        };
+    const where = {
+      age: {
+        gte: parseInt(age),
+        lte: parseInt(age2),
+      },
+      height: {
+        gte: height,
+      },
+      maritalStatus,
+    };
 
-        if (caste !== "Any") {
-          where.caste = caste;
-        }
+    const user = await auth();
+    if (user) {
+      where.email = { not: user.user.email };
+    }
 
-        if (religion !== "Any") {
-          where.religion = religion;
-        }
+    if (religion !== "Any") {
+      where.religion = religion;
+    }
 
-        if (res.profile.gender == "Female") {
-          where["gender"] = "Male";
-        } else {
-          where["gender"] = "Female";
-        }
+    if (caste !== "Any") {
+      where.caste = caste;
+    }
 
-        console.log(where);
+    if (name !== "" || name !== null || name !== undefined) {
+      where.fullName = { contains: name };
+    }
 
-        const data = await prisma.profile.findMany({
-          where,
-          skip: (page - 1) * pageSize,
-          take: pageSize,
-        });
-        console.log(data);
-        resolve(data);
-      });
+    const data = await prisma.profile.findMany({
+      where,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+
+    console.log(data);
+    resolve(data || []);
   });
 }

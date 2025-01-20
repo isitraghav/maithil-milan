@@ -18,7 +18,7 @@ export const config = {
   matcher: [
     "/profile/:path*",     // Protect /profile/*
     "/dashboard/:path*",   // Protect /dashboard/*
-    "/search/:path*",      // Protect /search/*
+    // "/search/:path*",      // Protect /search/*
     "/matches/:path*",     // Protect /matches/*
     "/receivedmatches/:path*"
   ],

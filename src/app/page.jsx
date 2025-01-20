@@ -6,7 +6,7 @@ import "keen-slider/keen-slider.min.css";
 import { CiLock, CiSquareCheck } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import { Router, useRouter } from "next/router";
 import GoogleLoginButton from "@/components/googleLoginButton";
 
 const SliderSection = () => {
@@ -59,6 +59,11 @@ const SliderSection = () => {
     }
   };
 
+  const [gender, setGender] = useState("male");
+  const [age, setAge] = useState(25);
+  const [age2, setAge2] = useState(30);
+  const [religion, setReligion] = useState("Hindu");
+
   return (
     <>
       <div className={`relative ${!modalOpened ? "hidden" : ""}`}>
@@ -78,6 +83,10 @@ const SliderSection = () => {
                       className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                       name="Gender"
                       id="gender"
+                      defaultValue={gender}
+                      onChange={(e) => {
+                        setGender(e.target.value);
+                      }}
                     >
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
@@ -93,6 +102,10 @@ const SliderSection = () => {
                         className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         name="Age"
                         id="age"
+                        defaultValue={age}
+                        onChange={(e) => {
+                          setAge(e.target.value);
+                        }}
                       >
                         {Array.from({ length: 51 }, (_, index) => (
                           <option key={index} value={index + 20}>
@@ -106,6 +119,10 @@ const SliderSection = () => {
                         To:
                       </label>
                       <select
+                        defaultValue={age2}
+                        onChange={(e) => {
+                          setAge2(e.target.value);
+                        }}
                         className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         name="Age"
                         id="age"
@@ -119,12 +136,36 @@ const SliderSection = () => {
                     </div>
                   </div>
                   <div>
+                    <label
+                      htmlFor="religion"
+                      className="block text-lg text-left"
+                    >
+                      Religion:
+                    </label>
+                    <select
+                      className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      name="Religion"
+                      id="religion"
+                      defaultValue="Hindu"
+                      onChange={(e) => {
+                        setReligion(e.target.value);
+                      }}
+                    >
+                      <option value="Any">Any</option>
+                      <option value="Hindu">Hindu</option>
+                      <option value="Muslim">Muslim</option>
+                      <option value="Christian">Christian</option>
+                      <option value="Buddhist">Buddhist</option>
+                      <option value="Jain">Jain</option>
+                      <option value="Sikh">Sikh</option>
+                      <option value="Parsi">Parsi</option>
+                    </select>
+                  </div>
+                  <div>
                     <button
                       className="bg-rose-700 w-full text-white px-4 py-2 rounded-md mt-4"
                       onClick={async () => {
-                        await signIn("google", {
-                          callbackUrl: "/profile",
-                        });
+                        location.href = `/search?gender=${gender}&age=${age}&age2=${age2}&religion=${religion}`;
                       }}
                     >
                       Search
