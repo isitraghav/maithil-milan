@@ -193,37 +193,55 @@ const ProfilePage = () => {
                 htmlFor="city"
                 className="block text-sm font-medium text-gray-700"
               >
-                City
+                City / State
               </label>
               <button
                 type="button"
                 id="city"
                 className="mt-1 text-xs md:text-md w-full px-3 py-3 md:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-[#ffffff]"
                 onClick={(event) => {
+                  async function getCity({ latitude, longitude }, ip = false) {
+                    try {
+                      const data = await getCityFromCoordinates(
+                        latitude,
+                        longitude,
+                        ip
+                      );
+                      setCity(data);
+                      event.target.textContent = data;
+                    } catch (error) {
+                      console.error("Error fetching city:", error);
+                      event.target.textContent = "Error";
+                    }
+                  }
                   event.target.textContent = "Loading...";
                   navigator.geolocation.getCurrentPosition(
                     async (position) => {
                       const { latitude, longitude } = position.coords;
                       setCoordinates({ latitude, longitude });
-                      try {
-                        const data = await getCityFromCoordinates(
-                          latitude,
-                          longitude
-                        );
-                        setCity(data);
-                        event.target.textContent = data;
-                      } catch (error) {
-                        console.error("Error fetching city:", error);
-                        event.target.textContent = "Error";
-                      }
-                    },
-                    (error) => {
-                      Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: error.message,
+                      await getCity({
+                        latitude,
+                        longitude,
                       });
-                      event.target.textContent = "Error";
+                    },
+                    async (error) => {
+                      // Approximate location on the accuracy of the ip address
+                      event.target.textContent = "Approximating Location...";
+                      await axios
+                        .get("http://ip-api.com/json")
+                        .then(async (res) => {
+                          setCoordinates({
+                            latitude: res.data.lat,
+                            longitude: res.data.lon,
+                          });
+                          await getCity(
+                            {
+                              latitude: res.data.lat,
+                              longitude: res.data.lon,
+                            },
+                            true
+                          );
+                        });
                     }
                   );
                 }}

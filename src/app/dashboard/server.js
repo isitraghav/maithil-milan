@@ -59,20 +59,27 @@ export async function getRecommendations() {
   });
 }
 
-export async function getCityFromCoordinates(lat, lon) {
+export async function getCityFromCoordinates(lat, lon, ip = false) {
   try {
+    console.log("Fetching city from coordinates:", lat, lon);
     const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`
+      `https://nominatim.openstreetmap.org/reverse?lat=${Number(
+        lat
+      )}&lon=${Number(lon)}&format=json`
     );
     const data = await response.json();
     console.log(data);
-    return (
-      data.address.city ||
-      data.address.county ||
-      data.address.state_district ||
-      data.address.state ||
-      data.address.country
-    );
+    if (ip) {
+      return data.address.state;
+    } else {
+      return (
+        data.address.city ||
+        data.address.county ||
+        data.address.state_district ||
+        data.address.state ||
+        data.address.country
+      );
+    }
   } catch (error) {
     console.error("Error fetching city:", error);
     return "Unknown City";
