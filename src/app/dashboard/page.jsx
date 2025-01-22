@@ -158,12 +158,14 @@ export default function Dashboard() {
             ))}
           </div>
           <div className="mt-6 text-center">
-            <a
-              href="#"
-              className="text-pink-500 hover:text-pink-600 transition-colors duration-200 font-medium"
+            <button
+              onClick={async () => {
+                setRecomendations(await getRecommendations());
+              }}
+              className="bg-white border border-pink-500 hover:bg-pink-500 hover:text-white transition-colors duration-200 font-medium px-4 py-2 rounded-full"
             >
-              View More Recommendations
-            </a>
+              Refresh Recommendations
+            </button>
           </div>
         </div>
       )}

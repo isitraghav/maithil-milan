@@ -25,7 +25,6 @@ export async function getUserProfile(userid) {
             },
           })
           .then(async (data) => {
-            console.log("User profile fetched:", data);
             let userid = await getUserId();
             await prisma.match
               .findMany({

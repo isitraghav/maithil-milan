@@ -19,8 +19,6 @@ model User {
   preferences      Preferences?
   matches          Match[]      @relation("UserMatches")
   matchedWith      Match[]      @relation("MatchedUsers")
-  sentMessages     Message[]    @relation("SentMessages")
-  receivedMessages Message[]    @relation("ReceivedMessages")
 }
 
 model Match {
@@ -101,14 +99,4 @@ model Preferences {
   preferredEducation String?
   preferredHeight    Float? // minimum height in cm
   user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Message {
-  id         String   @id @default(cuid())
-  senderId   String
-  receiverId String
-  content    String
-  sentAt     DateTime @default(now())
-  sender     User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
-  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
 }

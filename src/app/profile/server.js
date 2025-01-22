@@ -85,7 +85,6 @@ export async function createOrUpdateProfile(profileData = {}) {
 export async function getUserProfile() {
   return new Promise(async (resolve, reject) => {
     const user = (await auth()).user;
-    console.log("Fetching user profile:", user.email);
 
     let data;
     prisma.profile
@@ -96,7 +95,6 @@ export async function getUserProfile() {
       })
       .then((data) => {
         data = data;
-        console.log("User profile fetched:", data);
         resolve(data);
       })
       .catch((error) => {

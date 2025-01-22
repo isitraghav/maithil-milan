@@ -309,6 +309,9 @@ const ProfilePage = () => {
               >
                 <option value="Maithili">Maithili</option>
                 <option value="Hindi">Hindi</option>
+                <option value="Nepali">Nepali</option>
+                <option value="Bhojpuri">Bhojpuri</option>
+                <option value="Magahi">Magahi</option>
                 <option value="English">English</option>
               </select>
             </div>
