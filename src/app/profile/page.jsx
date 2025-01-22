@@ -228,7 +228,7 @@ const ProfilePage = () => {
                       // Approximate location on the accuracy of the ip address
                       event.target.textContent = "Approximating Location...";
                       await axios
-                        .get("http://ip-api.com/json")
+                        .get("https://ip-api-proxy.vercel.app/api/ip")
                         .then(async (res) => {
                           setCoordinates({
                             latitude: res.data.lat,
