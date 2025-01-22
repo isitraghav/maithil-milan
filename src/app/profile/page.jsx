@@ -577,7 +577,7 @@ const ProfilePage = () => {
             }
             btn.textContent = "Saving...";
             btn.disabled = true;
-            await axios.get("http://ip-api.com/json").then(async (res) => {
+            await axios.get("https://ip-api-proxy.vercel.app/").then(async (res) => {
               console.log(res);
               let awd = {
                 latitude: coordinates.latitude || res.data.lat,
