@@ -1,6 +1,7 @@
 "use server";
 import { prisma } from "@/prisma";
 import { getuserdata, getUserProfile } from "../profile/server";
+import { getUserId } from "@/components/server";
 
 export async function getRecommendations() {
   return new Promise(async (resolve, reject) => {
@@ -93,6 +94,37 @@ export async function getCoordinatesFromCity(city, ip = false) {
         lon: null,
       });
     }
+  });
+}
+
+export async function getUserMatchStatus() {
+  return new Promise(async (resolve, reject) => {
+    const user_id = await getUserId();
+    const data = await prisma.match.findMany({
+      where: {
+        OR: [
+          {
+            userId: user_id,
+          },
+          {
+            matchedUserId: user_id,
+          },
+        ],
+      },
+    });
+
+    let result = {
+      Pending: 0,
+      Accepted: 0,
+      Declined: 0,
+    };
+    console.log(data);
+    data.forEach((match) => {
+      result[match.status] = result[match.status]
+        ? result[match.status] + 1
+        : 1;
+    });
+    resolve(result);
   });
 }
 

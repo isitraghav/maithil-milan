@@ -1,11 +1,11 @@
 "use client";
-import Image from "next/image";
-import { CiStar } from "react-icons/ci";
-import { IoMdClose } from "react-icons/io";
-import { LuThumbsUp } from "react-icons/lu";
-import { checkProfileCompletion, getRecommendations } from "./server";
+import { LuClock, LuThumbsDown, LuThumbsUp } from "react-icons/lu";
+import {
+  checkProfileCompletion,
+  getRecommendations,
+  getUserMatchStatus,
+} from "./server";
 import { useEffect, useState } from "react";
-import { handleMatchingRequest } from "@/components/server";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import { sendMatchingRequest } from "../profile/[slug]/server";
@@ -14,6 +14,11 @@ export default function Dashboard() {
   const [userData, setUserData] = useState({});
   const [profileCompletion, setProfileCompletion] = useState(0);
   const [recomendations, setRecomendations] = useState([]);
+  const [matches, setMatches] = useState({
+    Accepted: 0,
+    Declined: 0,
+    Pending: 0,
+  });
 
   useEffect(() => {
     checkProfileCompletion().then((data) => {
@@ -25,11 +30,46 @@ export default function Dashboard() {
       console.log(data);
       setRecomendations(data);
     });
+    getUserMatchStatus().then((data) => {
+      setMatches(data);
+    });
   }, []);
 
   return (
     <div className="flex flex-col items-center">
       <div className="lg:w-5/6 w-11/12 m-2 md:m-5">
+        <div className="flex gap-3 w-full justify-evenly">
+          {[
+            {
+              color: "green",
+              icon: <LuThumbsUp size={35} />,
+              text: `${matches.Accepted} approved match`,
+              link: "/matches",
+            },
+            {
+              color: "red",
+              icon: <LuThumbsDown size={35} />,
+              text: `${matches.Declined} declined match`,
+            },
+            {
+              color: "yellow",
+              icon: <LuClock size={35} />,
+              text: `${matches.Pending} pending matches`,
+            },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="bg-white shadow-lg text-sm rounded-2xl p-2 md:p-4 lg:p-6 mb-4"
+            >
+              <div
+                className={`text-${item.color}-700 pb-1 grid place-items-center`}
+              >
+                {item.icon}
+              </div>
+              <div className="text-gray-800 text-center">{item.text}</div>
+            </div>
+          ))}
+        </div>
         <div className="bg-white shadow-lg rounded-2xl p-6 mb-8 relative">
           <h2 className="text-2xl font-semibold mb-6 text-gray-800">
             Your Profile
