@@ -30,29 +30,39 @@ export async function createOrUpdateProfile(profileData = {}) {
       throw new Error("You must be at least 18 years old to create a profile");
     }
   }
-  const email = (await auth()).user.email;
+  const email = (await auth()).user?.email;
+  if (!email) {
+    throw new Error("No user logged in");
+  }
+
   profileData["email"] = email;
   console.log("user data input: ", profileData);
-  await getCoordinatesFromCity(profileData.city).then((coordinates) => {
-    if (coordinates) {
-      profileData["latitude"] = Number(coordinates.lat);
-      profileData["longitude"] = Number(coordinates.lon);
-    }
-  });
+  let coordinates;
+  try {
+    coordinates = await getCoordinatesFromCity(profileData.city);
+  } catch (error) {
+    console.error("Error fetching city coordinates:", error.message);
+  }
+
+  if (coordinates) {
+    profileData["latitude"] = Number(coordinates.lat);
+    profileData["longitude"] = Number(coordinates.lon);
+  }
 
   let userid;
-  await prisma.user
-    .findUnique({
+  try {
+    const user = await prisma.user.findUnique({
       where: { email: email },
-    })
-    .then((user) => {
-      userid = user.id;
-      console.log("User ID:", userid);
-    })
-    .catch((error) => {
-      console.error("Error fetching user:", error.message);
-      throw error;
     });
+    userid = user?.id;
+  } catch (error) {
+    console.error("Error fetching user:", error.message);
+    throw error;
+  }
+
+  if (!userid) {
+    throw new Error("No user found");
+  }
 
   try {
     // Check if the user already has a profile

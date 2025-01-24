@@ -52,7 +52,7 @@ export default function Dashboard() {
               text: `${matches.Declined} declined match`,
             },
             {
-              color: "yellow",
+              color: "#987e1d",
               icon: <LuClock size={35} />,
               text: `${matches.Pending} pending matches`,
             },
@@ -62,7 +62,10 @@ export default function Dashboard() {
               className="bg-white shadow-lg text-sm rounded-2xl p-2 md:p-4 lg:p-6 mb-4"
             >
               <div
-                className={`text-${item.color}-700 pb-1 grid place-items-center`}
+                style={{
+                  color: item.color,
+                }}
+                className={`pb-1 grid place-items-center`}
               >
                 {item.icon}
               </div>

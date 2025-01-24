@@ -1,4 +1,6 @@
-import { sendVerificationRequest } from "@/authSendRequest";
+import {
+  sendMail,
+} from "@/authSendRequest";
 import { prisma } from "@/prisma";
 import { randomBytes } from "crypto";
 
@@ -30,7 +32,23 @@ export async function POST(req) {
     const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${resetToken}`;
 
     // Send the reset email
-    await sendVerificationRequest({ identifier: email, url: resetUrl });
+    await sendMail({
+      email,
+      subject: "Password Reset Request",
+      htmlContent: `
+      <html>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+            <h2>Forgot password on Maithil Milan?</h2>
+            <p>Click the button below to reset your password:</p>
+            <a href="${resetUrl}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">
+              Reset Password
+            </a>
+            <p>If you didn’t request this, please ignore this email.</p>
+            <p>Thanks, <br><strong>The Maithil Milan Team</strong></p>
+          </body>
+        </html>
+      `,
+    });
 
     return Response.json({ message: "Password reset email sent!" });
   } catch (error) {

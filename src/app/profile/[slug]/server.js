@@ -1,5 +1,6 @@
 "use server";
 import { auth } from "@/auth";
+import { sendMail, sendMatchingRequestRecieved } from "@/authSendRequest";
 import { getUserId } from "@/components/server";
 import { prisma } from "@/prisma";
 
@@ -116,6 +117,37 @@ export async function sendMatchingRequest(receiverId) {
             },
           },
         });
+
+        await prisma.user
+          .findUnique({
+            where: {
+              id: receiverId,
+            },
+            select: {
+              email: true,
+              name: true,
+              id: true,
+            },
+          })
+          .then(async (data) => {
+            await sendMail({
+              email: data.email,
+              subject: "Matching Request from " + data.name,
+              htmlContent: `
+                <html>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+            <h2>You have a matching request on Maithil Milan!</h2>
+            <p>${data.name} has sent you a matching request. Click the button below to accept or decline:</p>
+            <a href="${process.env.NEXTAUTH_URL}/profile/${data.id}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">
+              View Matching Request
+            </a>
+            <p>If you have any questions, reply to this email or contact us at <a href="mailto:info@maithilmilan.com">info@maithilmilan.com</a>.</p>
+            <p>Thanks, <br><strong>The Maithil Milan Team</strong></p>
+          </body>
+        </html>
+        `,
+            });
+          });
       } catch (error) {
         console.error("Error sending matching request:", error.message);
         resolve(1);

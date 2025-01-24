@@ -1,4 +1,4 @@
-import { sendVerificationRequest } from "@/authSendRequest";
+import { sendMail } from "@/authSendRequest";
 import { prisma } from "@/prisma";
 import bcrypt from "bcryptjs";
 
@@ -33,7 +33,11 @@ export async function POST(req) {
     const successUrl = `${process.env.NEXTAUTH_URL}/login?success=true`;
 
     // Send the success email
-    await sendVerificationRequest({ identifier: tokenRecord.identifier, url: successUrl });
+    await sendMail({
+      email: tokenRecord.identifier,
+      subject: "Password Change Successful",
+      htmlContent: `Your password has been successfully changed. <br> <a href="${successUrl}">Click here to log in</a>`,
+    });
 
     return Response.json({ message: "Password changed successfully!" });
   } catch (error) {
@@ -41,5 +45,3 @@ export async function POST(req) {
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
-
-

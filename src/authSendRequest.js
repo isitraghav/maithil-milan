@@ -1,26 +1,23 @@
-export async function sendVerificationRequest({ identifier: email, url }) {
+"use server";
+import axios from "axios";
+export async function sendMail({ email, subject, htmlContent }) {
   try {
-    const response = await fetch(
+    console.log(`Sending email to ${email} with subject: ${subject}`);
+    const response = await axios.post(
       "https://email-api-maithil.vercel.app/api/send-email",
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email, // Recipient email
-          url, // Verification link
-        }),
+        email, // Recipient email
+        content: htmlContent,
+        subject,
       }
     );
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(`Failed to send email: ${errorData.error}`);
+    if (!response.data.success) {
+      console.log(response.data);
     }
 
-    console.log("✅ Verification email sent successfully");
+    console.log("Email sent successfully");
   } catch (error) {
-    console.error("❌ Error sending verification email:", error);
+    console.error("Error sending email:", error);
   }
 }

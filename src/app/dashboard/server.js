@@ -8,7 +8,10 @@ export async function getRecommendations() {
     try {
       console.log("Fetching recommendations");
       const data = await getUserProfile();
-
+      if (!data) {
+        resolve([]);
+        return;
+      }
       const age = Math.floor(
         (new Date().getTime() - new Date(data.dateOfBirth).getTime()) /
           (1000 * 60 * 60 * 24 * 365.25)
