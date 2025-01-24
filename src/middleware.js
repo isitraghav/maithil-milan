@@ -8,7 +8,9 @@ export async function middleware(req) {
 
   if (!session) {
     // Redirect unauthenticated users to /auth/signin
-    return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+    return NextResponse.redirect(
+      new URL(`/login?redirect=${req.url}`, req.url)
+    );
   }
 
   return NextResponse.next(); // Allow access if authenticated
@@ -16,11 +18,10 @@ export async function middleware(req) {
 
 export const config = {
   matcher: [
-    "/profile/:path*",     // Protect /profile/*
-    "/dashboard/:path*",   // Protect /dashboard/*
+    "/profile/:path*", // Protect /profile/*
+    "/dashboard/:path*", // Protect /dashboard/*
     // "/search/:path*",      // Protect /search/*
-    "/matches/:path*",     // Protect /matches/*
-    "/receivedmatches/:path*"
+    "/matches/:path*", // Protect /matches/*
+    "/receivedmatches/:path*",
   ],
 };
-

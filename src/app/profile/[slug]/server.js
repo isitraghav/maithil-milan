@@ -18,6 +18,7 @@ export async function getUserProfile(userid) {
         },
       })
       .then(async (data) => {
+        console.log("User profile fetched:", data);
         await prisma.profile
           .findUnique({
             where: {

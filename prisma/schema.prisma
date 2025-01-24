@@ -8,25 +8,63 @@ datasource db {
 }
 
 model User {
-  id               String       @id @default(cuid())
-  name             String?
-  email            String?      @unique
-  emailVerified    DateTime?
-  image            String?
-  accounts         Account[]
-  sessions         Session[]
-  profile          Profile?
-  preferences      Preferences?
-  matches          Match[]      @relation("UserMatches")
-  matchedWith      Match[]      @relation("MatchedUsers")
+  id            String       @id @default(cuid())
+  name          String?
+  email         String?      @unique
+  password      String? // For credentials-based authentication
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  profile       Profile?
+  preferences   Preferences?
+  matches       Match[]      @relation("UserMatches")
+  matchedWith   Match[]      @relation("MatchedUsers")
+}
+
+model Profile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  email         String   @unique
+  fullName      String
+  dateOfBirth   DateTime
+  gender        String
+  image         String?  @default("/img/user.webp")
+  age           Int
+  religion      String?
+  caste         String?
+  motherTongue  String?
+  phone         String?
+  latitude      Float?
+  longitude     Float?
+  city          String?
+  state         String?
+  education     String?
+  profession    String?
+  height        Int?     @default(168)
+  maritalStatus String   @default("Unmarried")
+  bio           String?
+  photos        Json
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Preferences {
+  id                 String  @id @default(cuid())
+  userId             String  @unique
+  minAge             Int
+  maxAge             Int
+  preferredEducation String?
+  preferredHeight    Float?
+  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Match {
   id            String   @id @default(cuid())
   userId        String
   matchedUserId String
-  status        String   @default("Pending") // other values: Accepted, Declined
+  status        String   @default("Pending") // Pending, Accepted, Declined, Blocked
   createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   user          User     @relation("UserMatches", fields: [userId], references: [id], onDelete: Cascade)
   matchedUser   User     @relation("MatchedUsers", fields: [matchedUserId], references: [id], onDelete: Cascade)
 }
@@ -63,40 +101,4 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
-}
-
-model Profile {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  fullName      String
-  dateOfBirth   DateTime
-  gender        String
-  image         String?  @default("/img/user.webp")
-  age           Int
-  religion      String?
-  caste         String?
-  motherTongue  String?
-  phone         String?
-  latitude      Float?
-  longitude     Float?
-  city          String?
-  education     String?
-  profession    String?
-  height        Int?     @default(168)
-  maritalStatus String   @default("Unmarried")
-  bio           String?
-  photos        Json // Replace array with JSON
-  user          User     @relation(fields: [id], references: [id], onDelete: Cascade)
-}
-
-model Preferences {
-  id                 String  @id @default(cuid())
-  userId             String  @unique
-  minAge             Int
-  maxAge             Int
-  preferredReligion  String?
-  preferredCaste     String?
-  preferredEducation String?
-  preferredHeight    Float? // minimum height in cm
-  user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

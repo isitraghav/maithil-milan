@@ -1,6 +1,6 @@
 export default function GoogleLoginButton() {
   async function loginWithGoogle() {
-    location.href = "/api/auth/signin/";
+    location.href = "/signup/";
   }
 
   return (

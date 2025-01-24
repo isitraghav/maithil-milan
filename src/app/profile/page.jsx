@@ -13,7 +13,11 @@ import { IoMdClose } from "react-icons/io";
 import { LuImagePlus } from "react-icons/lu";
 import Swal from "sweetalert2";
 import axios from "axios";
-import { getCityFromCoordinates } from "../dashboard/server";
+
+let {
+  getCitiesByStateAndCountry,
+  getStatesByCountry,
+} = require("xcountry-state-city");
 
 const ProfilePage = () => {
   const [data, setData] = useState({});
@@ -36,7 +40,7 @@ const ProfilePage = () => {
   const [city, setCity] = useState("");
   const [coordinates, setCoordinates] = useState({});
   const [phoneNumber, setPhoneNumber] = useState("");
-
+  const [state, setState] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -64,6 +68,7 @@ const ProfilePage = () => {
           longitude: data.longitude || 0,
         });
         setCity(data.city || "");
+        setState(data.state || "");
         setHeight(data.height || 0);
         setMaritalStatus(data.maritalStatus || "Unmarried");
         setuserphotos(data.photos || []);
@@ -130,459 +135,441 @@ const ProfilePage = () => {
     );
   } else {
     return (
-      <div className="p-8 pr-0.5 pl-2 md:pr-8 max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4">
-          {name ? "Profile" : "Complete Your Profile"}
-        </h1>
+      <div className="flex items-center justify-center">
+        <div className="p-2 w-full md:w-2/3 md:p-0 mx-auto">
+          <h1 className="text-3xl font-bold mb-4">
+            {name ? "Profile" : "Complete Your Profile"}
+          </h1>
 
-        <div className="flex flex-col items-center">
-          <div className="relative">
-            {uploading ? (
-              <>
-                <div className="grid place-items-center">
-                  <PiSpinnerLight size={40} className="animate-spin " />{" "}
-                  Uploading
-                </div>
-              </>
-            ) : (
-              <>
-                <img
-                  src={profilePic || "/img/user.webp"}
-                  alt="User Avatar"
-                  className="rounded-full aspect-square object-cover w-32 h-32 mb-4"
-                />
+          <div className="flex flex-col items-center">
+            <div className="relative">
+              {uploading ? (
+                <>
+                  <div className="grid place-items-center">
+                    <PiSpinnerLight size={40} className="animate-spin " />{" "}
+                    Uploading
+                  </div>
+                </>
+              ) : (
+                <>
+                  <img
+                    src={profilePic || "/img/user.webp"}
+                    alt="User Avatar"
+                    className="rounded-full aspect-square object-cover w-32 h-32 mb-4"
+                  />
+                  <label
+                    htmlFor="profilePic"
+                    className="absolute bottom-0 right-0 bg-gray-800 rounded-full p-1"
+                  >
+                    <PiPencil size={20} className="text-white" />
+                  </label>
+                </>
+              )}
+            </div>
+          </div>
+
+          <input
+            type="file"
+            accept="image/*"
+            id="profilePic"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <div className="w-full">
                 <label
-                  htmlFor="profilePic"
-                  className="absolute bottom-0 right-0 bg-gray-800 rounded-full p-1"
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700"
                 >
-                  <PiPencil size={20} className="text-white" />
+                  Name
                 </label>
-              </>
-            )}
-          </div>
-        </div>
-
-        <input
-          type="file"
-          accept="image/*"
-          id="profilePic"
-          onChange={handleFileUpload}
-          className="hidden"
-        />
-
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-2">
-            <div className="w-full">
-              <label
-                htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                placeholder="Enter your name"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div className="w-1/2 lg:w-1/4 md:w-1/3">
-              <label
-                htmlFor="city"
-                className="block text-sm font-medium text-gray-700"
-              >
-                City / State
-              </label>
-              <button
-                type="button"
-                id="city"
-                className="mt-1 text-xs md:text-md w-full px-3 py-3 md:py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-[#ffffff]"
-                onClick={(event) => {
-                  async function getCity({ latitude, longitude }, ip = false) {
-                    try {
-                      const data = await getCityFromCoordinates(
-                        latitude,
-                        longitude,
-                        ip
-                      );
-                      setCity(data);
-                      event.target.textContent = data;
-                    } catch (error) {
-                      console.error("Error fetching city:", error);
-                      event.target.textContent = "Error";
-                    }
-                  }
-                  event.target.textContent = "Loading...";
-                  navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                      const { latitude, longitude } = position.coords;
-                      setCoordinates({ latitude, longitude });
-                      await getCity({
-                        latitude,
-                        longitude,
-                      });
-                    },
-                    async (error) => {
-                      // Approximate location on the accuracy of the ip address
-                      event.target.textContent = "Approximating Location...";
-                      await axios
-                        .get("https://ip-api-proxy.vercel.app/")
-                        .then(async (res) => {
-                          setCoordinates({
-                            latitude: res.data.lat,
-                            longitude: res.data.lon,
-                          });
-                          await getCity(
-                            {
-                              latitude: res.data.lat,
-                              longitude: res.data.lon,
-                            },
-                            true
-                          );
-                        });
-                    }
-                  );
-                }}
-              >
-                {city || "Get city"}
-              </button>
-            </div>
-          </div>
-
-          <div className="flex w-full gap-2">
-            <div className="w-1/2 md:w-1/2">
-              <label
-                htmlFor="dateofbirth"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Date of Birth
-              </label>
-              <input
-                type="date"
-                value={dateofbirth}
-                id="dateofbirth"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                onChange={(e) => {
-                  console.log(e.target.value);
-                  setDateofbirth(e.target.value);
-                }}
-              />
-            </div>
-            <div className="w-full md:w-1/2">
-              <label
-                htmlFor="gender"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Gender
-              </label>
-              <select
-                value={gender}
-                onChange={(e) => {
-                  setGender(e.target.value);
-                }}
-                id="gender"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="flex-col md:flex-row flex w-full gap-2">
-            <div className="md:w-1/3">
-              <label
-                htmlFor="motherTongue"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Mother Tongue
-              </label>
-              <select
-                value={motherTongue}
-                onChange={(e) => {
-                  setmotherTongue(e.target.value);
-                }}
-                id="motherTongue"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              >
-                <option value="Maithili">Maithili</option>
-                <option value="Hindi">Hindi</option>
-                <option value="Nepali">Nepali</option>
-                <option value="Bhojpuri">Bhojpuri</option>
-                <option value="Magahi">Magahi</option>
-                <option value="English">English</option>
-              </select>
-            </div>
-
-            <div className="md:w-1/3">
-              <label
-                htmlFor="religion"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Religion
-              </label>
-              <select
-                value={religion}
-                onChange={(e) => {
-                  setReligion(e.target.value);
-                }}
-                id="religion"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              >
-                <option value="Hindu">Hindu</option>
-                <option value="Muslim">Muslim</option>
-                <option value="Christian">Christian</option>
-                <option value="Buddhist">Buddhist</option>
-                <option value="Jain">Jain</option>
-                <option value="Sikh">Sikh</option>
-                <option value="Parsi">Parsi</option>
-              </select>
-            </div>
-
-            <div className="md:w-1/3">
-              <label
-                htmlFor="caste"
-                className="block text-sm font-medium text-gray-700"
-              >
-                {religion === "Muslim" ? "Caste/Community" : "Caste"}
-              </label>
-              <select
-                value={caste}
-                onChange={(e) => {
-                  setCaste(e.target.value);
-                }}
-                id="caste"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              >
-                {religion === "Muslim" ? (
-                  <>
-                    <option value="Not Applicable">Not Applicable</option>
-                    <option value="Shia">Shia</option>
-                    <option value="Syed">Syed</option>
-                    <option value="Shaikh">Shaikh</option>
-                    <option value="Mughal">Mughal</option>
-                    <option value="Pathan">Pathan</option>
-                    <option value="Ansari">Ansari</option>
-                  </>
-                ) : (
-                  <>
-                    <option value="Not Applicable">Not Applicable</option>
-                    <option value="Brahmin">Brahmin</option>
-                    <option value="Baniya">Baniya</option>
-                    <option value="Kshatriya">Kshatriya</option>
-                    <option value="Vaishya">Vaishya</option>
-                    <option value="Shudra">Shudra</option>
-                    <option value="Sindhi">Sindhi</option>
-                  </>
-                )}
-              </select>
-            </div>
-          </div>
-
-          <div className="flex gap-2">
-            <div className="w-1/2">
-              <label
-                htmlFor="education"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Education
-              </label>
-              <input
-                value={education}
-                type="text"
-                id="education"
-                placeholder="Enter your education"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                onChange={(e) => setEducation(e.target.value)}
-              />
-            </div>
-
-            <div className="w-1/2">
-              <label
-                htmlFor="profession"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Profession
-              </label>
-              <input
-                type="text"
-                value={profession}
-                id="profession"
-                placeholder="Enter your profession"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                onChange={(e) => setProfession(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="w-full flex gap-2">
-            <div className="w-1/2">
-              <label
-                htmlFor="height"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Height (in cm)
-              </label>
-              <input
-                type="number"
-                value={height}
-                id="height"
-                placeholder="Enter your height"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                onChange={(e) => setHeight(e.target.value)}
-              />
-            </div>
-            <div className="w-1/2">
-              <label
-                htmlFor="maritalStatus"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Marital Status
-              </label>
-              <select
-                id="maritalStatus"
-                value={maritalStatus}
-                onChange={(e) => setMaritalStatus(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              >
-                <option value="Unmarried">Unmarried</option>
-                <option value="Divorced">Divorced</option>
-                <option value="Widowed">Widowed</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <div className="w-full">
-              <label
-                htmlFor="phoneNumber"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                value={phoneNumber}
-                id="phoneNumber"
-                placeholder="Enter your phone number"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                onChange={(e) => setPhoneNumber(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {uploadingPics ? (
-            <div>
-              <div
-                htmlFor="addimage"
-                className="border-2 border-dashed rounded-lg  aspect-square m-2 mt-3 h-24 grid place-items-center"
-              >
-                <PiSpinnerLight size={40} className="animate-spin" />
-                <div className="text-xs text-center px-3">
-                  Uploading Your Images
-                </div>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  placeholder="Enter your name"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  onChange={(e) => setName(e.target.value)}
+                />
               </div>
             </div>
-          ) : (
-            <div className="m-2">
-              <input
-                type="file"
-                name="addimage"
-                accept="image/*"
-                id="addimage"
-                className="hidden"
-                multiple={true}
-                onChange={(e) => {
-                  handleuserphotoupload(e);
-                }}
-              />
-              <div className="flex gap-4 mt-3 overflow-y-scroll">
-                {userphotos.length > 0 && (
-                  <div className="w-full flex gap-2 overflow-scroll">
+
+            <div className="flex gap-2">
+              <div className="w-1/2">
+                <label
+                  htmlFor="state"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  State
+                </label>
+                <select
+                  id="state"
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  {getStatesByCountry("IN").map((state) => (
+                    <option key={state.state_code} value={state.state_code}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="w-1/2">
+                <label
+                  htmlFor="city"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  City
+                </label>
+                <select
+                  id="city"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  {getCitiesByStateAndCountry("IN", state).map((city) => (
+                    <option key={city.name} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex w-full gap-2">
+              <div className="w-1/2 md:w-1/2">
+                <label
+                  htmlFor="dateofbirth"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Date of Birth
+                </label>
+                <input
+                  type="date"
+                  value={dateofbirth}
+                  id="dateofbirth"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  onChange={(e) => {
+                    console.log(e.target.value);
+                    setDateofbirth(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="w-full md:w-1/2">
+                <label
+                  htmlFor="gender"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Gender
+                </label>
+                <select
+                  value={gender}
+                  onChange={(e) => {
+                    setGender(e.target.value);
+                  }}
+                  id="gender"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex-col md:flex-row flex w-full gap-2">
+              <div className="md:w-1/3">
+                <label
+                  htmlFor="motherTongue"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Mother Tongue
+                </label>
+                <select
+                  value={motherTongue}
+                  onChange={(e) => {
+                    setmotherTongue(e.target.value);
+                  }}
+                  id="motherTongue"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  <option value="Maithili">Maithili</option>
+                  <option value="Hindi">Hindi</option>
+                  <option value="Nepali">Nepali</option>
+                  <option value="Bhojpuri">Bhojpuri</option>
+                  <option value="Magahi">Magahi</option>
+                  <option value="English">English</option>
+                </select>
+              </div>
+
+              <div className="md:w-1/3">
+                <label
+                  htmlFor="religion"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Religion
+                </label>
+                <select
+                  value={religion}
+                  onChange={(e) => {
+                    setReligion(e.target.value);
+                  }}
+                  id="religion"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  <option value="Hindu">Hindu</option>
+                  <option value="Muslim">Muslim</option>
+                  <option value="Christian">Christian</option>
+                  <option value="Buddhist">Buddhist</option>
+                  <option value="Jain">Jain</option>
+                  <option value="Sikh">Sikh</option>
+                  <option value="Parsi">Parsi</option>
+                </select>
+              </div>
+
+              <div className="md:w-1/3">
+                <label
+                  htmlFor="caste"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  {religion === "Muslim" ? "Caste/Community" : "Caste"}
+                </label>
+                <select
+                  value={caste}
+                  onChange={(e) => {
+                    setCaste(e.target.value);
+                  }}
+                  id="caste"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  {religion === "Muslim" ? (
+                    <>
+                      <option value="Not Applicable">Not Applicable</option>
+                      <option value="Shia">Shia</option>
+                      <option value="Syed">Syed</option>
+                      <option value="Shaikh">Shaikh</option>
+                      <option value="Mughal">Mughal</option>
+                      <option value="Pathan">Pathan</option>
+                      <option value="Ansari">Ansari</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="Not Applicable">Not Applicable</option>
+                      <option value="Brahmin">Brahmin</option>
+                      <option value="Baniya">Baniya</option>
+                      <option value="Kshatriya">Kshatriya</option>
+                      <option value="Vaishya">Vaishya</option>
+                      <option value="Shudra">Shudra</option>
+                      <option value="Sindhi">Sindhi</option>
+                    </>
+                  )}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <div className="w-1/2">
+                <label
+                  htmlFor="education"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Education
+                </label>
+                <input
+                  value={education}
+                  type="text"
+                  id="education"
+                  placeholder="Enter your education"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  onChange={(e) => setEducation(e.target.value)}
+                />
+              </div>
+
+              <div className="w-1/2">
+                <label
+                  htmlFor="profession"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Profession
+                </label>
+                <input
+                  type="text"
+                  value={profession}
+                  id="profession"
+                  placeholder="Enter your profession"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  onChange={(e) => setProfession(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="w-full flex gap-2">
+              <div className="w-1/2">
+                <label
+                  htmlFor="height"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Height (in cm)
+                </label>
+                <input
+                  type="number"
+                  value={height}
+                  id="height"
+                  placeholder="Enter your height"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  onChange={(e) => setHeight(e.target.value)}
+                />
+              </div>
+              <div className="w-1/2">
+                <label
+                  htmlFor="maritalStatus"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Marital Status
+                </label>
+                <select
+                  id="maritalStatus"
+                  value={maritalStatus}
+                  onChange={(e) => setMaritalStatus(e.target.value)}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  <option value="Unmarried">Unmarried</option>
+                  <option value="Divorced">Divorced</option>
+                  <option value="Widowed">Widowed</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <div className="w-full">
+                <label
+                  htmlFor="phoneNumber"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  id="phoneNumber"
+                  placeholder="Enter your phone number"
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {uploadingPics ? (
+              <div>
+                <div
+                  htmlFor="addimage"
+                  className="border-2 border-dashed rounded-lg  aspect-square m-2 mt-3 h-24 grid place-items-center"
+                >
+                  <PiSpinnerLight size={40} className="animate-spin" />
+                  <div className="text-xs text-center px-3">
+                    Uploading Your Images
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="m-2">
+                <input
+                  type="file"
+                  name="addimage"
+                  accept="image/*"
+                  id="addimage"
+                  className="hidden"
+                  multiple={true}
+                  onChange={(e) => {
+                    handleuserphotoupload(e);
+                  }}
+                />
+                <div className="flex gap-4 mt-3 overflow-y-scroll">
+                  {userphotos.length > 0 && (
+                    <div className="w-full flex gap-2 overflow-scroll">
+                      <label
+                        htmlFor="addimage"
+                        className="border-2 border-dashed rounded-lg  aspect-square h-24 flex justify-center items-center"
+                      >
+                        <LuImagePlus size={34} />
+                      </label>
+                      {userphotos.map((pic, index) => (
+                        <div key={index} className="aspect-square h-24">
+                          <div className="relative">
+                            <img
+                              src={pic}
+                              draggable="false"
+                              className="rounded-lg aspect-square h-24 w-24 object-cover"
+                              key={index}
+                              alt=""
+                            />
+                            <button
+                              type="button"
+                              className="absolute top-0 right-0 p-1 bg-black rounded-md text-white hover:text-gray-900"
+                              onClick={() => {
+                                setuserphotos(
+                                  userphotos.filter((p, i) => i !== index)
+                                );
+                              }}
+                            >
+                              <IoMdClose size={24} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {userphotos.length === 0 && (
                     <label
                       htmlFor="addimage"
-                      className="border-2 border-dashed rounded-lg  aspect-square h-24 flex justify-center items-center"
+                      className="h-24 w-full rounded-lg border-2 border-dashed mt-3 flex justify-center items-center text-md capitalize "
                     >
-                      <LuImagePlus size={34} />
-                    </label>
-                    {userphotos.map((pic, index) => (
-                      <div key={index} className="aspect-square h-24">
-                        <div className="relative">
-                          <img
-                            src={pic}
-                            draggable="false"
-                            className="rounded-lg aspect-square h-24 w-24 object-cover"
-                            key={index}
-                            alt=""
-                          />
-                          <button
-                            type="button"
-                            className="absolute top-0 right-0 p-1 bg-black rounded-md text-white hover:text-gray-900"
-                            onClick={() => {
-                              setuserphotos(
-                                userphotos.filter((p, i) => i !== index)
-                              );
-                            }}
-                          >
-                            <IoMdClose size={24} />
-                          </button>
-                        </div>
+                      <div className="flex gap-2 justify-center items-center">
+                        <LuImagePlus size={24} />
+                        add more pictures
                       </div>
-                    ))}
-                  </div>
-                )}
-
-                {userphotos.length === 0 && (
-                  <label
-                    htmlFor="addimage"
-                    className="h-24 w-full rounded-lg border-2 border-dashed mt-3 flex justify-center items-center text-md capitalize "
-                  >
-                    <div className="flex gap-2 justify-center items-center">
-                      <LuImagePlus size={24} />
-                      add more pictures
-                    </div>
-                  </label>
-                )}
+                    </label>
+                  )}
+                </div>
               </div>
+            )}
+          </div>
+          {!(name && dateofbirth && gender && profilePic) && (
+            <div className="text-center text-yellow-900 flex center-all">
+              <PiWarningBold size={24} />
+              Complete at least 30% profile to get matches
             </div>
           )}
-        </div>
-        {!(name && dateofbirth && gender && profilePic) && (
-          <div className="text-center text-yellow-900 flex center-all">
-            <PiWarningBold size={24} />
-            Complete at least 30% profile to get matches
-          </div>
-        )}
 
-        <button
-          onClick={async (event) => {
-            const btn = event.target;
-            const errors = [];
-            if (!name) errors.push("Full name");
-            if (!gender) errors.push("Gender");
-            if (!dateofbirth) errors.push("Date of birth");
-            console.log(city);
-            if (!city || city === "Unknown City") errors.push("City");
+          <button
+            onClick={async (event) => {
+              const btn = event.target;
+              const errors = [];
+              if (!name) errors.push("Full name");
+              if (!gender) errors.push("Gender");
+              if (!dateofbirth) errors.push("Date of birth");
+              console.log(city);
+              if (!city || city === "Unknown City") errors.push("City");
 
-            if (errors.length) {
-              Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: `Please fill in your ${errors.join(
-                  ", "
-                )} to save your profile.`,
-              });
-              return;
-            }
-            btn.textContent = "Saving...";
-            btn.disabled = true;
-            await axios.get("https://ip-api-proxy.vercel.app/").then(async (res) => {
-              console.log(res);
+              if (errors.length) {
+                Swal.fire({
+                  icon: "error",
+                  title: "Oops...",
+                  text: `Please fill in your ${errors.join(
+                    ", "
+                  )} to save your profile.`,
+                });
+                return;
+              }
+              btn.textContent = "Saving...";
+              btn.disabled = true;
               let awd = {
-                latitude: coordinates.latitude || res.data.lat,
-                longitude: coordinates.longitude || res.data.lon,
-                city: city || res.data.city,
+                latitude: coordinates.latitude,
+                longitude: coordinates.longitude,
+                city: city,
+                state: state,
                 fullName: name,
                 dateOfBirth: new Date(dateofbirth).toISOString(),
                 gender: gender,
@@ -629,13 +616,13 @@ const ProfilePage = () => {
                   btn.disabled = false;
                 }, 2300);
               }
-            });
-          }}
-          type="submit"
-          className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Save Profile
-        </button>
+            }}
+            type="submit"
+            className="mt-4 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Save Profile
+          </button>
+        </div>
       </div>
     );
   }

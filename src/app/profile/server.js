@@ -5,6 +5,7 @@ import { createWriteStream, existsSync, mkdirSync } from "fs";
 import path from "path";
 import sharp from "sharp";
 import { v4 } from "uuid";
+import { getCoordinatesFromCity } from "../dashboard/server";
 
 export async function createOrUpdateProfile(profileData = {}) {
   // Validation
@@ -32,6 +33,12 @@ export async function createOrUpdateProfile(profileData = {}) {
   const email = (await auth()).user.email;
   profileData["email"] = email;
   console.log("user data input: ", profileData);
+  await getCoordinatesFromCity(profileData.city).then((coordinates) => {
+    if (coordinates) {
+      profileData["latitude"] = Number(coordinates.lat);
+      profileData["longitude"] = Number(coordinates.lon);
+    }
+  });
 
   let userid;
   await prisma.user
@@ -52,7 +59,6 @@ export async function createOrUpdateProfile(profileData = {}) {
     const existingProfile = await prisma.profile.findUnique({
       where: { email: email },
     });
-    console.log("Existing profile:", existingProfile);
 
     // If profile exists, update it; otherwise, create a new one
     let profile;
@@ -138,4 +144,3 @@ export async function uploadFile(file) {
     throw new Error("File upload failed");
   }
 }
-

@@ -91,7 +91,7 @@ export default function Dashboard() {
                 className="border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow duration-200"
               >
                 <Link
-                  href={`/profile/${profile.id}`}
+                  href={`/profile/${profile.userId}`}
                   className="flex items-center mb-4"
                 >
                   <img
@@ -149,9 +149,9 @@ export default function Dashboard() {
                     >
                       <LuThumbsUp className="w-5 h-5" />
                     </button>
-                    <button className="bg-gray-100 text-gray-600 p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
-                      <IoMdClose className="w-5 h-5" />
-                    </button>
+                    {/* <button className="bg-gray-100 text-gray-600 p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
+                        <IoMdClose className="w-5 h-5" />
+                      </button> */}
                   </div>
                 </div>
               </div>

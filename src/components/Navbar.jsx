@@ -4,14 +4,16 @@ import { signIn, getSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { CiLogout } from "react-icons/ci";
+import { CiLogout, CiMenuBurger } from "react-icons/ci";
 import GoogleLoginButton from "./googleLoginButton";
+import { usePathname } from "next/navigation";
+import { LuArrowDown } from "react-icons/lu";
 
 export default function Navbar() {
   const [loggedin, setLoggedin] = useState(false);
   const [user, setUser] = useState(null);
   const [menuOpened, setMenuOpened] = useState(false);
-
+  const pathname = usePathname();
   useEffect(() => {
     getSession().then((session) => {
       if (session == null) {
@@ -22,7 +24,7 @@ export default function Navbar() {
         console.log(session.user);
       }
     });
-  }, []);
+  }, [pathname]);
 
   return (
     <header className="bg-white">
@@ -62,17 +64,15 @@ export default function Navbar() {
                     <div className="inline-flex items-center overflow-hidden rounded-full">
                       <button
                         onClick={() => setMenuOpened(!menuOpened)}
-                        className="h-full p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700"
+                        className="h-full flex items-center gap-2 p-2 text-gray-600 hover:bg-gray-50 hover:text-gray-700"
                       >
                         <span className="sr-only">Menu</span>
-                        <img
-                          loading="eager"
-                          src={user.image}
-                          alt={user.name}
-                          width={30}
-                          className="rounded-full"
-                          height={30}
-                        />
+                        <span className="hidden md:flex items-center">
+                          Welcome, {user.name} <LuArrowDown size={20} />
+                        </span>
+                        <span className="block md:hidden">
+                          <CiMenuBurger size={20} />
+                        </span>
                       </button>
                     </div>
 

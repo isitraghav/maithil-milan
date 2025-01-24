@@ -34,7 +34,7 @@ export default function AcceptedMatchCard({ result }) {
             <PiPhoneCall size={20} /> Call
           </a>
           <Link
-            href={`/profile/${result.id}`}
+            href={`/profile/${result.userId}`}
             className="bg-[#007bff] flex gap-2 center-all text-white px-2.5 py-1 rounded-lg"
           >
             <LuUserRound size={20} /> Profile

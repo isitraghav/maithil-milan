@@ -114,7 +114,7 @@ export default function CardSearch({ result, mode }) {
           )}
         </div>
         <div className="flex space-x-2">
-          <Link href={`/profile/${result.id}`}>
+          <Link href={`/profile/${result.userId}`}>
             <button className="bg-gray-100 py-1 text-gray-600 p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
               View Profile
             </button>
