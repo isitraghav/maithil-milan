@@ -28,7 +28,7 @@ const ProfilePage = () => {
   const [gender, setGender] = useState("Male");
   const [motherTongue, setmotherTongue] = useState("Maithili");
   const [religion, setReligion] = useState("Hindu");
-  const [caste, setCaste] = useState("Brahmin");
+  const [caste, setCaste] = useState("Vatsya");
   const [education, setEducation] = useState("");
   const [profession, setProfession] = useState("");
   const [height, setHeight] = useState(168);
@@ -58,7 +58,7 @@ const ProfilePage = () => {
         );
         setGender(data.gender || "Male");
         setReligion(data.religion || "Hindu");
-        setCaste(data.caste || "Brahmin");
+        setCaste(data.caste || "Vatsya");
         setmotherTongue(data.motherTongue || "Hindi");
         setEducation(data.education || "");
         setPhoneNumber(data.phone || "");
@@ -357,12 +357,21 @@ const ProfilePage = () => {
                   ) : (
                     <>
                       <option value="Not Applicable">Not Applicable</option>
-                      <option value="Brahmin">Brahmin</option>
-                      <option value="Baniya">Baniya</option>
-                      <option value="Kshatriya">Kshatriya</option>
-                      <option value="Vaishya">Vaishya</option>
-                      <option value="Shudra">Shudra</option>
-                      <option value="Sindhi">Sindhi</option>
+                      <option value="Sandilya">Sandilya</option>
+                      <option value="Vatsya">Vatsya</option>
+                      <option value="Kashyap">Kashyap</option>
+                      <option value="Bharadwaj">Bharadwaj</option>
+                      <option value="Prasar">Prasar</option>
+                      <option value="Katyan">Katyan</option>
+                      <option value="Gautam">Gautam</option>
+                      <option value="Krishnaye">Krishnaye</option>
+                      <option value="Garge">Garge</option>
+                      <option value="Vishnubridhi">Vishnubridhi</option>
+                      <option value="Sayannee">Sayannee</option>
+                      <option value="Kaushik">Kaushik</option>
+                      <option value="Vasishta">Vasishta</option>
+                      <option value="Moudal">Moudal</option>
+                      <option value="Kaundliya">Kaundliya</option>
                     </>
                   )}
                 </select>

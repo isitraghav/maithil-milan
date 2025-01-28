@@ -96,12 +96,21 @@ async function main() {
     ];
     const religion = faker.helpers.arrayElement(religionOptions);
     const casteOptions = [
-      "Brahmin",
-      "Baniya",
-      "Kshatriya",
-      "Vaishya",
-      "Shudra",
-      "Sindhi",
+      "Sandilya",
+      "Vatsya",
+      "Kashyap",
+      "Bharadwaj",
+      "Prasar",
+      "Katyan",
+      "Gautam",
+      "Krishnaye",
+      "Garge",
+      "Vishnubridhi",
+      "Sayannee",
+      "Kaushik",
+      "Vasishta",
+      "Moudal",
+      "Kaundliya",
     ];
     const caste = faker.helpers.arrayElement(casteOptions);
     const maritalStatus = faker.helpers.arrayElement([

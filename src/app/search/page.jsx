@@ -110,7 +110,7 @@ export default function Search() {
   const [age, setAge] = useState(22);
   const [age2, setAge2] = useState(25);
   const [religion, setReligion] = useState("Hindu");
-  const [caste, setCaste] = useState("Brahmin");
+  const [caste, setCaste] = useState("Vatsya");
   const [maritalStatus, setMaritalStatus] = useState("Unmarried");
   const [height, setHeight] = useState(160);
   const [searchResults, setSearchResults] = useState([]);
@@ -260,12 +260,21 @@ export default function Search() {
                       ) : (
                         <>
                           <option value="Any">Any</option>
-                          <option value="Brahmin">Brahmin</option>
-                          <option value="Baniya">Baniya</option>
-                          <option value="Kshatriya">Kshatriya</option>
-                          <option value="Vaishya">Vaishya</option>
-                          <option value="Shudra">Shudra</option>
-                          <option value="Sindhi">Sindhi</option>
+                          <option value="Sandilya">Sandilya</option>
+                          <option value="Vatsya">Vatsya</option>
+                          <option value="Kashyap">Kashyap</option>
+                          <option value="Bharadwaj">Bharadwaj</option>
+                          <option value="Prasar">Prasar</option>
+                          <option value="Katyan">Katyan</option>
+                          <option value="Gautam">Gautam</option>
+                          <option value="Krishnaye">Krishnaye</option>
+                          <option value="Garge">Garge</option>
+                          <option value="Vishnubridhi">Vishnubridhi</option>
+                          <option value="Sayannee">Sayannee</option>
+                          <option value="Kaushik">Kaushik</option>
+                          <option value="Vasishta">Vasishta</option>
+                          <option value="Moudal">Moudal</option>
+                          <option value="Kaundliya">Kaundliya</option>
                         </>
                       )}
                     </select>
