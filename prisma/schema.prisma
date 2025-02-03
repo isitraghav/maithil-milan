@@ -10,6 +10,7 @@ datasource db {
 model User {
   id            String       @id @default(cuid())
   name          String?
+  createdAt     DateTime     @default(now())
   email         String?      @unique
   password      String? // For credentials-based authentication
   emailVerified DateTime?

@@ -10,7 +10,14 @@ export async function getDataServerAdmin() {
     const userCount = await prisma.user.count();
     const matchCount = await prisma.match.count();
     const profileCount = await prisma.profile.count();
-    resolve({ userCount, matchCount, profileCount });
+    const newUsers = await prisma.user.count({
+      where: {
+        createdAt: {
+          gt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        },
+      },
+    });
+    resolve({ userCount, matchCount, profileCount, newUsers });
   });
 }
 

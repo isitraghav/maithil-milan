@@ -25,6 +25,12 @@ export default function AdminDashboard() {
   useEffect(() => {
     getDataServerAdmin().then(
       ({ userCount, matchCount, profileCount, newUsers }) => {
+        console.log("Updated data:", {
+          userCount,
+          matchCount,
+          profileCount,
+          newUsers,
+        });
         setData({ userCount, matchCount, profileCount, newUsers });
       }
     );
@@ -86,6 +92,7 @@ export default function AdminDashboard() {
           </div>
           <div className="card-content">
             <div className="text-2xl font-bold">{data.newUsers}</div>
+            <div className="text-xs opacity-50">added last month</div>
           </div>
         </div>
       </div>
