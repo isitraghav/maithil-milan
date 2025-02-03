@@ -14,6 +14,9 @@ import Link from "next/link";
 import { IoMdClose } from "react-icons/io";
 import { usePathname } from "next/navigation";
 import "./sidebar.css";
+import { PiGear } from "react-icons/pi";
+import { isAdminServer } from "@/app/admin/server";
+import { auth } from "@/auth";
 
 export default function Sidebar({ children }) {
   const { data: session, status } = useSession(); // Access the session and loading status
@@ -21,6 +24,7 @@ export default function Sidebar({ children }) {
   const [loggedin, setLoggedin] = useState(false);
   const [userData, setUserData] = useState({});
   const [location, setLocation] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (status === "authenticated" && !hasRun) {
@@ -32,6 +36,9 @@ export default function Sidebar({ children }) {
         setUserData(data);
       });
     }
+    isAdminServer().then((data) => {
+      setIsAdmin(data);
+    });
   }, [status, session, hasRun]);
 
   const pathname = usePathname();
@@ -141,10 +148,28 @@ export default function Sidebar({ children }) {
                   </span>
                 </Link>
               </li>
+
+              {isAdmin && (
+                <li className="flex items-center justify-center md:justify-start">
+                  <Link
+                    href="/admin"
+                    className={`hover:bg-[#f5f6f8] w-full group ${
+                      location == "admin" && "bg-[#f5f6f8]"
+                    } flex items-center justify-between rounded-lg px-2 mx-2 md:mx-0 md:px-4 py-2 text-gray-800`}
+                  >
+                    <span className="text-sm flex gap-2 font-medium">
+                      <PiGear size={20} />
+                      <div className="hidden md:block">Admin Panel</div>
+                    </span>
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
         )}
-        <div className={loggedin ? "w-5/6 md:w-3/4 mx-auto" : "w-full"}>{children}</div>
+        <div className={loggedin ? "w-5/6 md:w-3/4 mx-auto" : "w-full"}>
+          {children}
+        </div>
       </div>
     </>
   );

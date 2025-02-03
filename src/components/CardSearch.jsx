@@ -19,7 +19,7 @@ export default function CardSearch({ result, mode }) {
           alt={result.fullName}
           width={64}
           height={64}
-          className="rounded-full mr-4"
+          className="rounded-full mr-4 aspect-square object-cover"
         />
         <div>
           <h4 className="font-medium text-lg text-gray-800">
