@@ -154,7 +154,7 @@ export default function AdminDashboard() {
                     <div className="flex space-x-2">
                       <Link href={`/admin/${result.id}`}>
                         <button className="bg-yellow-100 py-1 text-yellow-600 p-2 rounded-full hover:bg-yellow-200 transition-colors duration-200">
-                          Get Inf
+                          Get Info
                         </button>
                       </Link>
                       <button
