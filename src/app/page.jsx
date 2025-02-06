@@ -63,6 +63,7 @@ const SliderSection = () => {
   const [age, setAge] = useState(25);
   const [age2, setAge2] = useState(30);
   const [religion, setReligion] = useState("Hindu");
+  const [caste, setCaste] = useState("Any");
 
   return (
     <>
@@ -161,11 +162,60 @@ const SliderSection = () => {
                       <option value="Parsi">Parsi</option>
                     </select>
                   </div>
+                  {(religion === "Hindu" || religion === "Muslim") && (
+                    <div className="mt-2 w-full">
+                      <label
+                        htmlFor="caste"
+                        className="block text-lg text-left"
+                      >
+                        {religion === "Muslim" ? "Caste/Community" : "Caste"}
+                      </label>
+                      <select
+                        value={caste}
+                        onChange={(e) => {
+                          setCaste(e.target.value);
+                        }}
+                        id="caste"
+                        className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                      >
+                        {religion === "Muslim" ? (
+                          <>
+                            <option value="Any">Any</option>
+                            <option value="Shia">Shia</option>
+                            <option value="Syed">Syed</option>
+                            <option value="Shaikh">Shaikh</option>
+                            <option value="Mughal">Mughal</option>
+                            <option value="Pathan">Pathan</option>
+                            <option value="Ansari">Ansari</option>
+                          </>
+                        ) : (
+                          <>
+                            <option value="Any">Any</option>
+                            <option value="Sandilya">Sandilya</option>
+                            <option value="Vatsya">Vatsya</option>
+                            <option value="Kashyap">Kashyap</option>
+                            <option value="Bharadwaj">Bharadwaj</option>
+                            <option value="Prasar">Prasar</option>
+                            <option value="Katyan">Katyan</option>
+                            <option value="Gautam">Gautam</option>
+                            <option value="Krishnaye">Krishnaye</option>
+                            <option value="Garge">Garge</option>
+                            <option value="Vishnubridhi">Vishnubridhi</option>
+                            <option value="Sayannee">Sayannee</option>
+                            <option value="Kaushik">Kaushik</option>
+                            <option value="Vasishta">Vasishta</option>
+                            <option value="Moudal">Moudal</option>
+                            <option value="Kaundliya">Kaundliya</option>
+                          </>
+                        )}
+                      </select>
+                    </div>
+                  )}
                   <div>
                     <button
                       className="bg-rose-700 w-full text-white px-4 py-2 rounded-md mt-4"
                       onClick={async () => {
-                        location.href = `/search?gender=${gender}&age=${age}&age2=${age2}&religion=${religion}`;
+                        location.href = `/search?gender=${gender}&age=${age}&age2=${age2}&religion=${religion}&caste=${caste}`;
                       }}
                     >
                       Search

@@ -5,7 +5,6 @@ import CardSearch from "@/components/CardSearch";
 import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import Swal from "sweetalert2";
 import { useSearchParams } from "next/navigation";
-import { auth } from "@/auth";
 
 function Pagination({ context }) {
   const {
@@ -88,10 +87,12 @@ export default function Search() {
         age2: searchParams.get("age2"),
         gender: searchParams.get("gender"),
         religion: searchParams.get("religion") || "Hindu",
+        caste: searchParams.get("caste") || "Vatsya",
       };
       setReqOptions(awd);
       setAge(awd.age);
       setAge2(awd.age2);
+      setCaste(awd.caste);
       setName(awd.name);
       setGender(awd.gender);
       setReligion(awd.religion);

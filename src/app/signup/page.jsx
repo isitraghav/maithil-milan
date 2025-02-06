@@ -21,6 +21,7 @@ export default function SignupPage() {
       const res = await axios.post("/api/auth/signup", {
         name: formData.get("name"),
         email: formData.get("email"),
+        password: formData.get("password"),
       });
 
       setMessage(res.data.message);
@@ -44,8 +45,21 @@ export default function SignupPage() {
       </button>
       <div className="text-center font-semibold text-gray-500">OR</div>
       <form
-        onSubmit={handleSubmit}
         className="bg-white p-8 rounded shadow-md w-96"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault();
+          const formData = new FormData(event.currentTarget);
+          const password = formData.get("password");
+          const retypePassword = formData.get("retype_password");
+
+          if (password !== retypePassword) {
+            setError("Passwords do not match");
+            return;
+          }
+
+          handleSubmit(event);
+        }}
       >
         <h2 className="text-xl font-bold mb-4">Sign Up</h2>
         {message && <p className="text-green-500">{message}</p>}
@@ -61,6 +75,20 @@ export default function SignupPage() {
           type="email"
           name="email"
           placeholder="Email"
+          required
+          className="w-full p-2 mb-3 border rounded"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          required
+          className="w-full p-2 mb-3 border rounded"
+        />
+        <input
+          type="password"
+          name="retype_password"
+          placeholder="Retype Password"
           required
           className="w-full p-2 mb-3 border rounded"
         />

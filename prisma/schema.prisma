@@ -14,7 +14,7 @@ model User {
   email         String?      @unique
   password      String? // For credentials-based authentication
   emailVerified DateTime?
-  image         String?
+  image         String       @default("/img/user.webp")
   accounts      Account[]
   sessions      Session[]
   profile       Profile?

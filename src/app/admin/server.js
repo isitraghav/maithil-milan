@@ -88,10 +88,19 @@ export async function getCoreInfo(id) {
 
 export async function isAdminServer() {
   return new Promise(async (resolve, reject) => {
-    const infoPath = path.join(process.cwd(), "src", "info.json");
-    const info = JSON.parse(readFileSync(infoPath, "utf8"));
-    console.log("Admins:", info.admins);
-    console.log(info.admins.includes((await auth()).user.email));
-    resolve(info.admins.includes((await auth()).user.email));
+    const user = await auth();
+    if (!user) {
+      resolve(false);
+      return;
+    }
+    try {
+      const infoPath = path.join(process.cwd(), "src", "info.json");
+      const info = JSON.parse(readFileSync(infoPath, "utf8"));
+      const isAdmin = info.admins.includes(user.email);
+      resolve(isAdmin);
+    } catch (error) {
+      console.error("Error checking admin:", error);
+      reject(error);
+    }
   });
 }
