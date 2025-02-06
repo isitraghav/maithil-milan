@@ -124,7 +124,7 @@ export default function UserProfilePage({ params }) {
                     {userData.matchedWith.map((matchedUser, index) => (
                       <div key={index}>
                         Matched User ID: {matchedUser.id}, Name:{" "}
-                        {matchedUser.name}
+                        {matchedUser.fullName}, Status: {matchedUser.status}
                       </div>
                     ))}
                   </dd>
