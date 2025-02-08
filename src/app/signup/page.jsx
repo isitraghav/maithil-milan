@@ -32,8 +32,8 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex flex-col gap-2 min-h-screen items-center justify-center bg-gray-100 p-2">
-      <div className="sm:w-full md:w-2/3 mt-3">
+    <div className="flex flex-col gap-2 min-h-[88vh] items-center justify-center bg-gray-100 p-2">
+      <div className="sm:w-full md:w-2/3 mt-3 flex flex-col items-center gap-2">
         <button
           className="bg-white p-4 rounded-lg shadow-md w-full max-w-96"
           onClick={() => {
@@ -44,9 +44,9 @@ export default function SignupPage() {
         >
           Login With Google
         </button>
-        <div className="text-center font-semibold text-gray-500">OR</div>
+        <div className="text-center font-semibold text-gray-500 max-w-96">OR</div>
         <form
-          className="bg-white p-8 rounded shadow-md"
+          className="bg-white p-8 rounded shadow-md max-w-96"
           noValidate
           onSubmit={(event) => {
             event.preventDefault();

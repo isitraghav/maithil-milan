@@ -44,10 +44,10 @@ export default function LoginPage() {
       >
         Login With Google
       </button>
-      <div className="text-center font-semibold text-gray-500">OR</div>
+      <div className="text-center font-semibold text-gray-500 max-w-96">OR</div>
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md"
+        className="bg-white p-8 rounded-lg shadow-md max-w-96"
       >
         <h2 className="text-xl font-bold mb-4">Login</h2>
         {error && <p className="text-red-500">{error}</p>}
