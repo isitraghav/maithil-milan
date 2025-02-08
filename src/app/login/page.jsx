@@ -33,9 +33,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-col gap-2 min-h-screen items-center justify-center bg-gray-100">
+    <div className="flex flex-col gap-2 min-h-screen items-center justify-center bg-gray-100 p-2">
       <button
-        className="bg-white p-4 rounded-lg shadow-md w-96"
+        className="bg-white p-4 rounded-lg shadow-md w-full max-w-96"
         onClick={() => {
           signIn("google", {
             redirectTo: "/dashboard",
@@ -47,7 +47,7 @@ export default function LoginPage() {
       <div className="text-center font-semibold text-gray-500">OR</div>
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-96"
+        className="bg-white p-8 rounded-lg shadow-md"
       >
         <h2 className="text-xl font-bold mb-4">Login</h2>
         {error && <p className="text-red-500">{error}</p>}

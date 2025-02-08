@@ -2,8 +2,6 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
-import { readFileSync } from "fs";
-import path from "path";
 
 export async function getDataServerAdmin() {
   return new Promise(async (resolve, reject) => {
@@ -25,7 +23,7 @@ export async function searchAdmin(q) {
   console.log("Searching for user with query:", q);
   const users = await prisma.user.findMany({
     where: {
-      OR: [{ name: { contains: q } }, { email: { contains: q } }],
+      OR: [{ name: { contains: q } }, { email: { contains: q } }, { id: q }],
     },
     select: {
       id: true,
@@ -86,17 +84,23 @@ export async function getCoreInfo(id) {
   });
 }
 
+import info from "../../info.js";
 export async function isAdminServer() {
   return new Promise(async (resolve, reject) => {
-    const user = await auth();
+    console.log("Checking if user is admin...");
+    let user = await auth();
+    user = user.user;
+    console.log("User:", user);
     if (!user) {
+      console.log("No user found, resolving as false.");
       resolve(false);
       return;
     }
     try {
-      const infoPath = path.join(process.cwd(), "src", "info.json");
-      const info = JSON.parse(readFileSync(infoPath, "utf8"));
       const isAdmin = info.admins.includes(user.email);
+      console.log(
+        `User ${user.email} is ${isAdmin ? "an admin" : "not an admin"}.`
+      );
       resolve(isAdmin);
     } catch (error) {
       console.error("Error checking admin:", error);
