@@ -8,9 +8,6 @@ export async function middleware(req) {
 
   if (!session) {
     // Redirect unauthenticated users to /auth/signin
-    if (req.nextUrl.hostname === "localhost") {
-      return NextResponse.redirect("/dashboard");
-    }
     return NextResponse.redirect(
       new URL(`/login?redirect=${req.url}`, req.url)
     );
