@@ -7,10 +7,14 @@ export async function middleware(req) {
   const session = await auth(); // Get the current session
 
   if (!session) {
-    // Redirect unauthenticated users to /auth/signin
-    return NextResponse.redirect(
-      new URL(`/login?redirect=${req.url}`, req.url)
+    // Dynamically determine the host (works in both localhost & production)
+    const host = req.nextUrl.origin;
+    const redirectUrl = new URL(
+      `/login?redirect=${req.nextUrl.pathname}`,
+      host
     );
+
+    return NextResponse.redirect(redirectUrl);
   }
 
   return NextResponse.next(); // Allow access if authenticated
@@ -18,10 +22,9 @@ export async function middleware(req) {
 
 export const config = {
   matcher: [
-    "/profile/:path*", // Protect /profile/*
-    "/dashboard/:path*", // Protect /dashboard/*
-    // "/search/:path*",      // Protect /search/*
-    "/matches/:path*", // Protect /matches/*
+    "/profile/:path*",
+    "/dashboard/:path*",
+    "/matches/:path*",
     "/receivedmatches/:path*",
   ],
 };
