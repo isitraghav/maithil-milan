@@ -33,7 +33,7 @@ model Profile {
   image         String?  @default("/img/user.webp")
   age           Int
   religion      String?
-  caste         String?
+  gotra         String?
   motherTongue  String?
   phone         String?
   latitude      Float?

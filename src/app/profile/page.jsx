@@ -28,7 +28,7 @@ const ProfilePage = () => {
   const [gender, setGender] = useState("Male");
   const [motherTongue, setmotherTongue] = useState("Maithili");
   const [religion, setReligion] = useState("Hindu");
-  const [caste, setCaste] = useState("Vatsya");
+  const [gotra, setGotra] = useState("Vatsya");
   const [education, setEducation] = useState("");
   const [profession, setProfession] = useState("");
   const [height, setHeight] = useState(168);
@@ -58,7 +58,7 @@ const ProfilePage = () => {
         );
         setGender(data.gender || "Male");
         setReligion(data.religion || "Hindu");
-        setCaste(data.caste || "Vatsya");
+        setGotra(data.gotra || "Vatsya");
         setmotherTongue(data.motherTongue || "Hindi");
         setEducation(data.education || "");
         setPhoneNumber(data.phone || "");
@@ -320,60 +320,42 @@ const ProfilePage = () => {
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 >
                   <option value="Hindu">Hindu</option>
-                  <option value="Muslim">Muslim</option>
-                  <option value="Christian">Christian</option>
-                  <option value="Buddhist">Buddhist</option>
-                  <option value="Jain">Jain</option>
-                  <option value="Sikh">Sikh</option>
-                  <option value="Parsi">Parsi</option>
                 </select>
               </div>
 
               <div className="md:w-1/3">
                 <label
-                  htmlFor="caste"
+                  htmlFor="gotra"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  {religion === "Muslim" ? "Caste/Community" : "Caste"}
+                  Gotra
                 </label>
                 <select
-                  value={caste}
+                  value={gotra}
                   onChange={(e) => {
-                    setCaste(e.target.value);
+                    setGotra(e.target.value);
                   }}
-                  id="caste"
+                  id="gotra"
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 >
-                  {religion === "Muslim" ? (
-                    <>
-                      <option value="Not Applicable">Not Applicable</option>
-                      <option value="Shia">Shia</option>
-                      <option value="Syed">Syed</option>
-                      <option value="Shaikh">Shaikh</option>
-                      <option value="Mughal">Mughal</option>
-                      <option value="Pathan">Pathan</option>
-                      <option value="Ansari">Ansari</option>
-                    </>
-                  ) : (
-                    <>
-                      <option value="Not Applicable">Not Applicable</option>
-                      <option value="Sandilya">Sandilya</option>
-                      <option value="Vatsya">Vatsya</option>
-                      <option value="Kashyap">Kashyap</option>
-                      <option value="Bharadwaj">Bharadwaj</option>
-                      <option value="Prasar">Prasar</option>
-                      <option value="Katyan">Katyan</option>
-                      <option value="Gautam">Gautam</option>
-                      <option value="Krishnaye">Krishnaye</option>
-                      <option value="Garge">Garge</option>
-                      <option value="Vishnubridhi">Vishnubridhi</option>
-                      <option value="Sayannee">Sayannee</option>
-                      <option value="Kaushik">Kaushik</option>
-                      <option value="Vasishta">Vasishta</option>
-                      <option value="Moudal">Moudal</option>
-                      <option value="Kaundliya">Kaundliya</option>
-                    </>
-                  )}
+                  <>
+                    <option value="Not Applicable">Not Applicable</option>
+                    <option value="Sandilya">Sandilya</option>
+                    <option value="Vatsya">Vatsya</option>
+                    <option value="Kashyap">Kashyap</option>
+                    <option value="Bharadwaj">Bharadwaj</option>
+                    <option value="Prasar">Prasar</option>
+                    <option value="Katyan">Katyan</option>
+                    <option value="Gautam">Gautam</option>
+                    <option value="Krishnaye">Krishnaye</option>
+                    <option value="Garge">Garge</option>
+                    <option value="Vishnubridhi">Vishnubridhi</option>
+                    <option value="Sayannee">Sayannee</option>
+                    <option value="Kaushik">Kaushik</option>
+                    <option value="Vasishta">Vasishta</option>
+                    <option value="Moudal">Moudal</option>
+                    <option value="Kaundliya">Kaundliya</option>
+                  </>
                 </select>
               </div>
             </div>
@@ -584,7 +566,7 @@ const ProfilePage = () => {
                 gender: gender,
                 motherTongue: motherTongue,
                 religion: religion,
-                caste: caste,
+                gotra: gotra,
                 education: education,
                 profession: profession,
                 height: Number(height),

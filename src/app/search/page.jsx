@@ -87,12 +87,12 @@ export default function Search() {
         age2: searchParams.get("age2"),
         gender: searchParams.get("gender"),
         religion: searchParams.get("religion") || "Hindu",
-        caste: searchParams.get("caste") || "Vatsya",
+        gotra: searchParams.get("gotra") || "Vatsya",
       };
       setReqOptions(awd);
       setAge(awd.age);
       setAge2(awd.age2);
-      setCaste(awd.caste);
+      setGotra(awd.gotra);
       setName(awd.name);
       setGender(awd.gender);
       setReligion(awd.religion);
@@ -111,7 +111,7 @@ export default function Search() {
   const [age, setAge] = useState(22);
   const [age2, setAge2] = useState(25);
   const [religion, setReligion] = useState("Hindu");
-  const [caste, setCaste] = useState("Vatsya");
+  const [gotra, setGotra] = useState("Vatsya");
   const [maritalStatus, setMaritalStatus] = useState("Unmarried");
   const [height, setHeight] = useState(160);
   const [searchResults, setSearchResults] = useState([]);
@@ -217,70 +217,49 @@ export default function Search() {
                     onChange={(e) => {
                       setReligion(e.target.value);
                       if (e.target.value == "Any") {
-                        setCaste("Any");
+                        setGotra("Any");
                       }
                     }}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full"
                   >
-                    <option value="Any">Any</option>
                     <option value="Hindu">Hindu</option>
-                    <option value="Muslim">Muslim</option>
-                    <option value="Christian">Christian</option>
-                    <option value="Buddhist">Buddhist</option>
-                    <option value="Jain">Jain</option>
-                    <option value="Sikh">Sikh</option>
-                    <option value="Parsi">Parsi</option>
                   </select>
                 </div>
-                {(religion === "Hindu" || religion === "Muslim") && (
-                  <div className="mt-2 w-full">
-                    <label
-                      htmlFor="caste"
-                      className="block mb-2 text-sm font-medium text-gray-700"
-                    >
-                      {religion === "Muslim" ? "Caste/Community" : "Caste"}
-                    </label>
-                    <select
-                      value={caste}
-                      onChange={(e) => {
-                        setCaste(e.target.value);
-                      }}
-                      id="caste"
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    >
-                      {religion === "Muslim" ? (
-                        <>
-                          <option value="Any">Any</option>
-                          <option value="Shia">Shia</option>
-                          <option value="Syed">Syed</option>
-                          <option value="Shaikh">Shaikh</option>
-                          <option value="Mughal">Mughal</option>
-                          <option value="Pathan">Pathan</option>
-                          <option value="Ansari">Ansari</option>
-                        </>
-                      ) : (
-                        <>
-                          <option value="Any">Any</option>
-                          <option value="Sandilya">Sandilya</option>
-                          <option value="Vatsya">Vatsya</option>
-                          <option value="Kashyap">Kashyap</option>
-                          <option value="Bharadwaj">Bharadwaj</option>
-                          <option value="Prasar">Prasar</option>
-                          <option value="Katyan">Katyan</option>
-                          <option value="Gautam">Gautam</option>
-                          <option value="Krishnaye">Krishnaye</option>
-                          <option value="Garge">Garge</option>
-                          <option value="Vishnubridhi">Vishnubridhi</option>
-                          <option value="Sayannee">Sayannee</option>
-                          <option value="Kaushik">Kaushik</option>
-                          <option value="Vasishta">Vasishta</option>
-                          <option value="Moudal">Moudal</option>
-                          <option value="Kaundliya">Kaundliya</option>
-                        </>
-                      )}
-                    </select>
-                  </div>
-                )}
+                <div className="mt-2 w-full">
+                  <label
+                    htmlFor="gotra"
+                    className="block mb-2 text-sm font-medium text-gray-700"
+                  >
+                    Gotra
+                  </label>
+                  <select
+                    value={gotra}
+                    onChange={(e) => {
+                      setGotra(e.target.value);
+                    }}
+                    id="gotra"
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  >
+                    <>
+                      <option value="Any">Any</option>
+                      <option value="Sandilya">Sandilya</option>
+                      <option value="Vatsya">Vatsya</option>
+                      <option value="Kashyap">Kashyap</option>
+                      <option value="Bharadwaj">Bharadwaj</option>
+                      <option value="Prasar">Prasar</option>
+                      <option value="Katyan">Katyan</option>
+                      <option value="Gautam">Gautam</option>
+                      <option value="Krishnaye">Krishnaye</option>
+                      <option value="Garge">Garge</option>
+                      <option value="Vishnubridhi">Vishnubridhi</option>
+                      <option value="Sayannee">Sayannee</option>
+                      <option value="Kaushik">Kaushik</option>
+                      <option value="Vasishta">Vasishta</option>
+                      <option value="Moudal">Moudal</option>
+                      <option value="Kaundliya">Kaundliya</option>
+                    </>
+                  </select>
+                </div>
               </div>
               <div className="flex gap-2 w-full">
                 <div className="mt-2 w-full">
@@ -354,7 +333,7 @@ export default function Search() {
                         age,
                         age2,
                         religion,
-                        caste,
+                        gotra,
                         maritalStatus,
                         height,
                         page,

@@ -143,7 +143,7 @@ export async function checkProfileCompletion() {
         "image",
         "religion",
         "phone",
-        "caste",
+        "gotra",
         "motherTongue",
         "education",
         "profession",

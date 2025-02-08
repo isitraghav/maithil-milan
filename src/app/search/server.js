@@ -7,7 +7,7 @@ export async function searchMatch({
   age,
   age2,
   religion = "Any",
-  caste = "Any",
+  gotra = "Any",
   height = 1,
   maritalStatus = "Unmarried",
   page = 1,
@@ -18,7 +18,7 @@ export async function searchMatch({
     age,
     age2,
     religion,
-    caste,
+    gotra,
     height,
     maritalStatus,
     page,
@@ -45,8 +45,8 @@ export async function searchMatch({
       where.religion = religion;
     }
 
-    if (caste !== "Any") {
-      where.caste = caste;
+    if (gotra !== "Any") {
+      where.gotra = gotra;
     }
 
     if (name !== "" || name !== null || name !== undefined) {

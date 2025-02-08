@@ -87,15 +87,9 @@ async function main() {
     const phone = faker.phone.number("+91 ##########");
     const religionOptions = [
       "Hindu",
-      "Muslim",
-      "Christian",
-      "Buddhist",
-      "Jain",
-      "Sikh",
-      "Parsi",
     ];
     const religion = faker.helpers.arrayElement(religionOptions);
-    const casteOptions = [
+    const gotraOptions = [
       "Sandilya",
       "Vatsya",
       "Kashyap",
@@ -112,7 +106,7 @@ async function main() {
       "Moudal",
       "Kaundliya",
     ];
-    const caste = faker.helpers.arrayElement(casteOptions);
+    const gotra = faker.helpers.arrayElement(gotraOptions);
     const maritalStatus = faker.helpers.arrayElement([
       "Unmarried",
       "Divorced",
@@ -134,7 +128,7 @@ async function main() {
             gender,
             age,
             religion,
-            caste,
+            gotra,
             motherTongue: faker.helpers.arrayElement([
               "Maithili",
               "Hindi",
