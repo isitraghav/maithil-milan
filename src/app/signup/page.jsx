@@ -47,7 +47,6 @@ export default function SignupPage() {
         <div className="text-center font-semibold text-gray-500 max-w-96">OR</div>
         <form
           className="bg-white p-8 rounded shadow-md max-w-96"
-          noValidate
           onSubmit={(event) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
