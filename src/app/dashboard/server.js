@@ -19,32 +19,36 @@ export async function getRecommendations() {
 
       console.log(`Current age: ${age}`);
 
-      const results = await prisma.profile.findMany({
-        where: {
-          maritalStatus: "Unmarried",
-          email: { not: data.email },
-          age: { gte: age - 5, lte: data.gender === "Male" ? 999 : age + 5 },
-          religion: data.religion,
-          gender: data.gender === "Male" ? "Female" : "Male",
-          height: { gt: data.height },
-        },
-        take: 3,
-        orderBy: { id: "desc" },
-      });
+      const results = await prisma.$queryRaw`
+        SELECT *
+        FROM profile
+        WHERE maritalStatus = 'Unmarried'
+        AND email != ${data.email}
+        AND age >= ${age - 5} AND age <= ${
+        data.gender === "Male" ? 999 : age + 5
+      }
+        AND religion = ${data.religion}
+        AND gender = ${data.gender === "Male" ? "Female" : "Male"}
+        AND height > ${data.height}
+        ORDER BY RAND()
+        LIMIT 3
+      `;
 
-      const commonCityResults = await prisma.profile.findMany({
-        where: {
-          maritalStatus: "Unmarried",
-          email: { not: data.email },
-          age: { gte: age - 5, lte: data.gender === "Male" ? 999 : age + 5 },
-          religion: data.religion,
-          gender: data.gender === "Male" ? "Female" : "Male",
-          height: { gt: data.height },
-          city: data.city,
-        },
-        take: 3,
-        orderBy: { id: "desc" },
-      });
+      const commonCityResults = await prisma.$queryRaw`
+        SELECT *
+        FROM profile
+        WHERE maritalStatus = 'Unmarried'
+        AND email != ${data.email}
+        AND age >= ${age - 5} AND age <= ${
+        data.gender === "Male" ? 999 : age + 5
+      }
+        AND religion = ${data.religion}
+        AND gender = ${data.gender === "Male" ? "Female" : "Male"}
+        AND height > ${data.height}
+        AND city = ${data.city}
+        ORDER BY RAND()
+        LIMIT 3
+      `;
 
       const allResults = [...results, ...commonCityResults];
       const uniqueResults = allResults.filter(
