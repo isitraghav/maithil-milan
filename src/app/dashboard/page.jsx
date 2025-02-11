@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import { sendMatchingRequest } from "../profile/[slug]/server";
+import { PlusCircle } from "lucide-react";
 
 export default function Dashboard() {
   const [userData, setUserData] = useState({});
@@ -161,9 +162,9 @@ export default function Dashboard() {
                       onClick={async (event) => {
                         const btn = event.currentTarget;
                         btn.disabled = true;
-
+                        console.log(profile);
                         try {
-                          const res = await sendMatchingRequest(profile.id);
+                          const res = await sendMatchingRequest(profile.userId);
                           console.log(res);
                           if (res == 0) {
                             Swal.fire({
@@ -190,7 +191,7 @@ export default function Dashboard() {
                       }}
                       className="bg-pink-100 text-pink-600 p-2 rounded-full hover:bg-pink-200 transition-colors duration-200"
                     >
-                      <LuThumbsUp className="w-5 h-5" />
+                      <PlusCircle className="w-5 h-5" />
                     </button>
                     {/* <button className="bg-gray-100 text-gray-600 p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
                         <IoMdClose className="w-5 h-5" />

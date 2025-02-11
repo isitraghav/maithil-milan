@@ -66,94 +66,89 @@ export async function getUserProfile(userid) {
 }
 
 export async function sendMatchingRequest(receiverId) {
-  console.log("Sending matching request to ", receiverId);
-  return new Promise(async (resolve, reject) => {
-    await getUserId().then(async (data) => {
-      if (data === receiverId) {
-        console.log("Cannot send matching request to yourself");
-        resolve(3);
-        return;
-      }
-      console.log("userid", data);
-      console.log("receiverId", receiverId);
+  try {
+    console.log("Sending matching request to", receiverId);
+    const senderId = await getUserId();
 
-      const existingRequest = await prisma.match.findFirst({
-        where: {
-          OR: [
-            {
-              userId: data,
-              matchedUserId: receiverId,
-            },
-            {
-              userId: receiverId,
-              matchedUserId: data,
-            },
-          ],
-        },
-      });
+    // Validate users
+    if (senderId === receiverId) {
+      console.log("Cannot send matching request to yourself");
+      return 3;
+    }
 
-      console.log("existingRequest", existingRequest);
+    // Check user existence first
+    const [sender, receiver] = await Promise.all([
+      prisma.user.findUnique({ where: { id: senderId } }),
+      prisma.user.findUnique({ where: { id: receiverId } }),
+    ]);
 
-      if (existingRequest) {
-        console.log("Matching request already exists");
-        resolve(2);
-        return;
-      }
+    console.log("Sender:", sender, "Receiver:", receiver);
+    if (!sender || !receiver) {
+      console.log("One or both users not found");
+      return 4; // New error code for missing users
+    }
 
-      try {
-        await prisma.match.create({
-          data: {
-            status: "Pending",
-            createdAt: new Date(),
-            user: {
-              connect: {
-                id: data,
-              },
-            },
-            matchedUser: {
-              connect: {
-                id: receiverId,
-              },
-            },
-          },
-        });
+    // Check existing matches using unique constraint
+    const existingMatch = await prisma.match.findFirst({
+      where: {
+        OR: [
+          { userId: senderId, matchedUserId: receiverId },
+          { userId: receiverId, matchedUserId: senderId },
+        ],
+      },
+    });
 
-        await prisma.user
-          .findUnique({
-            where: {
-              id: receiverId,
-            },
-            select: {
-              email: true,
-              name: true,
-              id: true,
-            },
-          })
-          .then(async (data) => {
-            await sendMail({
-              email: data.email,
-              subject: "Matching Request from " + data.name,
-              htmlContent: `
-                <html>
+    if (existingMatch) {
+      console.log("Matching request already exists");
+      return 2;
+    }
+
+    // Create match with direct ID assignment
+    await prisma.match.create({
+      data: {
+        userId: senderId,
+        matchedUserId: receiverId,
+        status: "Pending",
+        // createdAt/updatedAt are automatic
+      },
+    });
+
+    // Send email (no need for extra user lookup - use receiver from earlier)
+    console.log("Sending email to user");
+    await sendMail({
+      email: receiver.email,
+      subject: `Matching Request from ${sender.name}`,
+      htmlContent: `
+        <html>
           <body style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
             <h2>You have a matching request on Maithil Milan!</h2>
-            <p>${data.name} has sent you a matching request. Click the button below to accept or decline:</p>
-            <a href="${process.env.NEXTAUTH_URL}/profile/${data.id}" style="display: inline-block; padding: 12px 24px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            <p>${sender.name} has sent you a matching request. Click below to respond:</p>
+            <a href="${process.env.NEXTAUTH_URL}/profile/${senderId}"
+               style="display: inline-block; padding: 12px 24px; background-color: #007bff; 
+                      color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">
               View Matching Request
             </a>
-            <p>If you have any questions, reply to this email or contact us at <a href="mailto:info@maithilmilan.com">info@maithilmilan.com</a>.</p>
+            <p>Questions? Contact <a href="mailto:info@maithilmilan.com">info@maithilmilan.com</a></p>
             <p>Thanks, <br><strong>The Maithil Milan Team</strong></p>
           </body>
         </html>
-        `,
-            });
-          });
-      } catch (error) {
-        console.error("Error sending matching request:", error.message);
-        resolve(1);
-      } finally {
-        resolve(0);
-      }
+      `,
     });
-  });
+
+    return 0; // Success
+  } catch (error) {
+    console.error("Error sending matching request:", error);
+
+    // Handle specific Prisma errors
+    if (error.code === "P2002") {
+      console.log("Duplicate match detected");
+      return 2;
+    }
+    if (error.code === "P2003") {
+      console.log("Invalid user reference");
+      return 4;
+    }
+
+    return 1; // Generic error
+  }
 }

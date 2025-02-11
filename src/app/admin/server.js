@@ -87,23 +87,16 @@ export async function getCoreInfo(id) {
 import info from "../../info.js";
 export async function isAdminServer() {
   return new Promise(async (resolve, reject) => {
-    console.log("Checking if user is admin...");
     let user = await auth();
-    console.log("User:", user);
     if (!user) {
-      console.log("No user found, resolving as false.");
       resolve(false);
       return;
     }
     user = user?.user;
     try {
       const isAdmin = info.admins.includes(user.email);
-      console.log(
-        `User ${user.email} is ${isAdmin ? "an admin" : "not an admin"}.`
-      );
       resolve(isAdmin);
     } catch (error) {
-      console.error("Error checking admin:", error);
       reject(error);
     }
   });

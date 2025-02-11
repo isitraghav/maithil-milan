@@ -17,6 +17,7 @@ import "./sidebar.css";
 import { PiGear } from "react-icons/pi";
 import { isAdminServer } from "@/app/admin/server";
 import { auth } from "@/auth";
+import { Send } from "lucide-react";
 
 export default function Sidebar({ children }) {
   const { data: session, status } = useSession(); // Access the session and loading status
@@ -129,6 +130,30 @@ export default function Sidebar({ children }) {
                       </span>
                       <span className="md:hidden relative top-2 right-2 ml-0 md:ml-2 grid place-items-center rounded-full bg-red-500  px-1 text-xs text-white">
                         {userData.recievedMathes}
+                      </span>
+                    </>
+                  )}
+                </Link>
+              </li>
+
+              <li className="flex items-center justify-center md:justify-start">
+                <Link
+                  href="/sentmatches"
+                  className={`hover:bg-[#f5f6f8] w-full group ${
+                    location == "sentmatches" && "bg-[#f5f6f8]"
+                  } flex items-center justify-between rounded-lg px-2 mx-2 md:mx-0 md:px-4 py-2 text-gray-800`}
+                >
+                  <span className="text-sm flex gap-2 font-medium">
+                    <Send size={18} />
+                    <div className="hidden md:block">Sent Matches</div>
+                  </span>
+                  {userData.sentMathes > 0 && (
+                    <>
+                      <span className="hidden ml-0 md:ml-2 md:grid place-items-center rounded-full bg-red-500  px-1 text-xs text-white">
+                        {userData.sentMathes}
+                      </span>
+                      <span className="md:hidden relative top-2 right-2 ml-0 md:ml-2 grid place-items-center rounded-full bg-red-500  px-1 text-xs text-white">
+                        {userData.sentMathes}
                       </span>
                     </>
                   )}
