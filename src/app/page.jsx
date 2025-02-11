@@ -157,7 +157,7 @@ const SliderSection = () => {
                   </div>
                   <div className="mt-2 w-full">
                     <label htmlFor="gotra" className="block text-lg text-left">
-                      Gotra
+                      Non-Gotra
                     </label>
                     <select
                       value={gotra}

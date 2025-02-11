@@ -46,12 +46,14 @@ export async function searchMatch({
     }
 
     if (gotra !== "Any") {
-      where.gotra = gotra;
+      where.gotra = { not: gotra };
     }
 
     if (name !== "" || name !== null || name !== undefined) {
       where.fullName = { contains: name };
     }
+
+    console.log(where);
 
     const data = await prisma.profile.findMany({
       where,
@@ -59,7 +61,6 @@ export async function searchMatch({
       take: pageSize,
     });
 
-    console.log(data);
     resolve(data || []);
   });
 }

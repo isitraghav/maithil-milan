@@ -328,7 +328,7 @@ const ProfilePage = () => {
                   htmlFor="gotra"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Gotra
+                  Non-Gotra
                 </label>
                 <select
                   value={gotra}

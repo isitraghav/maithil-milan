@@ -230,7 +230,7 @@ export default function Search() {
                     htmlFor="gotra"
                     className="block mb-2 text-sm font-medium text-gray-700"
                   >
-                    Gotra
+                    Non-Gotra
                   </label>
                   <select
                     value={gotra}
