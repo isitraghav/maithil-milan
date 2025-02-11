@@ -9,7 +9,7 @@ import {
 } from "./server";
 import { PiPencil, PiSpinnerLight, PiWarningBold } from "react-icons/pi";
 import { UploadClient } from "@uploadcare/upload-client";
-import { IoMdClose } from "react-icons/io";
+import { IoMdClose, IoIosCloseCircle } from "react-icons/io";
 import { LuImagePlus } from "react-icons/lu";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -86,7 +86,6 @@ const ProfilePage = () => {
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
-
     if (!file) {
       await Swal.fire({
         icon: "error",
@@ -102,6 +101,27 @@ const ProfilePage = () => {
       setUploading(false);
     });
     setUploading(false);
+  };
+
+  const handleDeleteProfilePic = () => {
+    Swal.fire({
+      title: "Remove Profile Picture?",
+      text: "This will reset to default avatar",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, remove it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setProfilePic("/img/user.webp");
+        Swal.fire(
+          "Removed!",
+          "Your profile picture has been reset.",
+          "success"
+        );
+      }
+    });
   };
 
   function handleuserphotoupload(e) {
@@ -142,27 +162,33 @@ const ProfilePage = () => {
           </h1>
 
           <div className="flex flex-col items-center">
-            <div className="relative">
+            <div className="relative group">
               {uploading ? (
-                <>
-                  <div className="grid place-items-center">
-                    <PiSpinnerLight size={40} className="animate-spin " />{" "}
-                    Uploading
-                  </div>
-                </>
+                <div className="grid place-items-center">
+                  <PiSpinnerLight size={40} className="animate-spin" />
+                  Uploading
+                </div>
               ) : (
                 <>
                   <img
                     src={profilePic || "/img/user.webp"}
                     alt="User Avatar"
-                    className="rounded-full aspect-square object-cover w-32 h-32 mb-4"
+                    className="rounded-full aspect-square object-cover w-32 h-32 mb-4 hover:opacity-90 transition-opacity"
                   />
                   <label
                     htmlFor="profilePic"
-                    className="absolute bottom-0 right-0 bg-gray-800 rounded-full p-1"
+                    className="absolute bottom-2 right-2 bg-gray-800 rounded-full p-1 hover:bg-gray-700 transition-colors cursor-pointer"
                   >
                     <PiPencil size={20} className="text-white" />
                   </label>
+                  {profilePic !== "/img/user.webp" && (
+                    <button
+                      onClick={handleDeleteProfilePic}
+                      className="absolute top-2 right-2 bg-red-500 rounded-full p-1 hover:bg-red-600 transition-colors"
+                    >
+                      <IoIosCloseCircle size={20} className="text-white" />
+                    </button>
+                  )}
                 </>
               )}
             </div>
