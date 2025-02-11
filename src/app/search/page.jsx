@@ -118,6 +118,7 @@ export default function Search() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [name, setName] = useState("");
+  const [motherTongue, setMotherTongue] = useState("");
   const [gender, setGender] = useState("Male");
 
   return (
@@ -299,28 +300,52 @@ export default function Search() {
                 </div>
               </div>
 
-              <div className="mt-2 w-full">
-                <label
-                  htmlFor="height"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Minimium Height (in cm)
-                </label>
-                <input
-                  type="number"
-                  id="height"
-                  value={height}
-                  onChange={(e) => setHeight(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Height in cm"
-                />
-                <div>
-                  {height && (
-                    <p className="text-xs text-gray-500">
-                      Height in feet: {Math.floor(height / 30.48)}'
-                      {Math.round(((height / 30.48) % 1) * 12)}"
-                    </p>
-                  )}
+              <div className="flex gap-2 w-full">
+                <div className="mt-2 w-1/2">
+                  <label
+                    htmlFor="height"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Minimium Height (in cm)
+                  </label>
+                  <input
+                    type="number"
+                    id="height"
+                    value={height}
+                    onChange={(e) => setHeight(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder="Height in cm"
+                  />
+                  <div>
+                    {height && (
+                      <p className="text-xs text-gray-500">
+                        Height in feet: {Math.floor(height / 30.48)}'
+                        {Math.round(((height / 30.48) % 1) * 12)}"
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="mt-2 w-1/2">
+                  <label
+                    htmlFor="motherTongue"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Mother Tongue
+                  </label>
+                  <select
+                    id="motherTongue"
+                    value={motherTongue}
+                    onChange={(e) => setMotherTongue(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  >
+                    <option value="Any">Any</option>
+                    <option value="Maithili">Maithili</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Nepali">Nepali</option>
+                    <option value="Bhojpuri">Bhojpuri</option>
+                    <option value="Magahi">Magahi</option>
+                    <option value="English">English</option>
+                  </select>
                 </div>
               </div>
               <div className="mt-2 text-center">
@@ -339,6 +364,7 @@ export default function Search() {
                         page,
                         pageSize,
                         gender,
+                        motherTongue,
                       };
 
                       setReqOptions(awd);

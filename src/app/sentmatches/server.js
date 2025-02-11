@@ -50,3 +50,28 @@ export async function getMatchInfo(id) {
   });
 }
 
+export async function deleteRequest(id) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const record = await prisma.match.findUnique({
+        where: {
+          id: id,
+        },
+      });
+      if (!record) {
+        console.error("Record not found:", id);
+        resolve(false);
+        return;
+      }
+      await prisma.match.delete({
+        where: {
+          id: id,
+        },
+      });
+      resolve(true);
+    } catch (error) {
+      console.error("Error deleting request:", error.message);
+      resolve(false);
+    }
+  });
+}

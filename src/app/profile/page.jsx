@@ -540,6 +540,7 @@ const ProfilePage = () => {
               const errors = [];
               if (!name) errors.push("Full name");
               if (!gender) errors.push("Gender");
+              if (!motherTongue) errors.push("Mother Tongue");
               if (!dateofbirth) errors.push("Date of birth");
               console.log(city);
               if (!city || city === "Unknown City") errors.push("City");

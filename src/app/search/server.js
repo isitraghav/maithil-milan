@@ -12,6 +12,7 @@ export async function searchMatch({
   maritalStatus = "Unmarried",
   page = 1,
   pageSize = 10,
+  motherTongue = "Any",
 }) {
   console.log("searching for matches", {
     name,
@@ -39,6 +40,10 @@ export async function searchMatch({
     const user = await auth();
     if (user) {
       where.email = { not: user.user.email };
+    }
+
+    if (motherTongue !== "Any") {
+      where.motherTongue = motherTongue;
     }
 
     if (religion !== "Any") {
