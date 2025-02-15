@@ -24,40 +24,44 @@ model User {
 }
 
 model Profile {
-  id                String   @id @default(cuid())
-  userId            String   @unique
-  email             String   @unique
-  fullName          String
-  surname           String?
-  dateOfBirth       DateTime
-  gender            String
-  image             String?  @default("/img/user.webp")
-  age               Int
-  religion          String?
-  gotra             String?
-  fatherName        String?
-  motherName        String?
-  fatherOccupation  String?
-  motherOccupation  String?
-  familyType        String?
-  status            String?
-  siblings          Int?
-  professionSector  String?
-  annualIncome      Int?
-  professionDetails String?
-  motherTongue      String?
-  phone             String?
-  latitude          Float?
-  longitude         Float?
-  city              String?
-  state             String?
-  education         String?
-  profession        String?
-  height            Int?     @default(168)
-  maritalStatus     String   @default("Unmarried")
-  bio               String?
-  photos            Json
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  email               String   @unique
+  fullName            String
+  surname             String?
+  dateOfBirth         DateTime
+  gender              String
+  image               String?  @default("/img/user.webp")
+  age                 Int
+  religion            String?
+  gotra               String?
+  fatherName          String?
+  motherName          String?
+  fatherOccupation    String?
+  motherOccupation    String?
+  familyType          String?
+  status              String?
+  siblings            Int?
+  ageRange            String?
+  prefferedProfession String?
+  prefferedEducation  String?
+  prefferedHeight     Float?
+  professionSector    String?
+  annualIncome        Int?
+  professionDetails   String?
+  motherTongue        String?
+  phone               String?
+  latitude            Float?
+  longitude           Float?
+  city                String?
+  state               String?
+  education           String?
+  profession          String?
+  height              Int?     @default(168)
+  maritalStatus       String   @default("Unmarried")
+  bio                 String?
+  photos              Json
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Preferences {

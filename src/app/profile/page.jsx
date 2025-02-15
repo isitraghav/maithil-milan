@@ -11,6 +11,7 @@ import { PiPencil, PiSpinnerLight, PiWarningBold } from "react-icons/pi";
 import { IoMdClose, IoIosCloseCircle } from "react-icons/io";
 import { LuImagePlus } from "react-icons/lu";
 import Swal from "sweetalert2";
+import Link from "next/link";
 
 let {
   getCitiesByStateAndCountry,
@@ -51,7 +52,11 @@ const ProfilePage = () => {
   const [status, setStatus] = useState("");
   const [motherOccupation, setMotherOccupation] = useState("");
   const [fatherOccupation, setFatherOccupation] = useState("");
-  const [activeTab, setActiveTab] = useState("basic"); // Tab navigation state
+  const [activeTab, setActiveTab] = useState("basic");
+  const [ageRange, setAgeRange] = useState("");
+  const [prefferedHeight, setPrefferedHeight] = useState();
+  const [prefferedEducation, setPrefferedEducation] = useState("");
+  const [prefferedProfession, setPrefferedProfession] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -93,6 +98,10 @@ const ProfilePage = () => {
         setFatherOccupation(data.fatherOccupation || "");
         setStatus(data.status || "");
         setSiblings(data.siblings || 0);
+        setPrefferedHeight(data.prefferedHeight || "");
+        setPrefferedProfession(data.prefferedProfession || "");
+        setPrefferedEducation(data.prefferedEducation || "");
+        setAgeRange(data.ageRange || "");
       } else {
         console.log("no existing user profile was found");
         getuserdata().then((res) => {
@@ -765,46 +774,83 @@ const ProfilePage = () => {
 
             {/* Partner Preferences Tab */}
             {activeTab === "partner" && (
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold">Partner Preferences</h3>
-                <div className="flex gap-2">
-                  <div className="w-1/2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Preferred Age Range
-                    </label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold text-gray-900 border-b pb-2">
+                  Partner Preferences
+                </h3>
+
+                <div className="space-y-6">
+                  {/* Demographic Preferences */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide">
+                      Demographic Preferences
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Preferred Age Range
+                        </label>
+                        <input
+                          value={ageRange}
+                          onChange={(e) => setAgeRange(e.target.value)}
+                          type="text"
+                          placeholder="e.g., 25-35"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Preferred Height (in cms)
+                        </label>
+                        <input
+                          value={prefferedHeight}
+                          onChange={(e) => setPrefferedHeight(e.target.value)}
+                          type="text"
+                          placeholder="e.g., 165-175"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-1/2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Preferred Height
-                    </label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-2">
-                  <div className="w-1/2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Preferred Education
-                    </label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
-                  </div>
-                  <div className="w-1/2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Preferred Profession
-                    </label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    />
+
+                  {/* Professional Preferences */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-gray-600 uppercase tracking-wide">
+                      Professional Preferences
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Preferred Education Level
+                        </label>
+                        <select
+                          value={prefferedEducation}
+                          onChange={(e) =>
+                            setPrefferedEducation(e.target.value)
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                        >
+                          <option value="">Select Education</option>
+                          <option>Bachelor's Degree</option>
+                          <option>Master's Degree</option>
+                          <option>Doctorate</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Preferred Profession
+                        </label>
+                        <input
+                          value={prefferedProfession}
+                          onChange={(e) =>
+                            setPrefferedProfession(e.target.value)
+                          }
+                          type="text"
+                          placeholder="e.g., Engineer, Doctor"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -876,115 +922,127 @@ const ProfilePage = () => {
             )}
 
             {/* Save Button */}
-            <button
-              onClick={async (event) => {
-                const btn = event.target;
-                const errors = [];
-                if (!name) errors.push("Full name");
-                if (!gender) errors.push("Gender");
-                if (!motherTongue) errors.push("Mother Tongue");
-                if (!dateofbirth) errors.push("Date of birth");
-                if (typeof name !== "string" || name.trim() === "")
-                  errors.push("Full name");
-                if (!["Male", "Female"].includes(gender)) errors.push("Gender");
-                if (
-                  typeof motherTongue !== "string" ||
-                  motherTongue.trim() === ""
-                )
-                  errors.push("Mother Tongue");
-                if (
-                  typeof dateofbirth !== "string" ||
-                  isNaN(Date.parse(dateofbirth))
-                )
-                  errors.push("Date of birth");
-                if (typeof religion !== "string" || religion.trim() === "")
-                  errors.push("Religion");
-                if (typeof gotra !== "string" || gotra.trim() === "")
-                  errors.push("Gotra");
+            <div className="flex center-all gap-2 flex-col md:flex-row">
+              <button
+                onClick={async (event) => {
+                  const btn = event.target;
+                  const errors = [];
+                  if (!name) errors.push("Full name");
+                  if (!gender) errors.push("Gender");
+                  if (!motherTongue) errors.push("Mother Tongue");
+                  if (!dateofbirth) errors.push("Date of birth");
+                  if (typeof name !== "string" || name.trim() === "")
+                    errors.push("Full name");
+                  if (!["Male", "Female"].includes(gender))
+                    errors.push("Gender");
+                  if (
+                    typeof motherTongue !== "string" ||
+                    motherTongue.trim() === ""
+                  )
+                    errors.push("Mother Tongue");
+                  if (
+                    typeof dateofbirth !== "string" ||
+                    isNaN(Date.parse(dateofbirth))
+                  )
+                    errors.push("Date of birth");
+                  if (typeof religion !== "string" || religion.trim() === "")
+                    errors.push("Religion");
+                  if (typeof gotra !== "string" || gotra.trim() === "")
+                    errors.push("Gotra");
 
-                console.log(city);
-                if (!city || city === "Unknown City") errors.push("City");
+                  console.log(city);
+                  if (!city || city === "Unknown City") errors.push("City");
 
-                if (errors.length) {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: `Please fill in your ${errors.join(
-                      ", "
-                    )} to save your profile.`,
-                  });
-                  return;
-                }
-                btn.textContent = "Saving...";
-                btn.disabled = true;
-                let awd = {
-                  latitude: coordinates.latitude,
-                  longitude: coordinates.longitude,
-                  city: city,
-                  state: state,
-                  fullName: name,
-                  dateOfBirth: new Date(dateofbirth).toISOString(),
-                  gender: gender,
-                  motherTongue: motherTongue,
-                  religion: religion,
-                  gotra: gotra,
-                  fatherName: fatherName,
-                  motherName: motherName,
-                  familyType: familyType,
-                  education: education,
-                  profession: profession,
-                  motherOccupation: motherOccupation,
-                  fatherOccupation: fatherOccupation,
-                  status: status,
-                  professionSector: professionSector,
-                  professionDetails: professionDetails,
-                  siblings: Number(siblings),
-                  surname: surname || null,
-                  height: Number(height),
-                  annualIncome: Number(annualIncome),
-                  maritalStatus: maritalStatus,
-                  photos: userphotos,
-                  phone: phoneNumber,
-                  age: Math.floor(
-                    (new Date().getTime() - new Date(dateofbirth).getTime()) /
-                      (1000 * 60 * 60 * 24 * 365.25)
-                  ),
-                  image: profilePic,
-                };
-                if (awd.age < 21) {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Age Restriction",
-                    text: "You must be at least 21 years old to create a profile.",
-                  });
-                  btn.textContent = "Save Profile";
-                  btn.disabled = false;
-                  return;
-                }
-
-                console.log(awd);
-                try {
-                  await createOrUpdateProfile(awd);
-                } catch (error) {
-                  Swal.fire({
-                    icon: "error",
-                    title: "Oops...",
-                    text: error.message,
-                  });
-                } finally {
-                  btn.textContent = "Saved Changed!";
-
-                  setTimeout(() => {
+                  if (errors.length) {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: `Please fill in your ${errors.join(
+                        ", "
+                      )} to save your profile.`,
+                    });
+                    return;
+                  }
+                  btn.textContent = "Saving...";
+                  btn.disabled = true;
+                  let awd = {
+                    latitude: coordinates.latitude,
+                    longitude: coordinates.longitude,
+                    city: city,
+                    state: state,
+                    fullName: name,
+                    dateOfBirth: new Date(dateofbirth).toISOString(),
+                    gender: gender,
+                    motherTongue: motherTongue,
+                    religion: religion,
+                    gotra: gotra,
+                    fatherName: fatherName,
+                    motherName: motherName,
+                    familyType: familyType,
+                    education: education,
+                    profession: profession,
+                    motherOccupation: motherOccupation,
+                    fatherOccupation: fatherOccupation,
+                    status: status,
+                    professionSector: professionSector,
+                    professionDetails: professionDetails,
+                    siblings: Number(siblings),
+                    surname: surname || null,
+                    height: Number(height),
+                    annualIncome: Number(annualIncome),
+                    maritalStatus: maritalStatus,
+                    photos: userphotos,
+                    phone: phoneNumber,
+                    age: Math.floor(
+                      (new Date().getTime() - new Date(dateofbirth).getTime()) /
+                        (1000 * 60 * 60 * 24 * 365.25)
+                    ),
+                    image: profilePic,
+                    ageRange: ageRange,
+                    prefferedProfession: prefferedProfession,
+                    prefferedEducation: prefferedEducation,
+                    prefferedHeight: Number(prefferedHeight),
+                  };
+                  if (awd.age < 21) {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Age Restriction",
+                      text: "You must be at least 21 years old to create a profile.",
+                    });
                     btn.textContent = "Save Profile";
                     btn.disabled = false;
-                  }, 2300);
-                }
-              }}
-              type="submit"
-              className="mt-4 mb-3 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Save Profile
-            </button>
+                    return;
+                  }
+
+                  console.log(awd);
+                  try {
+                    await createOrUpdateProfile(awd);
+                  } catch (error) {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: error.message,
+                    });
+                  } finally {
+                    btn.textContent = "Saved Changed!";
+
+                    setTimeout(() => {
+                      btn.textContent = "Save Profile";
+                      btn.disabled = false;
+                    }, 2300);
+                  }
+                }}
+                type="submit"
+                className="mt-4 mb-3 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                Save Profile
+              </button>
+              <Link href={`/profile/${data.userId}`}>
+                <button className="mt-4 mb-3 rounded-md bg-yellow-600 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
+                  Your Profile
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
