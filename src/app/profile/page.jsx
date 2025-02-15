@@ -48,6 +48,9 @@ const ProfilePage = () => {
   const [motherName, setMotherName] = useState("");
   const [familyType, setFamilyType] = useState("");
   const [siblings, setSiblings] = useState(0);
+  const [status, setStatus] = useState("");
+  const [motherOccupation, setMotherOccupation] = useState("");
+  const [fatherOccupation, setFatherOccupation] = useState("");
   const [activeTab, setActiveTab] = useState("basic"); // Tab navigation state
 
   useEffect(() => {
@@ -86,6 +89,9 @@ const ProfilePage = () => {
         setFatherName(data.fatherName || "");
         setMotherName(data.motherName || "");
         setFamilyType(data.familyType || "");
+        setMotherOccupation(data.motherOccupation || "");
+        setFatherOccupation(data.fatherOccupation || "");
+        setStatus(data.status || "");
         setSiblings(data.siblings || 0);
       } else {
         console.log("no existing user profile was found");
@@ -672,10 +678,86 @@ const ProfilePage = () => {
                     <label className="block text-sm font-medium text-gray-700">
                       Family Type
                     </label>
-                    <select className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <select
+                      onChange={(e) => setFamilyType(e.target.value)}
+                      value={familyType}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    >
                       <option value="Joint">Joint Family</option>
                       <option value="Nuclear">Nuclear Family</option>
                     </select>
+                  </div>
+                </div>
+                <div className="flex flex-col md:flex-row gap-2">
+                  <div className="w-full">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Status
+                    </label>
+                    <div className="flex space-x-2">
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          name="status"
+                          onChange={(e) => setStatus(e.target.value)}
+                          value="Middle Class"
+                          checked={status === "Middle Class"}
+                          className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                        />
+                        <label className="ml-2 block text-sm font-medium text-gray-700">
+                          Middle Class
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          onChange={(e) => setStatus(e.target.value)}
+                          name="status"
+                          value="Lower Middle Class"
+                          checked={status === "Lower Middle Class"}
+                          className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                        />
+                        <label className="ml-2 block text-sm font-medium text-gray-700">
+                          Lower Middle Class
+                        </label>
+                      </div>
+                      <div className="flex items-center">
+                        <input
+                          type="radio"
+                          onChange={(e) => setStatus(e.target.value)}
+                          name="status"
+                          value="Rich"
+                          checked={status === "Rich"}
+                          className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded"
+                        />
+                        <label className="ml-2 block text-sm font-medium text-gray-700">
+                          Rich
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <div className="w-1/2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Mother's Occupation
+                    </label>
+                    <input
+                      type="text"
+                      value={motherOccupation}
+                      onChange={(e) => setMotherOccupation(e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Father's Occupation
+                    </label>
+                    <input
+                      type="text"
+                      value={fatherOccupation}
+                      onChange={(e) => setFatherOccupation(e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    />
                   </div>
                 </div>
               </div>
@@ -851,6 +933,9 @@ const ProfilePage = () => {
                   familyType: familyType,
                   education: education,
                   profession: profession,
+                  motherOccupation: motherOccupation,
+                  fatherOccupation: fatherOccupation,
+                  status: status,
                   professionSector: professionSector,
                   professionDetails: professionDetails,
                   siblings: Number(siblings),

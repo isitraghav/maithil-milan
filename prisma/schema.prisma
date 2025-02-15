@@ -37,8 +37,11 @@ model Profile {
   gotra             String?
   fatherName        String?
   motherName        String?
-  siblings          Int?
+  fatherOccupation  String?
+  motherOccupation  String?
   familyType        String?
+  status            String?
+  siblings          Int?
   professionSector  String?
   annualIncome      Int?
   professionDetails String?
