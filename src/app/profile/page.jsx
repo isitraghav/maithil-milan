@@ -8,11 +8,9 @@ import {
   uploadFile,
 } from "./server";
 import { PiPencil, PiSpinnerLight, PiWarningBold } from "react-icons/pi";
-import { UploadClient } from "@uploadcare/upload-client";
 import { IoMdClose, IoIosCloseCircle } from "react-icons/io";
 import { LuImagePlus } from "react-icons/lu";
 import Swal from "sweetalert2";
-import axios from "axios";
 
 let {
   getCitiesByStateAndCountry,
@@ -44,6 +42,7 @@ const ProfilePage = () => {
   const [professionSector, setProfessionSector] = useState("");
   const [professionDetails, setProfessionDetails] = useState("");
   const [annualIncome, setAnnualIncome] = useState(0);
+  const [surname, setSurname] = useState("");
   const [loading, setLoading] = useState(true);
   const [fatherName, setFatherName] = useState("");
   const [motherName, setMotherName] = useState("");
@@ -268,7 +267,7 @@ const ProfilePage = () => {
             {activeTab === "basic" && (
               <>
                 <div className="flex gap-2">
-                  <div className="w-full">
+                  <div className="w-1/2">
                     <label
                       htmlFor="name"
                       className="block text-sm font-medium text-gray-700"
@@ -283,6 +282,52 @@ const ProfilePage = () => {
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       onChange={(e) => setName(e.target.value)}
                     />
+                  </div>
+                  <div className="w-1/2">
+                    <label
+                      htmlFor="surname"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Surname
+                    </label>
+                    <select
+                      id="surname"
+                      value={surname}
+                      onChange={(e) => setSurname(e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    >
+                      <option value="">Select Surname</option>
+                      <option value="Yadav">Yadav</option>
+                      <option value="Singh">Singh</option>
+                      <option value="Sinha">Sinha</option>
+                      <option value="Prasad">Prasad</option>
+                      <option value="Kumar">Kumar</option>
+                      <option value="Pandey">Pandey</option>
+                      <option value="Mishra">Mishra</option>
+                      <option value="Tiwari">Tiwari</option>
+                      <option value="Chaturvedi">Chaturvedi</option>
+                      <option value="Tripathi">Tripathi</option>
+                      <option value="Dwivedi">Dwivedi</option>
+                      <option value="Srivastava">Srivastava</option>
+                      <option value="Shukla">Shukla</option>
+                      <option value="Verma">Verma</option>
+                      <option value="Sharma">Sharma</option>
+                      <option value="Acharya">Acharya</option>
+                      <option value="Thapa">Thapa</option>
+                      <option value="Rai">Rai</option>
+                      <option value="Gurung">Gurung</option>
+                      <option value="Magar">Magar</option>
+                      <option value="Lama">Lama</option>
+                      <option value="Tamang">Tamang</option>
+                      <option value="Karki">Karki</option>
+                      <option value="Regmi">Regmi</option>
+                      <option value="Shrestha">Shrestha</option>
+                      <option value="Jha">Jha</option>
+                      <option value="Mishra">Mishra</option>
+                      <option value="Choudhary">Choudhary</option>
+                      <option value="Pathak">Pathak</option>
+                      {/* Add more options as needed */}
+                    </select>
                   </div>
                 </div>
 
@@ -809,6 +854,7 @@ const ProfilePage = () => {
                   professionSector: professionSector,
                   professionDetails: professionDetails,
                   siblings: Number(siblings),
+                  surname: surname || null,
                   height: Number(height),
                   annualIncome: Number(annualIncome),
                   maritalStatus: maritalStatus,

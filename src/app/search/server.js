@@ -14,22 +14,11 @@ export async function searchMatch({
   pageSize = 10,
   motherTongue = "Any",
 }) {
-  console.log("searching for matches", {
-    name,
-    age,
-    age2,
-    religion,
-    gotra,
-    height,
-    maritalStatus,
-    page,
-    pageSize,
-  });
-  return new Promise(async (resolve, reject) => {
+  try {
     const where = {
       age: {
-        gte: parseInt(age),
-        lte: parseInt(age2),
+        gte: age,
+        lte: age2,
       },
       height: {
         gte: height,
@@ -46,15 +35,12 @@ export async function searchMatch({
       where.motherTongue = motherTongue;
     }
 
-    if (religion !== "Any") {
-      where.religion = religion;
-    }
-
     if (gotra !== "Any") {
       where.gotra = { not: gotra };
     }
 
-    if (name !== "" || name !== null || name !== undefined) {
+    // Apply the name filter only if a non-empty string is provided.
+    if (name && name.trim() !== "") {
       where.fullName = { contains: name };
     }
 
@@ -66,6 +52,8 @@ export async function searchMatch({
       take: pageSize,
     });
 
-    resolve(data || []);
-  });
+    return data || [];
+  } catch (error) {
+    throw error;
+  }
 }

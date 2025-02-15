@@ -28,6 +28,7 @@ model Profile {
   userId            String   @unique
   email             String   @unique
   fullName          String
+  surname           String?
   dateOfBirth       DateTime
   gender            String
   image             String?  @default("/img/user.webp")

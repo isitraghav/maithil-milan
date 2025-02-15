@@ -113,6 +113,15 @@ export async function sendMatchingRequest(receiverId) {
       },
     });
 
+    const userData = await prisma.user.findUnique({
+      where: {
+        id: receiverId,
+      },
+      select: {
+        name: true,
+        profile: true,
+      },
+    });
     // Send email (no need for extra user lookup - use receiver from earlier)
     console.log("Sending email to user");
     await sendMail({
@@ -134,6 +143,62 @@ export async function sendMatchingRequest(receiverId) {
         </html>
       `,
     });
+
+    if (userData) {
+      await sendMail({
+        email: (await auth()).user.email,
+        subject: "Sent connection request to " + userData.name,
+        htmlContent: `
+        <table style="width: 100%; border-collapse: collapse;">
+          <tbody>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Name</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">${userData.profile?.fullName}</td>
+            </tr>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Age</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">
+                ${userData.profile?.dateOfBirth
+                  ? Math.floor(
+                      (new Date().getTime() -
+                        new Date(userData.profile.dateOfBirth).getTime()) /
+                        (1000 * 60 * 60 * 24 * 365.25)
+                    )
+                  : "-"}
+                years old
+              </td>
+            </tr>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Gender</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">${userData.profile?.gender}</td>
+            </tr>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Religion</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">${userData.profile?.religion}</td>
+            </tr>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Gotra</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">${userData.profile?.gotra}</td>
+            </tr>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Mother Tongue</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">${userData.profile?.motherTongue}</td>
+            </tr>
+            <tr>
+              <th style="border: 1px solid #ddd; padding: 8px;">Profile Image</th>
+              <td style="border: 1px solid #ddd; padding: 8px;">
+                <img
+                  src={userData.profile?.image}
+                  alt={userData.profile?.fullName}
+                  className="w-40 object-cover aspect-square h-40 rounded-full"
+                />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        `,
+      });
+    }
 
     return 0; // Success
   } catch (error) {

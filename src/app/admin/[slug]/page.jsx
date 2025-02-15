@@ -38,7 +38,7 @@ export default function UserProfilePage({ params }) {
               <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
                 <dt className="font-medium text-gray-900 pl-2">Name</dt>
                 <dd className="text-gray-700 sm:col-span-2 pl-2 md:pl-0">
-                  {userData.profile.fullName}
+                  {userData.profile.fullName} {userData.profile.surname}
                 </dd>
               </div>
 
