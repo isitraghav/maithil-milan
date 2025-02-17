@@ -51,25 +51,28 @@ export default function Dashboard() {
               color: "red",
               icon: <LuThumbsDown size={35} />,
               text: `${matches.Declined} declined match`,
+              link: "/dashboard",
             },
             {
               color: "#987e1d",
               icon: <LuClock size={35} />,
               text: `${matches.Pending} pending matches`,
+              link: "/sentmatches",
             },
           ].map((item, index) => (
             <div
               key={index}
               className="bg-white shadow-lg text-sm rounded-2xl p-2 md:p-4 lg:p-6 mb-4"
             >
-              <div
+              <Link
+                href={item.link}
                 style={{
                   color: item.color,
                 }}
                 className={`pb-1 grid place-items-center`}
               >
                 {item.icon}
-              </div>
+              </Link>
               <div className="text-gray-800 text-center">{item.text}</div>
             </div>
           ))}
