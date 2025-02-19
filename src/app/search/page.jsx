@@ -109,7 +109,7 @@ export default function Search() {
 
   const [reqOptions, setReqOptions] = useState({});
   const [age, setAge] = useState(22);
-  const [age2, setAge2] = useState(25);
+  const [age2, setAge2] = useState(30);
   const [religion, setReligion] = useState("Hindu");
   const [gotra, setGotra] = useState("Vatsya");
   const [maritalStatus, setMaritalStatus] = useState("Unmarried");
@@ -118,7 +118,7 @@ export default function Search() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [name, setName] = useState("");
-  const [motherTongue, setMotherTongue] = useState("");
+  const [motherTongue, setMotherTongue] = useState("Any");
   const [gender, setGender] = useState("Male");
 
   return (
