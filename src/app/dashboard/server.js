@@ -4,65 +4,58 @@ import { getuserdata, getUserProfile } from "../profile/server";
 import { getUserId } from "@/components/server";
 
 export async function getRecommendations() {
-  return new Promise(async (resolve, reject) => {
-    try {
-      console.log("Fetching recommendations");
-      const data = await getUserProfile();
-      if (!data) {
-        resolve([]);
-        return;
-      }
-      const age = Math.floor(
-        (new Date().getTime() - new Date(data.dateOfBirth).getTime()) /
-          (1000 * 60 * 60 * 24 * 365.25)
-      );
+  try {
+    console.log("Fetching recommendations");
+    const data = await getUserProfile();
+    if (!data) return [];
 
-      console.log(`Current age: ${age}`);
+    const age = Math.floor(
+      (new Date().getTime() - new Date(data.dateOfBirth).getTime()) /
+        (1000 * 60 * 60 * 24 * 365.25)
+    );
 
-      const results = await prisma.$queryRaw`
-        SELECT *
-        FROM profile
-        WHERE maritalStatus = 'Unmarried'
-        AND email != ${data.email}
-        AND age >= ${age - 5} AND age <= ${
-        data.gender === "Male" ? 999 : age + 5
-      }
-        AND religion = ${data.religion}
-        AND gender = ${data.gender === "Male" ? "Female" : "Male"}
-        AND height > ${data.height}
-        ORDER BY RAND()
-        LIMIT 3
-      `;
+    console.log(`Current age: ${age}`);
 
-      const commonCityResults = await prisma.$queryRaw`
-        SELECT *
-        FROM profile
-        WHERE maritalStatus = 'Unmarried'
-        AND email != ${data.email}
-        AND age >= ${age - 5} AND age <= ${
-        data.gender === "Male" ? 999 : age + 5
-      }
-        AND religion = ${data.religion}
-        AND gender = ${data.gender === "Male" ? "Female" : "Male"}
-        AND height > ${data.height}
-        AND city = ${data.city}
-        ORDER BY RAND()
-        LIMIT 3
-      `;
+    // Fetch all matching profiles from the dataset
+    const results = await prisma.profile.findMany({
+      where: {
+        maritalStatus: "Unmarried",
+        email: { not: data.email },
+        age: { gte: age - 5, lte: data.gender === "Male" ? 999 : age + 5 },
+        religion: data.religion,
+        gender: data.gender === "Male" ? "Female" : "Male",
+        height: { gt: data.height },
+      },
+    });
 
-      const allResults = [...results, ...commonCityResults];
-      const uniqueResults = allResults.filter(
-        (value, index, self) =>
-          self.findIndex((t) => t.id === value.id) === index
-      );
-      resolve([...uniqueResults]);
+    // Fetch profiles that also share the same city
+    const commonCityResults = await prisma.profile.findMany({
+      where: {
+        maritalStatus: "Unmarried",
+        email: { not: data.email },
+        age: { gte: age - 5, lte: data.gender === "Male" ? 999 : age + 5 },
+        religion: data.religion,
+        gender: data.gender === "Male" ? "Female" : "Male",
+        height: { gt: data.height },
+        city: data.city,
+      },
+    });
 
-      resolve(results);
-    } catch (error) {
-      console.error("Error fetching recommendations:", error);
-      resolve([]);
-    }
-  });
+    // Combine both result sets and filter out duplicates
+    const allResults = [...results, ...commonCityResults];
+    const uniqueResults = allResults.filter(
+      (profile, index, self) =>
+        self.findIndex((t) => t.id === profile.id) === index
+    );
+
+    // Shuffle the entire dataset randomly
+    const shuffledResults = uniqueResults.sort(() => Math.random() - 0.5);
+
+    return shuffledResults.slice(0, 8);
+  } catch (error) {
+    console.error("Error fetching recommendations:", error);
+    return [];
+  }
 }
 
 export async function getCoordinatesFromCity(city, ip = false) {
