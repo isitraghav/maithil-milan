@@ -138,7 +138,9 @@ export async function getUserMatchStatus() {
 export async function checkProfileCompletion() {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log("Fetching user profile for profile completion check");
       const data = await getUserProfile();
+      console.log("User profile data:", data);
 
       const requiredProperties = [
         "fullName",
@@ -149,8 +151,6 @@ export async function checkProfileCompletion() {
         "phone",
         "gotra",
         "motherTongue",
-        "education",
-        "profession",
         "city",
         "height",
         "maritalStatus",
@@ -158,12 +158,11 @@ export async function checkProfileCompletion() {
       let completedProperties = 0;
 
       requiredProperties.forEach((property) => {
-        if (
-          data?.hasOwnProperty(property) &&
-          data[property] !== null &&
-          data[property] !== ""
-        ) {
+        if (data[property] !== null && data[property] !== "") {
+          console.log(`Property ${property} is completed`);
           completedProperties++;
+        } else {
+          console.log(`Property ${property} is not completed`);
         }
       });
 
@@ -171,12 +170,16 @@ export async function checkProfileCompletion() {
         (completedProperties / requiredProperties.length) * 100
       );
 
+      console.log(
+        `Profile completion percentage: ${completionPercentage}%`
+      );
+
       resolve({
         data: data,
         completionPercentage: completionPercentage,
       });
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching user profile for profile completion check:", error);
       reject(error);
     }
   });
