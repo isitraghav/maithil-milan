@@ -1,5 +1,5 @@
 "use client";
-import { Users, Heart, MessageCircle, TrendingUp } from "lucide-react";
+import { Users, Heart, MessageCircle, TrendingUp, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   getCoreInfo,
@@ -7,17 +7,16 @@ import {
   handleDeleteUser,
   searchAdmin,
 } from "./server";
-import LinkNext from "next/link";
+import Link from "next/link";
 import Swal from "sweetalert2";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function AdminDashboard() {
   const [data, setData] = useState({
     userCount: 0,
     matchCount: 0,
     profileCount: 0,
-    newUsers: 0, // added new metric for demonstration
+    newUsers: 0,
   });
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -25,18 +24,11 @@ export default function AdminDashboard() {
   useEffect(() => {
     getDataServerAdmin().then(
       ({ userCount, matchCount, profileCount, newUsers }) => {
-        console.log("Updated data:", {
-          userCount,
-          matchCount,
-          profileCount,
-          newUsers,
-        });
         setData({ userCount, matchCount, profileCount, newUsers });
       }
     );
   }, []);
 
-  // Handles the search form submission.
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
@@ -48,151 +40,155 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6 mt-2">Admin Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Total Users Card */}
-        <div className="card shadow-md border rounded-lg bg-white p-4">
-          <div className="card-header flex flex-row items-center justify-between pb-2">
-            <h2 className="card-title text-sm font-medium">Total Users</h2>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <div className="card-content">
-            <div className="text-2xl font-bold">{data.userCount}</div>
-          </div>
-        </div>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-8">Admin Dashboard</h1>
 
-        {/* Matches Made Card */}
-        <div className="card shadow-md border rounded-lg bg-white p-4">
-          <div className="card-header flex flex-row items-center justify-between pb-2">
-            <h2 className="card-title text-sm font-medium">Matches Made</h2>
-            <Heart className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <div className="card-content">
-            <div className="text-2xl font-bold">{data.matchCount}</div>
-          </div>
-        </div>
-
-        {/* Active Profiles Card */}
-        <div className="card shadow-md border rounded-lg bg-white p-4">
-          <div className="card-header flex flex-row items-center justify-between pb-2">
-            <h2 className="card-title text-sm font-medium">Active Profiles</h2>
-            <MessageCircle className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <div className="card-content">
-            <div className="text-2xl font-bold">{data.profileCount}</div>
-          </div>
-        </div>
-
-        {/* New Users Card */}
-        <div className="card shadow-md border rounded-lg bg-white p-4">
-          <div className="card-header flex flex-row items-center justify-between pb-2">
-            <h2 className="card-title text-sm font-medium">New Users</h2>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </div>
-          <div className="card-content">
-            <div className="text-2xl font-bold">{data.newUsers}</div>
-            <div className="text-xs opacity-50">added last month</div>
-          </div>
-        </div>
+      {/* Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <MetricCard
+          icon={<Users className="w-5 h-5" />}
+          title="Total Users"
+          value={data.userCount}
+        />
+        <MetricCard
+          icon={<Heart className="w-5 h-5" />}
+          title="Matches Made"
+          value={data.matchCount}
+        />
+        <MetricCard
+          icon={<MessageCircle className="w-5 h-5" />}
+          title="Active Profiles"
+          value={data.profileCount}
+        />
+        <MetricCard
+          icon={<TrendingUp className="w-5 h-5" />}
+          title="New Users"
+          value={data.newUsers}
+          subtitle="last month"
+        />
       </div>
 
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold">Search All Users</h2>
-        <form onSubmit={handleSearch}>
-          <div className="mt-4 flex items-center space-x-4">
+      {/* Search Section */}
+      <div className="bg-white rounded-lg border border-gray-100 p-6">
+        <h2 className="text-lg font-semibold mb-4">Search Users</h2>
+        <form onSubmit={handleSearch} className="flex gap-3 mb-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
             <input
               type="search"
-              className="input w-full max-w-lg rounded-xl"
-              placeholder="Search by name, email, or phone number"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Search by name, email, or phone"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button
-              type="submit"
-              className="btn bg-blue-600 px-3 p-2 rounded-xl hover:bg-blue-700 text-white"
-            >
-              Search
-            </button>
           </div>
+          <button
+            type="submit"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+          >
+            Search
+          </button>
         </form>
 
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {searchResults.map((result) => {
-            if (!result.profile) return null;
-            return (
-              <div key={result.id}>
-                <div className="border bg-white border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow duration-200">
-                  <div className="flex items-center mb-4">
-                    <Image
-                      height={50}
-                      width={50}
-                      src={result.profile.image || "/img/user.webp"}
-                      alt=""
-                      className="rounded-full mr-4 aspect-square object-cover"
-                    />
-                    <div>
-                      <h4 className="font-medium text-lg text-gray-800">
-                        {result.profile.fullName}
-                      </h4>
-                      <p className="text-gray-600">
-                        {result.age} years, {result.profile.profession}
-                      </p>
-                    </div>
-                  </div>
-                  <p className="text-gray-600 mb-4">
-                    {result.height} cm, {result.profile.education}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <div className="flex space-x-2">
-                      <LinkNext href={`/profile/${result.profile.userId}`}>
-                        <button className="bg-gray-100 py-1 text-gray-600 p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
-                          View Profile
-                        </button>
-                      </LinkNext>
-                    </div>
-                    <div className="flex space-x-2">
-                      <Link href={`/admin/${result.id}`}>
-                        <button className="bg-yellow-100 py-1 text-yellow-600 p-2 rounded-full hover:bg-yellow-200 transition-colors duration-200">
-                          Get Info
-                        </button>
-                      </Link>
-                      <button
-                        onClick={() => {
-                          console.log(result);
-                          Swal.fire({
-                            title: "Confirm Deletion",
-                            text: "Are you sure you want to delete this user?",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#d33",
-                            cancelButtonColor: "#3085d6",
-                            confirmButtonText: "Yes, delete user",
-                          }).then(async (result) => {
-                            if (result.isConfirmed) {
-                              const res = await handleDeleteUser(result.id);
-                              if (res) {
-                                Swal.fire(
-                                  "Deleted!",
-                                  "User has been deleted.",
-                                  "success"
-                                );
-                              }
-                            }
-                          });
-                        }}
-                        className="bg-red-100 py-1 text-red-600 p-2 rounded-full hover:bg-red-200 transition-colors duration-200"
-                      >
-                        Delete User
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+        {/* Search Results */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {searchResults.map((user) => (
+            <UserCard
+              key={user.id}
+              user={user}
+              onDelete={async () => {
+                const confirmation = await Swal.fire({
+                  title: `Delete ${user.profile?.fullName}?`,
+                  text: "This action cannot be undone",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#ef4444",
+                  cancelButtonColor: "#6b7280",
+                });
+
+                if (confirmation.isConfirmed) {
+                  await handleDeleteUser(user.id);
+                  setSearchResults((results) =>
+                    results.filter((u) => u.id !== user.id)
+                  );
+                }
+              }}
+            />
+          ))}
         </div>
       </div>
     </div>
   );
 }
+
+// Reusable Metric Card Component
+const MetricCard = ({ icon, title, value, subtitle }) => (
+  <div className="bg-white rounded-lg border border-gray-100 p-4 hover:shadow-sm transition-all">
+    <div className="flex items-center justify-between mb-2">
+      <h3 className="text-sm font-medium text-gray-600">{title}</h3>
+      <div className="text-indigo-600">{icon}</div>
+    </div>
+    <div className="text-2xl font-bold text-gray-800">{value}</div>
+    {subtitle && <div className="text-xs text-gray-400 mt-1">{subtitle}</div>}
+  </div>
+);
+
+// Reusable User Card Component
+const UserCard = ({ user, onDelete }) => {
+  const profile = user.profile || {};
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-100 p-4 hover:shadow-sm transition-all">
+      <div className="flex items-center mb-4">
+        <div className="relative w-12 h-12 mr-3">
+          <Image
+            src={profile.image || "/img/user.webp"}
+            alt={profile.fullName}
+            fill
+            className="rounded-full object-cover border-2 border-white"
+          />
+        </div>
+        <div>
+          <h4 className="font-semibold text-gray-800">{profile.fullName}</h4>
+          <p className="text-sm text-gray-500">
+            {profile.city}, {profile.age} years
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 text-sm mb-4">
+        <div className="flex items-center text-gray-600">
+          <span className="mr-2">📚</span>
+          {profile.education || "N/A"}
+        </div>
+        <div className="flex items-center text-gray-600">
+          <span className="mr-2">💼</span>
+          {profile.professionDetails || "N/A"}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between border-t pt-3">
+        <div className="flex gap-2">
+          <Link
+            href={`/profile/${profile.userId}`}
+            className="text-sm text-indigo-600 hover:text-indigo-700"
+          >
+            View Profile
+          </Link>
+          <Link
+            href={`/admin/${user.id}`}
+            className="text-sm text-gray-600 hover:text-gray-700"
+          >
+            Admin View
+          </Link>
+        </div>
+        <button
+          onClick={onDelete}
+          className="text-sm text-red-600 hover:text-red-700"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+};

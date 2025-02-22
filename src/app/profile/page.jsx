@@ -54,7 +54,7 @@ const ProfilePage = () => {
   const [fatherOccupation, setFatherOccupation] = useState("");
   const [activeTab, setActiveTab] = useState("basic");
   const [ageRange, setAgeRange] = useState("");
-  const [prefferedHeight, setPrefferedHeight] = useState();
+  const [prefferedHeight, setPrefferedHeight] = useState("");
   const [prefferedEducation, setPrefferedEducation] = useState("");
   const [prefferedProfession, setPrefferedProfession] = useState("");
 
@@ -102,6 +102,7 @@ const ProfilePage = () => {
         setPrefferedProfession(data.prefferedProfession || "");
         setPrefferedEducation(data.prefferedEducation || "");
         setAgeRange(data.ageRange || "");
+        setSurname(data.surname || "");
       } else {
         console.log("no existing user profile was found");
         getuserdata().then((res) => {
@@ -803,7 +804,7 @@ const ProfilePage = () => {
                           Preferred Height (in cms)
                         </label>
                         <input
-                          value={prefferedHeight}
+                          value={prefferedHeight || ""}
                           onChange={(e) => setPrefferedHeight(e.target.value)}
                           type="text"
                           placeholder="e.g., 165-175"

@@ -10,9 +10,6 @@ import Swal from "sweetalert2";
 import jsPDF from "jspdf";
 
 export default function UserProfilePage({ params }) {
-  const [emblaRef, elembaApi] = useEmblaCarousel({ loop: false }, [
-    Autoplay({ delay: 2000 }),
-  ]);
   const [userid, setUserId] = useState();
   const [userData, setUserData] = useState({});
 
@@ -74,12 +71,14 @@ export default function UserProfilePage({ params }) {
       { label: "Age", value: `${calculateAge(userData.dateOfBirth)} years` },
       {
         label: "Religion",
-        value: `${userData.religion || "N/A"}${
-          userData.gotra ? `, ${userData.gotra}` : ""
-        }`,
+        value: `${userData.religion || "N/A"}`,
+      },
+      {
+        label: "Gotra",
+        value: userData.gotra || "N/A",
       },
       { label: "Education", value: userData.education || "N/A" },
-      { label: "Profession", value: userData.profession || "N/A" },
+      { label: "Profession", value: userData.professionDetails || "N/A" },
       {
         label: "Height",
         value: `${userData.height} cm (${convertHeightToFeetInches(
@@ -101,7 +100,7 @@ export default function UserProfilePage({ params }) {
 
       doc.setFont("helvetica", "normal");
       doc.setTextColor(0, 0, 0);
-      doc.text(value, x + 25, lineY);
+      doc.text(value, x + 30, lineY);
     });
 
     yPosition += half * 10 + 10;
@@ -125,21 +124,57 @@ export default function UserProfilePage({ params }) {
 
     doc.setFont("helvetica", "normal");
     doc.setTextColor(0, 0, 0);
-    const additionalInfo = [
-      `Family Details: `,
-      `  ${userData.familyType} family, `,
-      `  Father's Name: ${userData.fatherName}, `,
-      `  Father's Occupation: ${userData.fatherOccupation}, `,
-      `  Mother's Name: ${userData.motherName}, `,
-      `  Mother's Occupation: ${userData.motherOccupation}`,
-      ``,
-      `Preferences: `,
-      `  Profession: ${userData.prefferedProfession}, `,
-      `  Education: ${userData.prefferedEducation}, `,
-      `  Height: ${userData.prefferedHeight} cm, `,
-      `  Sector: ${userData.professionSector}, `,
-      `  Annual Income: ${userData.annualIncome} per annum`,
-    ];
+    const additionalInfo = [];
+    if (userData.familyType) {
+      additionalInfo.push(`Family Details:`);
+      additionalInfo.push(`  Family Type: ${userData.familyType}`);
+      if (userData.fatherName) {
+        additionalInfo.push(`  Father's Name: ${userData.fatherName}`);
+      }
+      if (userData.fatherOccupation) {
+        additionalInfo.push(
+          `  Father's Occupation: ${userData.fatherOccupation}`
+        );
+      }
+      if (userData.motherName) {
+        additionalInfo.push(`  Mother's Name: ${userData.motherName}`);
+      }
+      if (userData.motherOccupation) {
+        additionalInfo.push(
+          `  Mother's Occupation: ${userData.motherOccupation}`
+        );
+      }
+      if (userData.siblings) {
+        additionalInfo.push(`  Siblings: ${userData.siblings}`);
+      }
+      additionalInfo.push(``);
+    }
+    if (
+      userData.prefferedProfession ||
+      userData.prefferedEducation ||
+      userData.prefferedHeight ||
+      userData.professionSector ||
+      userData.annualIncome
+    ) {
+      additionalInfo.push(`Partner Preferences:`);
+      if (userData.prefferedProfession) {
+        additionalInfo.push(`  Profession: ${userData.prefferedProfession}`);
+      }
+      if (userData.prefferedEducation) {
+        additionalInfo.push(`  Education: ${userData.prefferedEducation}`);
+      }
+      if (userData.prefferedHeight) {
+        additionalInfo.push(`  Height: ${userData.prefferedHeight} cm`);
+      }
+      if (userData.professionSector) {
+        additionalInfo.push(`  Sector: ${userData.professionSector}`);
+      }
+      if (userData.annualIncome) {
+        additionalInfo.push(
+          `  Annual Income: ${userData.annualIncome} per annum`
+        );
+      }
+    }
 
     additionalInfo.forEach((info) => {
       doc.text(info, margin, yPosition);
@@ -184,207 +219,236 @@ export default function UserProfilePage({ params }) {
   const convertHeightToFeetInches = (height) => {
     const feet = Math.floor(height * 0.032808);
     const inches = Math.round((height * 0.032808 - feet) * 12);
-    return `${feet} ft ${inches} in`;
+    return `${feet} ft ${inches} inch`;
   };
 
+  const [emblaRef, elembaApi] = useEmblaCarousel({ loop: false }, [
+    Autoplay({ delay: 2000 }),
+  ]);
+
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="min-h-screen py-4 md:py-8 px-1 md:px-4 sm:px-6 lg:px-8">
       {userData.id ? (
-        <div className="flex flex-col items-center justify-center p-4 space-y-2 mb-10">
-          <img
-            src={userData.image}
-            alt={userData.fullName}
-            className="w-40 object-cover aspect-square h-40 rounded-full mb-4"
-          />
-          <div className="flow-root w-full">
-            <dl className="-my-3 divide-y divide-gray-100 text-sm">
-              <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                <dt className="font-medium text-gray-900 pl-2">Name</dt>
-                <dd className="text-gray-700 sm:col-span-2 pl-2 md:pl-0">
-                  {userData.fullName} {userData.surname || ""}
-                </dd>
-              </div>
-
-              <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                <dt className="font-medium text-gray-900 pl-2">Age</dt>
-                <dd className="text-gray-700 sm:col-span-2 pl-2 md:pl-0">
-                  {userData.dateOfBirth
-                    ? calculateAge(userData.dateOfBirth)
-                    : "-"}{" "}
-                  years old
-                </dd>
-              </div>
-              {userData.religion && (
-                <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900 pl-2">Religion</dt>
-                  <dd className="text-gray-700 sm:col-span-2 pl-2 md:pl-0">
-                    {userData.religion}, {userData.gotra}
-                  </dd>
+        <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
+          {/* Profile Header */}
+          <div className="bg-indigo-600 p-6">
+            <div className="flex flex-col items-center sm:flex-row sm:items-start gap-6">
+              <img
+                src={userData.image}
+                alt={userData.fullName}
+                className="w-32 h-32 rounded-full border-4 border-white shadow-lg"
+              />
+              <div className="text-center sm:text-left">
+                <h1 className="text-2xl font-bold text-white">
+                  {userData.fullName} {userData.surname}
+                </h1>
+                <p className="text-indigo-100 mt-1">
+                  {userData.age} years • {userData.city}, {userData.state}
+                </p>
+                <div className="mt-2 flex gap-2 flex-wrap justify-center sm:justify-start">
+                  <span className="px-3 py-1 bg-indigo-700 rounded-full text-sm text-white">
+                    {userData.religion}
+                  </span>
+                  <span className="px-3 py-1 bg-indigo-700 rounded-full text-sm text-white">
+                    {userData.maritalStatus}
+                  </span>
                 </div>
-              )}
-              {userData.education && (
-                <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900 pl-2">Education</dt>
-                  <dd className="text-gray-700 sm:col-span-2 pl-2 md:pl-0">
-                    {userData.education}
-                  </dd>
-                </div>
-              )}
-              {userData.profession && (
-                <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                  <dt className="font-medium text-gray-900 pl-2">Profession</dt>
-                  <dd className="text-gray-700 sm:col-span-2 pl-2 md:pl-0">
-                    {userData.profession}
-                  </dd>
-                </div>
-              )}
-              <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                <dt className="font-medium text-gray-900 pl-2">Height</dt>
-                <dd className="text-gray-700 sm:col-span-2 pl-2 md:pl-0">
-                  {convertHeightToFeetInches(userData.height)} ({" "}
-                  {userData.height} cm )
-                </dd>
               </div>
-              <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
-                <dt className="font-medium text-gray-900 pl-2">
-                  Marital Status
-                </dt>
-                <dd className="text-gray-700 sm:col-span-2 pl-2 md:pl-0">
-                  {userData.maritalStatus}
-                </dd>
-              </div>
-
-              <div className="flex flex-col md:flex-row gap-2 my-4 center-all mt-2">
-                {userData?.matches ? (
-                  <>
-                    <div className="flex items-center gap-2">
-                      {userData.matches.status === "Accepted" && (
-                        <span className="text-green-500 font-bold">
-                          Match Accepted
-                        </span>
-                      )}
-                      {userData.matches.status === "Declined" && (
-                        <span className="text-red-500 font-bold">
-                          Match Declined
-                        </span>
-                      )}
-                      {userData.matches.status === "Pending" && (
-                        <>
-                          <button
-                            className="p-2 flex gap-2 font-bold text-white bg-[#219742] rounded-lg hover:bg-[#186c30] transition duration-150 ease-in-out"
-                            onClick={async (e) => {
-                              Swal.fire({
-                                title: "Accept Match?",
-                                text:
-                                  "This will accept the match between you and " +
-                                  userData.fullName,
-                                icon: "warning",
-                                showCancelButton: true,
-                                confirmButtonColor: "#3085d6",
-                                cancelButtonColor: "#d33",
-                                confirmButtonText: "Yes, accept it!",
-                              }).then((result) => {
-                                if (result.isConfirmed) {
-                                }
-                              });
-                            }}
-                          >
-                            Accept Match
-                          </button>
-                          <button
-                            onClick={async (e) => {
-                              Swal.fire({
-                                title: "Decline Match?",
-                                text:
-                                  "This will decline the match between you and " +
-                                  userData.fullName,
-                                icon: "warning",
-                                showCancelButton: true,
-                                confirmButtonColor: "#3085d6",
-                                cancelButtonColor: "#d33",
-                                confirmButtonText: "Yes, decline it!",
-                              });
-                            }}
-                            className="p-2 flex gap-2 font-bold text-white bg-[#b02b36] rounded-lg hover:bg-[#7f1f27] transition duration-150 ease-in-out"
-                          >
-                            Decline Match
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <button
-                    onClick={async (e) => {
-                      let btn = e.target;
-                      btn.textContent = "Sending Request...";
-                      await sendMatchingRequest(userid).then((e) => {
-                        if (e == 0) {
-                          btn.textContent = "Request Sent";
-                        } else if (e == 2) {
-                          btn.textContent = "Request Already Sent";
-                        } else {
-                          btn.textContent = "Error Sending Request";
-                        }
-                      });
-                    }}
-                    className="p-2 flex gap-2 font-bold text-white bg-[#b0772b] rounded-lg hover:bg-[#9c632a] transition duration-150 ease-in-out"
-                  >
-                    <PiStarFill size={20} aria-hidden="true" />
-                    Send Matching Request
-                    <PiStarFill size={20} aria-hidden="true" />
-                  </button>
-                )}
-
-                {/* PDF Export Button */}
-                <button
-                  onClick={exportToPDF}
-                  className="p-2 px-4 font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-600 transition duration-150 ease-in-out"
-                >
-                  Export Profile as PDF
-                </button>
-              </div>
-
-              {userData?.photos?.length > 0 && (
-                <div className="embla rounded-md" ref={emblaRef}>
-                  <div className="embla__container">
-                    {userData?.photos?.map((photo, index) => (
-                      <div key={index} className="embla__slide mr-2">
-                        <img
-                          src={photo}
-                          className="object-cover h-[30vh] w-64 rounded-xl"
-                          alt={userData.fullName}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <div className="embla__arrows mt-2 flex items-center justify-center space-x-2">
-                    <button
-                      className="embla__button embla__button--prev p-1 rounded-full bg-white shadow-md"
-                      onClick={() => elembaApi?.scrollPrev()}
-                    >
-                      <IoMdArrowBack className="h-6 w-6" aria-hidden="true" />
-                    </button>
-                    <button
-                      className="embla__button embla__button--next p-1 rounded-full bg-white shadow-md"
-                      onClick={() => elembaApi?.scrollNext()}
-                    >
-                      <IoMdArrowForward
-                        className="h-6 w-6"
-                        aria-hidden="true"
-                      />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </dl>
+            </div>
           </div>
+
+          {/* Main Content */}
+          <div className="p-2 md:p-6 grid gap-6 md:grid-cols-2">
+            {/* Personal Details */}
+            <section>
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
+                Personal Details
+              </h2>
+              <dl className="space-y-3">
+                <DetailItem label="Gotra">{userData.gotra || "N/A"}</DetailItem>
+                <DetailItem label="Height">
+                  {convertHeightToFeetInches(userData.height)}
+                </DetailItem>
+                <DetailItem label="Date of Birth">
+                  {new Date(userData.dateOfBirth).toLocaleDateString()}
+                </DetailItem>
+                <DetailItem label="Education">
+                  {userData.education || "N/A"}
+                </DetailItem>
+                <DetailItem label="Profession">
+                  {userData.professionDetails}
+                </DetailItem>
+                <DetailItem label="Annual Income">
+                  ₹{userData.annualIncome?.toLocaleString() || "N/A"}
+                </DetailItem>
+              </dl>
+            </section>
+
+            {/* Family Details */}
+            <section>
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
+                Family Information
+              </h2>
+              <dl className="space-y-3">
+                <DetailItem label="Father's Name">
+                  {userData.fatherName}
+                </DetailItem>
+                <DetailItem label="Father's Occupation">
+                  {userData.fatherOccupation}
+                </DetailItem>
+                <DetailItem label="Mother's Name">
+                  {userData.motherName}
+                </DetailItem>
+                <DetailItem label="Mother's Occupation">
+                  {userData.motherOccupation}
+                </DetailItem>
+                <DetailItem label="Family Type">
+                  {userData.familyType}
+                </DetailItem>
+                <DetailItem label="Siblings">{userData.siblings}</DetailItem>
+              </dl>
+            </section>
+
+            {/* Partner Preferences */}
+            {(userData.prefferedProfession ||
+              userData.prefferedEducation ||
+              userData.prefferedHeight) && (
+              <section className="md:col-span-2">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
+                  Partner Preferences
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <PreferenceCard
+                    title="Profession"
+                    value={userData.prefferedProfession}
+                  />
+                  <PreferenceCard
+                    title="Education"
+                    value={userData.prefferedEducation}
+                  />
+                  <PreferenceCard
+                    title="Height"
+                    value={`${userData.prefferedHeight} cm`}
+                  />
+                </div>
+              </section>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="p-6 border-t border-gray-200 flex flex-wrap gap-4 justify-center">
+            {userData?.matches ? (
+              <MatchStatusButtons userData={userData} />
+            ) : (
+              <button
+                onClick={async (e) => {
+                  let btn = e.target;
+                  btn.textContent = "Sending Request...";
+                  await sendMatchingRequest(userid).then((e) => {
+                    if (e == 0) {
+                      btn.textContent = "Request Sent";
+                    } else if (e == 2) {
+                      btn.textContent = "Request Already Sent";
+                    } else {
+                      btn.textContent = "Error Sending Request";
+                    }
+                  });
+                }}
+                className="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 rounded-lg text-white font-semibold hover:from-amber-600 hover:to-amber-700 transition-all flex items-center gap-2"
+              >
+                <PiStarFill className="text-xl" />
+                Send Matching Request
+                <PiStarFill className="text-xl" />
+              </button>
+            )}
+            <button
+              onClick={exportToPDF}
+              className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg text-white font-semibold hover:from-indigo-600 hover:to-indigo-700 transition-all"
+            >
+              Export as PDF
+            </button>
+          </div>
+
+          {/* Photo Gallery */}
+          {userData.photos?.length > 0 && (
+            <div className="p-6 border-t border-gray-200">
+              <div className="embla rounded-xl overflow-hidden" ref={emblaRef}>
+                <div className="embla__container">
+                  {userData.photos.map((photo, index) => (
+                    <div key={index} className="embla__slide">
+                      <img
+                        src={photo}
+                        className="object-cover h-64 w-full rounded-lg"
+                        alt={`${userData.fullName}'s photo ${index + 1}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="embla__arrows mt-4 flex justify-center gap-4">
+                  <button
+                    className="embla__button p-2 rounded-full bg-white shadow-lg hover:bg-gray-100 transition-colors"
+                    onClick={() => elembaApi?.scrollPrev()}
+                  >
+                    <IoMdArrowBack className="h-6 w-6 text-gray-700" />
+                  </button>
+                  <button
+                    className="embla__button p-2 rounded-full bg-white shadow-lg hover:bg-gray-100 transition-colors"
+                    onClick={() => elembaApi?.scrollNext()}
+                  >
+                    <IoMdArrowForward className="h-6 w-6 text-gray-700" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
-        <div className="m-auto h-full w-full">
-          <PiSpinnerLight size={40} className="animate-spin w-full h-98" />
+        <div className="flex justify-center items-center h-96">
+          <PiSpinnerLight className="animate-spin text-indigo-600 h-16 w-16" />
         </div>
       )}
     </div>
   );
 }
+
+// Reusable Detail Item Component
+const DetailItem = ({ label, children }) => (
+  <div className="flex justify-between items-center py-2 px-4 bg-gray-50 rounded-lg">
+    <dt className="font-medium text-gray-600">{label}</dt>
+    <dd className="text-gray-800">{children}</dd>
+  </div>
+);
+
+// Reusable Preference Card Component
+const PreferenceCard = ({ title, value }) => (
+  <div className="bg-indigo-50 p-4 rounded-lg">
+    <h3 className="text-sm font-semibold text-indigo-600 mb-1">{title}</h3>
+    <p className="text-gray-800">{value || "Not specified"}</p>
+  </div>
+);
+
+// Match Status Buttons Component
+const MatchStatusButtons = ({ userData }) => (
+  <div className="flex items-center gap-4">
+    {userData.matches.status === "Accepted" && (
+      <span className="px-6 py-3 bg-green-100 text-green-800 rounded-lg font-semibold">
+        ✓ Match Accepted
+      </span>
+    )}
+    {userData.matches.status === "Declined" && (
+      <span className="px-6 py-3 bg-red-100 text-red-800 rounded-lg font-semibold">
+        ✗ Match Declined
+      </span>
+    )}
+    {userData.matches.status === "Pending" && (
+      <>
+        <button className="px-6 py-3 bg-green-100 text-green-800 rounded-lg font-semibold hover:bg-green-200 transition-colors">
+          Accept Match
+        </button>
+        <button className="px-6 py-3 bg-red-100 text-red-800 rounded-lg font-semibold hover:bg-red-200 transition-colors">
+          Decline Match
+        </button>
+      </>
+    )}
+  </div>
+);

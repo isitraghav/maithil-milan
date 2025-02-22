@@ -79,7 +79,8 @@ export default function Footer() {
               <ul className="mt-6 space-y-4 text-sm">
                 <li>
                   <Link
-                    href="/contact"
+                    target="_blank"
+                    href="mailto:admin@maithilmilan.com"
                     className="text-gray-700 transition hover:opacity-75"
                   >
                     Contact

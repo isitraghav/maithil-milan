@@ -15,9 +15,101 @@ async function main() {
       gender === "Male"
         ? faker.person.firstName("male") + " " + faker.person.lastName()
         : faker.person.firstName("female") + " " + faker.person.lastName();
+    const surname = faker.person.lastName();
 
     const dateOfBirth = faker.date.birthdate({ min: 18, max: 50, mode: "age" });
     const age = new Date().getFullYear() - dateOfBirth.getFullYear();
+
+    const fatherName = `${faker.person.firstName()} ${faker.person.lastName()}`;
+    const motherName = `${faker.person.firstName()} ${faker.person.lastName()}`;
+    const fatherOccupation = faker.helpers.arrayElement([
+      "Engineer",
+      "Doctor",
+      "Teacher",
+      "Businessman",
+      "House Maker",
+    ]);
+    const motherOccupation = faker.helpers.arrayElement([
+      "Teacher",
+      "Nurse",
+      "Housemaker",
+      "Secretary",
+      "Artist",
+    ]);
+    const familyType = faker.helpers.arrayElement(["Joint", "Nuclear"]);
+    const status = faker.helpers.arrayElement(["Active", "Inactive", "Away"]);
+    const siblings = faker.number.int({ min: 0, max: 5 });
+
+    const ageRange = faker.helpers.arrayElement([
+      "18-25",
+      "26-35",
+      "36-45",
+      "46-55",
+    ]);
+    const preferredProfession = faker.helpers.arrayElement([
+      "Engineer",
+      "Teacher",
+      "Doctor",
+      "Lawyer",
+      "Businessman",
+      "Artist",
+    ]);
+    const preferredEducation = faker.helpers.arrayElement([
+      "Graduate",
+      "Post Graduate",
+      "Doctorate",
+      "Other",
+    ]);
+    const preferredHeight = faker.number.float({ min: 150, max: 190 });
+    const professionSector = faker.helpers.arrayElement([
+      "IT",
+      "Healthcare",
+      "Education",
+      "Finance",
+      "Law",
+      "Business",
+    ]);
+    const annualIncome = faker.number.int({ min: 200000, max: 2000000 });
+    const professionDetails = faker.lorem.sentence();
+
+    const religiousOptions = [
+      "Hindu",
+      "Muslim",
+      "Christian",
+      "Sikh",
+      "Buddhist",
+      "Jain",
+    ];
+    const religion = faker.helpers.arrayElement(religiousOptions);
+    const gotraOptions = [
+      "Sandilya",
+      "Vatsya",
+      "Kashyap",
+      "Bharadwaj",
+      "Prasar",
+      "Katyan",
+      "Gautam",
+      "Krishnaye",
+      "Garge",
+      "Vishnubridhi",
+      "Sayannee",
+      "Kaushik",
+      "Vasishta",
+      "Moudal",
+      "Kaundliya",
+    ];
+    const gotra = faker.helpers.arrayElement(gotraOptions);
+
+    const motherTongueOptions = [
+      "Maithili",
+      "Hindi",
+      "Nepali",
+      "Bhojpuri",
+      "Magahi",
+      "English",
+    ];
+    const motherTongue = faker.helpers.arrayElement(motherTongueOptions);
+    const phone = faker.phone.number("+91 ## ## ####");
 
     const indianCities = [
       {
@@ -67,7 +159,7 @@ async function main() {
     const { city, latitude, longitude, state } =
       faker.helpers.arrayElement(indianCities);
 
-    const education = faker.helpers.arrayElement([
+    const educationOptions = [
       "B.Tech",
       "M.Tech",
       "MBA",
@@ -75,43 +167,32 @@ async function main() {
       "B.Sc",
       "M.Sc",
       "PhD",
-    ]);
-    const profession = faker.helpers.arrayElement([
+    ];
+    const education = faker.helpers.arrayElement(educationOptions);
+    const professionOptions = [
       "Software Engineer",
       "Doctor",
       "Teacher",
       "Banker",
       "Lawyer",
       "Businessman",
-    ]);
-    const phone = faker.phone.number("+91 ##########");
-    const religionOptions = [
-      "Hindu",
     ];
-    const religion = faker.helpers.arrayElement(religionOptions);
-    const gotraOptions = [
-      "Sandilya",
-      "Vatsya",
-      "Kashyap",
-      "Bharadwaj",
-      "Prasar",
-      "Katyan",
-      "Gautam",
-      "Krishnaye",
-      "Garge",
-      "Vishnubridhi",
-      "Sayannee",
-      "Kaushik",
-      "Vasishta",
-      "Moudal",
-      "Kaundliya",
-    ];
-    const gotra = faker.helpers.arrayElement(gotraOptions);
-    const maritalStatus = faker.helpers.arrayElement([
+    const profession = faker.helpers.arrayElement(professionOptions);
+    const height = faker.number.int({ min: 150, max: 190 });
+    const maritalStatusOptions = [
       "Unmarried",
       "Divorced",
       "Widowed",
-    ]);
+      "Separated",
+      "Married",
+    ];
+    const maritalStatus = faker.helpers.arrayElement(maritalStatusOptions);
+
+    const photos = [
+      faker.image.avatar(),
+      faker.image.avatar(),
+      faker.image.avatar(),
+    ];
 
     const user = await prisma.user.create({
       data: {
@@ -124,30 +205,37 @@ async function main() {
           create: {
             email,
             fullName,
+            surname,
             dateOfBirth,
             gender,
             age,
             religion,
             gotra,
-            motherTongue: faker.helpers.arrayElement([
-              "Maithili",
-              "Hindi",
-              "Nepali",
-              "Bhojpuri",
-              "Magahi",
-              "English",
-            ]),
+            fatherName,
+            motherName,
+            fatherOccupation,
+            motherOccupation,
+            familyType,
+            status,
+            siblings,
+            ageRange,
+            prefferedProfession: preferredProfession,
+            prefferedEducation: preferredEducation,
+            prefferedHeight: preferredHeight,
+            professionSector,
+            annualIncome,
+            professionDetails,
+            motherTongue,
             phone,
             latitude,
             longitude,
-            state,
             city,
+            state,
             education,
             profession,
-            height: faker.number.int({ min: 150, max: 190 }),
+            height,
             maritalStatus,
-            bio: faker.lorem.sentence(),
-            photos: [faker.image.avatar(), faker.image.avatar()],
+            photos,
           },
         },
       },

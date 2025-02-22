@@ -43,11 +43,13 @@ export default function MatchesPage() {
         <div className="p-2 w-full md:w-2/3 md:p-0 mx-auto">
           <h1 className="text-3xl font-bold mb-4">Your Matches</h1>
 
-          {matchDetails.map((match) => (
-            <div key={Math.random()}>
-              <AcceptedMatchCard result={match} />
-            </div>
-          ))}
+          <div className="flex flex-col gap-2">
+            {matchDetails.map((match) => (
+              <div key={Math.random()}>
+                <AcceptedMatchCard result={match} />
+              </div>
+            ))}
+          </div>
           {matchDetails.length === 0 && (
             <p className="text-gray-500">No matches found</p>
           )}
