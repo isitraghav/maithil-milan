@@ -145,57 +145,118 @@ export async function sendMatchingRequest(receiverId) {
     });
 
     if (userData) {
+      console.log("Sending email to sender");
+      console.log(userData);
       await sendMail({
         email: (await auth()).user.email,
         subject: "Sent connection request to " + userData.name,
         htmlContent: `
-        <table style="width: 100%; border-collapse: collapse;">
-          <tbody>
-            <tr>
-              <th style="border: 1px solid #ddd; padding: 8px;">Name</th>
-              <td style="border: 1px solid #ddd; padding: 8px;">${userData.profile?.fullName}</td>
-            </tr>
-            <tr>
-              <th style="border: 1px solid #ddd; padding: 8px;">Age</th>
-              <td style="border: 1px solid #ddd; padding: 8px;">
-                ${userData.profile?.dateOfBirth
-                  ? Math.floor(
-                      (new Date().getTime() -
-                        new Date(userData.profile.dateOfBirth).getTime()) /
-                        (1000 * 60 * 60 * 24 * 365.25)
-                    )
-                  : "-"}
-                years old
-              </td>
-            </tr>
-            <tr>
-              <th style="border: 1px solid #ddd; padding: 8px;">Gender</th>
-              <td style="border: 1px solid #ddd; padding: 8px;">${userData.profile?.gender}</td>
-            </tr>
-            <tr>
-              <th style="border: 1px solid #ddd; padding: 8px;">Religion</th>
-              <td style="border: 1px solid #ddd; padding: 8px;">${userData.profile?.religion}</td>
-            </tr>
-            <tr>
-              <th style="border: 1px solid #ddd; padding: 8px;">Gotra</th>
-              <td style="border: 1px solid #ddd; padding: 8px;">${userData.profile?.gotra}</td>
-            </tr>
-            <tr>
-              <th style="border: 1px solid #ddd; padding: 8px;">Mother Tongue</th>
-              <td style="border: 1px solid #ddd; padding: 8px;">${userData.profile?.motherTongue}</td>
-            </tr>
-            <tr>
-              <th style="border: 1px solid #ddd; padding: 8px;">Profile Image</th>
-              <td style="border: 1px solid #ddd; padding: 8px;">
-                <img
-                  src={userData.profile?.image}
-                  alt={userData.profile?.fullName}
-                  className="w-40 object-cover aspect-square h-40 rounded-full"
-                />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          <div style="max-width: 600px; margin: 20px auto; font-family: Arial, sans-serif; color: #333333;">
+            <table style="width: 100%; border-collapse: collapse; background-color: #f5f5f5; padding: 20px;">
+              <tbody>
+                <tr>
+                  <td style="text-align: center; font-size: 18px; font-weight: bold; color: #2c3e50;">
+                    Connection Request Sent to ${userData.name}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+      
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+              <tbody>
+                <tr>
+                  <th style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #f8f9fa; text-align: left; font-weight: bold; width: 250px;">
+                    Name
+                  </th>
+                  <td style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #ffffff;">
+                    ${userData.profile?.fullName}
+                  </td>
+                </tr>
+                <tr>
+                  <th style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #f8f9fa; text-align: left; font-weight: bold;">
+                    Age
+                  </th>
+                  <td style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #ffffff;">
+                    ${
+                      userData.profile?.dateOfBirth
+                        ? Math.floor(
+                            (new Date().getTime() -
+                              new Date(
+                                userData.profile.dateOfBirth
+                              ).getTime()) /
+                              (1000 * 60 * 60 * 24 * 36.25)
+                          )
+                        : "-"
+                    } years old
+                  </td>
+                </tr>
+                <tr>
+                  <th style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #f8f9fa; text-align: left; font-weight: bold;">
+                    Gender
+                  </th>
+                  <td style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #ffffff;">
+                    ${userData.profile?.gender}
+                  </td>
+                </tr>
+                <tr>
+                  <th style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #f8f9fa; text-align: left; font-weight: bold;">
+                    Religion
+                  </th>
+                  <td style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #ffffff;">
+                    ${userData.profile?.religion}
+                  </td>
+                </tr>
+                <tr>
+                  <th style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #f8f9fa; text-align: left; font-weight: bold;">
+                    Gotra
+                  </th>
+                  <td style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #ffffff;">
+                    ${userData.profile?.gotra}
+                  </td>
+                </tr>
+                <tr>
+                  <th style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #f8f9fa; text-align: left; font-weight: bold;">
+                    Mother Tongue
+                  </th>
+                  <td style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #ffffff;">
+                    ${userData.profile?.motherTongue}
+                  </td>
+                </tr>
+                <tr>
+                  <th style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #f8f9fa; text-align: left; font-weight: bold;">
+                    Profession
+                  </th>
+                  <td style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #ffffff;">
+                    ${userData.profile?.profession}
+                  </td>
+                </tr>
+                <tr>
+                  <th style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #f8f9fa; text-align: left; font-weight: bold;">
+                    Marital Status
+                  </th>
+                  <td style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #ffffff;">
+                    ${
+                      userData.profile?.maritalStatus?.toLowerCase() ||
+                      "Unmarried"
+                    }
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+      
+            <div style="margin: 20px 0; background-color: #f5f5f5; height: 1px;"></div>
+      
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background-color: #f8f9fa;">
+              <tbody>
+                <tr>
+                  <td style="padding: 15px; font-size: 12px; text-align: center; color: #666666;">
+                    If you have any questions or need support, you can contact us
+                    <a href="mailto:support@yourdomain.com" style="color: #2c3e50; text-decoration: none;">here</a>.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         `,
       });
     }
