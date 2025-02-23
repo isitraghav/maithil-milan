@@ -367,6 +367,31 @@ export default function Search() {
                         motherTongue,
                       };
 
+                      if (name.trim() === "") {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Error",
+                          text: "Name is required",
+                        });
+                        return;
+                      }
+                      if (age > age2) {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Error",
+                          text: "Age range is invalid",
+                        });
+                        return;
+                      }
+                      if (height < 65) {
+                        Swal.fire({
+                          icon: "error",
+                          title: "Error",
+                          text: "Height should be greater than 65",
+                        });
+                        return;
+                      }
+
                       setReqOptions(awd);
                       console.log("searching with", reqOptions);
                       btn.textContent = "Searching...";

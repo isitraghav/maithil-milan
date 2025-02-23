@@ -251,7 +251,7 @@ export async function sendMatchingRequest(receiverId) {
                 <tr>
                   <td style="padding: 15px; font-size: 12px; text-align: center; color: #666666;">
                     If you have any questions or need support, you can contact us
-                    <a href="mailto:support@yourdomain.com" style="color: #2c3e50; text-decoration: none;">here</a>.
+                    <a href="mailto:support@maithilmilan.com" style="color: #2c3e50; text-decoration: none;">here</a>.
                   </td>
                 </tr>
               </tbody>

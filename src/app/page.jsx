@@ -191,6 +191,25 @@ const SliderSection = () => {
                     <button
                       className="bg-rose-700 w-full text-white px-4 py-2 rounded-md mt-4"
                       onClick={async () => {
+                        if (
+                          !age ||
+                          !age2 ||
+                          !gender ||
+                          !gotra ||
+                          !religion ||
+                          age < 18 ||
+                          age2 < 18 ||
+                          age > 100 ||
+                          age2 > 100 ||
+                          age >= age2
+                        ) {
+                          Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "Please fill out all the fields with valid values, age should be between 18 and 100 and age2 should be greater than age",
+                          });
+                          return;
+                        }
                         location.href = `/search?gender=${gender}&age=${age}&age2=${age2}&religion=${religion}&gotra=${gotra}`;
                       }}
                     >
