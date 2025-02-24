@@ -72,14 +72,7 @@ async function main() {
     const annualIncome = faker.number.int({ min: 200000, max: 2000000 });
     const professionDetails = faker.lorem.sentence();
 
-    const religiousOptions = [
-      "Hindu",
-      "Muslim",
-      "Christian",
-      "Sikh",
-      "Buddhist",
-      "Jain",
-    ];
+    const religiousOptions = ["Hindu"];
     const religion = faker.helpers.arrayElement(religiousOptions);
     const gotraOptions = [
       "Sandilya",
@@ -179,13 +172,7 @@ async function main() {
     ];
     const profession = faker.helpers.arrayElement(professionOptions);
     const height = faker.number.int({ min: 150, max: 190 });
-    const maritalStatusOptions = [
-      "Unmarried",
-      "Divorced",
-      "Widowed",
-      "Separated",
-      "Married",
-    ];
+    const maritalStatusOptions = ["Unmarried", "Divorced", "Widowed"];
     const maritalStatus = faker.helpers.arrayElement(maritalStatusOptions);
 
     const photos = [

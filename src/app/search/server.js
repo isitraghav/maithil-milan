@@ -4,8 +4,8 @@ import { prisma } from "@/prisma";
 
 export async function searchMatch({
   name,
-  age,
-  age2,
+  age = 1,
+  age2 = 99,
   religion = "Any",
   gotra = "Any",
   height = 1,
@@ -14,7 +14,6 @@ export async function searchMatch({
   pageSize = 10,
   motherTongue = "Any",
 }) {
-  console.log(motherTongue);
   try {
     const where = {
       age: {
@@ -42,7 +41,9 @@ export async function searchMatch({
 
     // Apply the name filter only if a non-empty string is provided.
     if (name && name.trim() !== "") {
-      where.fullName = { contains: name };
+      where.OR = name
+        .split(" ")
+        .map((word) => ({ fullName: { contains: word } }));
     }
 
     console.log(where);
@@ -52,6 +53,7 @@ export async function searchMatch({
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
+    console.log(data);
 
     return data || [];
   } catch (error) {
