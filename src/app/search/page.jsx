@@ -111,7 +111,7 @@ export default function Search() {
   const [age, setAge] = useState(22);
   const [age2, setAge2] = useState(30);
   const [religion, setReligion] = useState("Hindu");
-  const [gotra, setGotra] = useState("Vatsya");
+  const [gotra, setGotra] = useState("Any");
   const [maritalStatus, setMaritalStatus] = useState("Unmarried");
   const [height, setHeight] = useState(160);
   const [searchResults, setSearchResults] = useState([]);

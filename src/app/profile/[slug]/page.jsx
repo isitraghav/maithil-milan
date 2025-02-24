@@ -247,6 +247,9 @@ export default function UserProfilePage({ params }) {
                 </p>
                 <div className="mt-2 flex gap-2 flex-wrap justify-center sm:justify-start">
                   <span className="px-3 py-1 bg-indigo-700 rounded-full text-sm text-white">
+                    {userData.gender}
+                  </span>
+                  <span className="px-3 py-1 bg-indigo-700 rounded-full text-sm text-white">
                     {userData.religion}
                   </span>
                   <span className="px-3 py-1 bg-indigo-700 rounded-full text-sm text-white">

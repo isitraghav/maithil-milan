@@ -36,10 +36,10 @@ const ProfilePage = () => {
   const [userphotos, setuserphotos] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [uploadingPics, setUploadingPics] = useState(false);
-  const [city, setCity] = useState("");
+  const [state, setState] = useState("Delhi");
+  const [city, setCity] = useState("New Delhi");
   const [coordinates, setCoordinates] = useState({});
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [state, setState] = useState("");
   const [professionSector, setProfessionSector] = useState("");
   const [professionDetails, setProfessionDetails] = useState("");
   const [annualIncome, setAnnualIncome] = useState(0);
@@ -47,7 +47,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [fatherName, setFatherName] = useState("");
   const [motherName, setMotherName] = useState("");
-  const [familyType, setFamilyType] = useState("");
+  const [familyType, setFamilyType] = useState("Joint");
   const [siblings, setSiblings] = useState(0);
   const [status, setStatus] = useState("");
   const [motherOccupation, setMotherOccupation] = useState("");
@@ -82,8 +82,8 @@ const ProfilePage = () => {
           latitude: data.latitude || 0,
           longitude: data.longitude || 0,
         });
-        setCity(data.city || "");
-        setState(data.state || "");
+        setState(data.state || "Delhi");
+        setCity(data.city || "New Delhi");
         setHeight(data.height || 0);
         setMaritalStatus(data.maritalStatus || "Unmarried");
         setuserphotos(data.photos || []);
@@ -233,6 +233,16 @@ const ProfilePage = () => {
             >
               Occupation
             </button>
+            <button
+              onClick={() => setActiveTab("education")}
+              className={`pb-2 px-4 ${
+                activeTab === "education"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500"
+              }`}
+            >
+              Education
+            </button>
           </div>
 
           {/* Profile Picture Section */}
@@ -288,7 +298,7 @@ const ProfilePage = () => {
                       htmlFor="name"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Name
+                      <span className="text-red-500">*</span> Name
                     </label>
                     <input
                       type="text"
@@ -353,7 +363,7 @@ const ProfilePage = () => {
                       htmlFor="state"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      State
+                      <span style={{ color: "red" }}>*</span> State
                     </label>
                     <select
                       id="state"
@@ -373,7 +383,7 @@ const ProfilePage = () => {
                       htmlFor="city"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      City
+                      <span style={{ color: "red" }}>*</span> City
                     </label>
                     <select
                       id="city"
@@ -396,7 +406,7 @@ const ProfilePage = () => {
                       htmlFor="dateofbirth"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Date of Birth
+                      <span className="text-red-500">*</span> Date of Birth
                     </label>
                     <input
                       type="date"
@@ -414,6 +424,7 @@ const ProfilePage = () => {
                       htmlFor="gender"
                       className="block text-sm font-medium text-gray-700"
                     >
+                      <span className="text-red-500">* </span>
                       Gender
                     </label>
                     <select
@@ -436,6 +447,7 @@ const ProfilePage = () => {
                       htmlFor="motherTongue"
                       className="block text-sm font-medium text-gray-700"
                     >
+                      <span className="text-red-500">* </span>
                       Mother Tongue
                     </label>
                     <select
@@ -460,6 +472,7 @@ const ProfilePage = () => {
                       htmlFor="religion"
                       className="block text-sm font-medium text-gray-700"
                     >
+                      <span className="text-red-500">* </span>
                       Religion
                     </label>
                     <select
@@ -479,6 +492,7 @@ const ProfilePage = () => {
                       htmlFor="gotra"
                       className="block text-sm font-medium text-gray-700"
                     >
+                      <span className="text-red-500">* </span>
                       Gotra
                     </label>
                     <select
@@ -908,6 +922,43 @@ const ProfilePage = () => {
                       value={annualIncome}
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       onChange={(e) => setAnnualIncome(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Education Tab */}
+            {activeTab === "education" && (
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">Education Details</h3>
+                <div className="flex md:flex-row flex-col gap-2">
+                  <div className="w-1/2">
+                    <label
+                      htmlFor="fieldOfStudy"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Education
+                    </label>
+                    <input
+                      value={education}
+                      placeholder="e.g., B.Tech in CSE"
+                      onChange={(e) => setEducation(e.target.value)}
+                      type="text"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <label
+                      htmlFor="fieldOfStudy"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Completded Year
+                    </label>
+                    <input
+                      placeholder={`${new Date().getFullYear() - 2}`}
+                      type="number"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
                 </div>

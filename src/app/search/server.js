@@ -13,6 +13,7 @@ export async function searchMatch({
   page = 1,
   pageSize = 10,
   motherTongue = "Any",
+  gender = "Any",
 }) {
   try {
     const where = {
@@ -29,6 +30,10 @@ export async function searchMatch({
     const user = await auth();
     if (user) {
       where.email = { not: user.user.email };
+    }
+
+    if (gender !== "Any") {
+      where.gender = gender;
     }
 
     if (motherTongue !== "Any") {
