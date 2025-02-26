@@ -953,7 +953,7 @@ const ProfilePage = () => {
                       htmlFor="fieldOfStudy"
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Completded Year
+                      Completion Year
                     </label>
                     <input
                       placeholder={`${new Date().getFullYear() - 2}`}
@@ -1077,7 +1077,7 @@ const ProfilePage = () => {
                     });
                   } finally {
                     btn.textContent = "Saved Changed!";
-
+                    await getUserProfile().then((data) => setData(data));
                     setTimeout(() => {
                       btn.textContent = "Save Profile";
                       btn.disabled = false;
@@ -1089,11 +1089,13 @@ const ProfilePage = () => {
               >
                 Save Profile
               </button>
-              <Link href={`/profile/${data.userId}`}>
-                <button className="mt-4 mb-3 rounded-md bg-yellow-600 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
-                  Your Profile
-                </button>
-              </Link>
+              {data.userId && (
+                <Link href={`/profile/${data.userId}`}>
+                  <button className="mt-4 mb-3 rounded-md bg-yellow-600 px-4 py-2 text-sm font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
+                    Your Profile
+                  </button>
+                </Link>
+              )}
             </div>
           </div>
         </div>
