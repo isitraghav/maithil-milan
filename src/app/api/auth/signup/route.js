@@ -53,6 +53,22 @@ export async function POST(req) {
     //   `,
     // });
 
+    await sendMail({
+      email,
+      subject: "Successful Registration on Maithil Milan",
+      htmlContent: `
+      <html>
+          <body style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+            <h2>Successful Registration on Maithil Milan</h2>
+            <p>Welcome to Maithil Milan, ${name}!</p>
+            <p>We are excited to have you on board.</p>
+            <p>If you didn’t request this, please ignore this email.</p>
+            <p>Thanks, <br><strong>The Maithil Milan Team</strong></p>
+          </body>
+        </html>
+      `,
+    });
+
     return Response.json(
       { message: "Registration successful!" },
       { status: 200 }
