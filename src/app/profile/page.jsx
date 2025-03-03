@@ -1043,6 +1043,29 @@ const ProfilePage = () => {
                     });
                     return;
                   }
+                  const calculateAge = (dateOfBirth) => {
+                    if (!dateOfBirth) return "N/A";
+                    const dob = new Date(dateOfBirth);
+                    const today = new Date();
+                    let age = today.getFullYear() - dob.getFullYear();
+                    const monthDiff = today.getMonth() - dob.getMonth();
+                    if (
+                      monthDiff < 0 ||
+                      (monthDiff === 0 && today.getDate() < dob.getDate())
+                    ) {
+                      age--;
+                    }
+                    return age;
+                  };
+                  const age = calculateAge(dateofbirth);
+                  if (age > 80) {
+                    Swal.fire({
+                      icon: "error",
+                      title: "Oops...",
+                      text: "Age can't be more than 80.",
+                    });
+                    return;
+                  }
                   btn.textContent = "Saving...";
                   btn.disabled = true;
                   let awd = {
