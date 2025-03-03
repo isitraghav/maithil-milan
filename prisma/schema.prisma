@@ -54,6 +54,8 @@ model Profile {
   latitude            Float?
   longitude           Float?
   city                String?
+  aboutMyFamily       String?
+  nativePlace         String?
   state               String?
   education           String?
   profession          String?

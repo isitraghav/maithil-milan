@@ -57,6 +57,8 @@ const ProfilePage = () => {
   const [prefferedHeight, setPrefferedHeight] = useState("");
   const [prefferedEducation, setPrefferedEducation] = useState("");
   const [prefferedProfession, setPrefferedProfession] = useState("");
+  const [nativePlace, setNativePlace] = useState("");
+  const [aboutMyFamily, setAboutMyFamily] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -103,6 +105,8 @@ const ProfilePage = () => {
         setPrefferedEducation(data.prefferedEducation || "");
         setAgeRange(data.ageRange || "");
         setSurname(data.surname || "");
+        setNativePlace(data.nativePlace || "");
+        setAboutMyFamily(data.aboutMyFamily || "");
       } else {
         console.log("no existing user profile was found");
         getuserdata().then((res) => {
@@ -784,6 +788,30 @@ const ProfilePage = () => {
                     />
                   </div>
                 </div>
+
+                <div className="flex gap-2">
+                  <div className="w-1/2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Native Place
+                    </label>
+                    <input
+                      value={nativePlace}
+                      onChange={(e) => setNativePlace(e.target.value)}
+                      type="text"
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      About my Family
+                    </label>
+                    <textarea
+                      value={aboutMyFamily}
+                      onChange={(e) => setAboutMyFamily(e.target.value)}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    />
+                  </div>
+                </div>
               </div>
             )}
 
@@ -1054,6 +1082,8 @@ const ProfilePage = () => {
                     prefferedProfession: prefferedProfession,
                     prefferedEducation: prefferedEducation,
                     prefferedHeight: Number(prefferedHeight),
+                    aboutMyFamily: aboutMyFamily.trim() || null,
+                    nativePlace: nativePlace.trim() || null,
                   };
                   if (awd.age < 21) {
                     Swal.fire({

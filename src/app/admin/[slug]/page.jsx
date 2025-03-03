@@ -88,7 +88,7 @@ export default function UserProfilePage({ params }) {
                       Math.floor(userData.profile.height * 0.032808)) *
                       12
                   )}
-                  in ( {userData.profile.height} cm )
+                  in
                 </dd>
               </div>
               <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">

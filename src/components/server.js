@@ -78,30 +78,21 @@ export async function getUserId() {
 async function approveMatchingRequest(matchId) {
   return new Promise(async (resolve, reject) => {
     try {
-      let userid = await getUserId();
       await prisma.match
         .findMany({
           where: {
             OR: [
               {
-                AND: {
-                  userId: userid,
-                  matchedUserId: matchId,
-                },
+                matchedUserId: matchId,
               },
               {
-                AND: {
-                  userId: matchId,
-                  matchedUserId: userid,
-                },
+                userId: matchId,
               },
             ],
           },
-          select: {
-            id: true,
-          },
         })
         .then(async (data) => {
+          console.log("Data:", data);
           if (data) {
             data.forEach(async (possibility) => {
               await prisma.match
@@ -183,6 +174,7 @@ export async function handleMatchingRequest(matchId, action) {
       let result = false;
       console.log("Handling matching request:", matchId, action);
       if (action === "Accepted") {
+        console.log("Approving matching request:", matchId);
         result = await approveMatchingRequest(matchId);
       } else if (action === "Declined") {
         result = await declineMatchingRequest(matchId);

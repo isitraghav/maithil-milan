@@ -99,7 +99,9 @@ export default function Dashboard() {
                     {userData?.fullName}
                   </h3>
                   <p className="text-gray-600 mb-2">
-                    {userData?.age} years, {userData?.height} cm,{" "}
+                    {userData?.age} years,{" "}
+                    {Math.floor(userData?.height / 30.48)} ft{" "}
+                    {Math.round(userData?.height % 30.48)} in
                     {userData?.profession}
                   </p>
                   <p className="text-gray-600 mb-4">{userData?.education}</p>
@@ -156,7 +158,7 @@ export default function Dashboard() {
                   </div>
                 </Link>
                 <p className="text-gray-600 mb-4">
-                  {profile.height} cm, {profile.education}
+                {Math.floor(profile?.height / 30.48)} ft {Math.round(profile?.height % 30.48)} in, {profile.education}
                 </p>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center"></div>

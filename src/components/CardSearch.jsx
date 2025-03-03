@@ -83,10 +83,11 @@ export default function CardSearch({ result, mode }) {
                     confirmButtonColor: "#3085d6",
                     cancelButtonColor: "#d33",
                     confirmButtonText: "Yes",
-                  }).then(async (result) => {
-                    if (result.isConfirmed) {
+                  }).then(async (result_) => {
+                    console.log(result);
+                    if (result_.isConfirmed) {
                       const res = await handleMatchingRequest(
-                        result.id,
+                        result.userId,
                         "Accepted"
                       );
                       console.log(res);
@@ -97,7 +98,7 @@ export default function CardSearch({ result, mode }) {
                           text: "The match request has been accepted",
                         }).then((result) => {
                           if (result.isConfirmed) {
-                            window.location.reload();
+                            window.location.href = "/matches";
                           }
                         });
                       }
@@ -117,7 +118,7 @@ export default function CardSearch({ result, mode }) {
                 btn.disabled = true;
                 try {
                   const res = await handleMatchingRequest(
-                    result.id,
+                    result.userId,
                     "Declined"
                   );
                   console.log(res);

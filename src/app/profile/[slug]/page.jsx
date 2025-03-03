@@ -6,12 +6,17 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { PiSpinnerLight, PiStarFill } from "react-icons/pi";
-import Swal from "sweetalert2";
 import jsPDF from "jspdf";
+import { getreceivedmatches } from "@/app/receivedmatches/server";
+import { handleMatchingRequest } from "@/components/server";
+import Swal from "sweetalert2";
+import { getAcceptedMatches } from "@/app/matches/server";
 
 export default function UserProfilePage({ params }) {
   const [userid, setUserId] = useState();
   const [userData, setUserData] = useState({});
+  const [userAlreadyInteracted, setUserAlreadyInteracted] = useState(false);
+  const [usermatchingdata, setUsermatchingdata] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,9 +25,40 @@ export default function UserProfilePage({ params }) {
       const data = await getUserProfile(slug);
       console.log("User data fetched:", data);
       setUserData(data);
+
+      getreceivedmatches().then(async (data) => {
+        if (data) {
+          console.log("Received matches:", data);
+          for (const res in data.matches) {
+            console.log(data.matches[res]);
+            if (data.matches[res].user.id === slug) {
+              console.log("User has already interacted with the other user");
+              setUserAlreadyInteracted(true);
+              setUsermatchingdata(data.matches[res]);
+              break; // Exit the loop if the user has already interacted with the other user
+            }
+          }
+        }
+      });
+
+      getAcceptedMatches().then(async (data) => {
+        if (data) {
+          console.log("Accepted matches:", data);
+          for (const res in data.matches) {
+            console.log(data.matches[res]);
+            if (data.matches[res].user.id === slug) {
+              console.log("User has already interacted with the other user");
+              setUserAlreadyInteracted(true);
+              setUsermatchingdata(data.matches[res]);
+              break; // Exit the loop if the user has already interacted with the other user
+            }
+          }
+        }
+      });
     };
     fetchData();
   }, []);
+
   const exportToPDF = async () => {
     const doc = new jsPDF();
     const primaryColor = "#3F51B5"; // Indigo color
@@ -81,9 +117,7 @@ export default function UserProfilePage({ params }) {
       { label: "Profession", value: userData.professionDetails || "N/A" },
       {
         label: "Height",
-        value: `${userData.height} cm (${convertHeightToFeetInches(
-          userData.height
-        )})`,
+        value: `${convertHeightToFeetInches(userData.height)}`,
       },
       { label: "Marital Status", value: userData.maritalStatus || "N/A" },
     ];
@@ -173,7 +207,9 @@ export default function UserProfilePage({ params }) {
         additionalInfo.push(`  Education: ${userData.prefferedEducation}`);
       }
       if (userData.prefferedHeight) {
-        additionalInfo.push(`  Height: ${userData.prefferedHeight} cm`);
+        additionalInfo.push(
+          `  Height: ${convertHeightToFeetInches(userData.prefferedHeight)}`
+        );
       }
     }
 
@@ -332,7 +368,7 @@ export default function UserProfilePage({ params }) {
                   />
                   <PreferenceCard
                     title="Height"
-                    value={`${userData.prefferedHeight} cm`}
+                    value={convertHeightToFeetInches(userData.prefferedHeight)}
                   />
                 </div>
               </section>
@@ -341,8 +377,8 @@ export default function UserProfilePage({ params }) {
 
           {/* Action Buttons */}
           <div className="p-6 border-t border-gray-200 flex flex-wrap gap-4 justify-center">
-            {userData?.matches ? (
-              <MatchStatusButtons userData={userData} />
+            {userAlreadyInteracted ? (
+              <MatchStatusButtons userData={usermatchingdata} />
             ) : (
               <button
                 onClick={async (e) => {
@@ -433,27 +469,80 @@ const PreferenceCard = ({ title, value }) => (
 );
 
 // Match Status Buttons Component
-const MatchStatusButtons = ({ userData }) => (
-  <div className="flex items-center gap-4">
-    {userData.matches.status === "Accepted" && (
-      <span className="px-6 py-3 bg-green-100 text-green-800 rounded-lg font-semibold">
-        ✓ Match Accepted
-      </span>
-    )}
-    {userData.matches.status === "Declined" && (
-      <span className="px-6 py-3 bg-red-100 text-red-800 rounded-lg font-semibold">
-        ✗ Match Declined
-      </span>
-    )}
-    {userData.matches.status === "Pending" && (
-      <>
-        <button className="px-6 py-3 bg-green-100 text-green-800 rounded-lg font-semibold hover:bg-green-200 transition-colors">
-          Accept Match
-        </button>
-        <button className="px-6 py-3 bg-red-100 text-red-800 rounded-lg font-semibold hover:bg-red-200 transition-colors">
-          Decline Match
-        </button>
-      </>
-    )}
-  </div>
-);
+const MatchStatusButtons = ({ userData }) => {
+  console.log("Match Status Buttons:", userData);
+  return (
+    <div className="flex items-center gap-4">
+      {userData.status === "Accepted" && (
+        <span className="px-6 py-3 bg-green-100 text-green-800 rounded-lg font-semibold">
+          ✓ Match Accepted
+        </span>
+      )}
+      {userData.status === "Declined" && (
+        <span className="px-6 py-3 bg-red-100 text-red-800 rounded-lg font-semibold">
+          ✗ Match Declined
+        </span>
+      )}
+      {userData.status === "Pending" && (
+        <>
+          <button
+            onClick={() => {
+              Swal.fire({
+                title: "Are you sure?",
+                text: "Accept this match?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, accept it!",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  handleMatchingRequest(userData.userId, "Accepted");
+                  Swal.fire(
+                    "Accepted!",
+                    "The match has been accepted.",
+                    "success"
+                  );
+                  window.location.reload();
+                }
+              });
+            }}
+            className="px-6 py-3 bg-green-100 text-green-800 rounded-lg font-semibold hover:bg-green-200 transition-colors"
+          >
+            Accept Match
+          </button>
+          <button
+            onClick={() => {
+              Swal.fire({
+                title: "Are you sure?",
+                text: "Decline this match?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, decline it!",
+              })
+                .then((result) => {
+                  if (result.isConfirmed) {
+                    handleMatchingRequest(userData.userId, "Declined");
+                    Swal.fire(
+                      "Declined!",
+                      "The match has been declined.",
+                      "success"
+                    );
+                    window.location.reload();
+                  }
+                })
+                .catch((error) => {
+                  Swal.fire("Error!", error.message, "error");
+                });
+            }}
+            className="px-6 py-3 bg-red-100 text-red-800 rounded-lg font-semibold hover:bg-red-200 transition-colors"
+          >
+            Decline Match
+          </button>
+        </>
+      )}
+    </div>
+  );
+};
