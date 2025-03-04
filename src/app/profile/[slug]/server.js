@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { sendMail, sendMatchingRequestRecieved } from "@/authSendRequest";
 import { getUserId } from "@/components/server";
 import { prisma } from "@/prisma";
+import moment from "moment";
 
 export async function getUserProfile(userid) {
   console.log("Fetching user profile:", userid);
@@ -177,17 +178,7 @@ export async function sendMatchingRequest(receiverId) {
                     Age
                   </th>
                   <td style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #ffffff;">
-                    ${
-                      userData.profile?.dateOfBirth
-                        ? Math.floor(
-                            (new Date().getTime() -
-                              new Date(
-                                userData.profile.dateOfBirth
-                              ).getTime()) /
-                              (1000 * 60 * 60 * 24 * 36.25)
-                          )
-                        : "-"
-                    } years old
+                    ${userData.profile?.dateOfBirth ? moment(userData.profile.dateOfBirth).fromNow(true) : ''}
                   </td>
                 </tr>
                 <tr>
