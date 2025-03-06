@@ -59,6 +59,9 @@ const ProfilePage = () => {
   const [prefferedProfession, setPrefferedProfession] = useState("");
   const [nativePlace, setNativePlace] = useState("");
   const [aboutMyFamily, setAboutMyFamily] = useState("");
+  const [partnermotherTongue, setpartnermotherTongue] = useState("");
+  const [partnerFoodHabits, setPartnerFoodHabits] = useState("");
+  const [aboutPartner, setAboutPartner] = useState("");
 
   useEffect(() => {
     setLoading(true);
@@ -107,6 +110,9 @@ const ProfilePage = () => {
         setSurname(data.surname || "");
         setNativePlace(data.nativePlace || "");
         setAboutMyFamily(data.aboutMyFamily || "");
+        setpartnermotherTongue(data.partnermotherTongue || "");
+        setPartnerFoodHabits(data.partnerFoodHabits || "");
+        setAboutPartner(data.aboutPartner?.trim() || "");
       } else {
         console.log("no existing user profile was found");
         getuserdata().then((res) => {
@@ -895,6 +901,50 @@ const ProfilePage = () => {
                       </div>
                     </div>
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Mother Tongue
+                    </label>
+                    <select
+                      value={partnermotherTongue}
+                      onChange={(e) => setpartnermotherTongue(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    >
+                      <option value="">Select Mother Tongue</option>
+                      <option>Maithili</option>
+                      <option>Hindi</option>
+                      <option>English</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Food Habits
+                    </label>
+                    <select
+                      value={partnerFoodHabits}
+                      onChange={(e) => setPartnerFoodHabits(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    >
+                      <option value="">Select Food Habits</option>
+                      <option>Vegetarian</option>
+                      <option>Non-Vegetarian</option>
+                      <option>Eggetarian</option>
+                      <option>Jain</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      About my Partner
+                    </label>
+                    <textarea
+                      value={aboutPartner}
+                      onChange={(e) => setAboutPartner(e.target.value)}
+                      placeholder="e.g., kind, caring, understanding"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -1107,6 +1157,9 @@ const ProfilePage = () => {
                     prefferedHeight: Number(prefferedHeight),
                     aboutMyFamily: aboutMyFamily.trim() || null,
                     nativePlace: nativePlace.trim() || null,
+                    partnerMotherTongue: partnermotherTongue,
+                    partnerFoodHabits: partnerFoodHabits,
+                    aboutPartner: aboutPartner.trim() || null,
                   };
                   if (awd.age < 21) {
                     Swal.fire({

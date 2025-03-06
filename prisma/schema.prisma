@@ -49,6 +49,9 @@ model Profile {
   professionSector    String?
   annualIncome        Int?
   professionDetails   String?
+  partnerFoodHabits   String?
+  aboutPartner        String?
+  partnerMotherTongue String?
   motherTongue        String?
   phone               String?
   latitude            Float?

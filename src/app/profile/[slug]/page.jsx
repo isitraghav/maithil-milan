@@ -390,7 +390,7 @@ export default function UserProfilePage({ params }) {
                     } else if (e == 2) {
                       btn.textContent = "Request Already Sent";
                     } else {
-                      btn.textContent = "Can't Send Request to youself.";
+                      btn.textContent = "Can't Send Request to yourself.";
                       // btn.textContent = "Error Sending Request";
                     }
                   });

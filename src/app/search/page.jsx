@@ -367,14 +367,6 @@ export default function Search() {
                         motherTongue,
                       };
 
-                      if (name.trim() === "") {
-                        Swal.fire({
-                          icon: "error",
-                          title: "Error",
-                          text: "Name is required",
-                        });
-                        return;
-                      }
                       if (age > age2) {
                         Swal.fire({
                           icon: "error",

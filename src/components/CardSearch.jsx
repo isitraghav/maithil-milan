@@ -117,24 +117,36 @@ export default function CardSearch({ result, mode }) {
                 const btn = event.currentTarget;
                 btn.disabled = true;
                 try {
-                  const res = await handleMatchingRequest(
-                    result.userId,
-                    "Declined"
-                  );
-                  console.log(res);
-                  if (res) {
-                    Swal.fire({
-                      icon: "success",
-                      title: "Match Declined",
-                      text:
-                        "The match request has been declined from " +
-                        result.fullName,
-                    }).then((result) => {
-                      if (result.isConfirmed) {
-                        window.location.href = "/matches";
+                  Swal.fire({
+                    title: "Are you sure?",
+                    text: "Decline match from " + result.fullName,
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, decline",
+                  }).then(async (result_) => {
+                    if (result_.isConfirmed) {
+                      const res = await handleMatchingRequest(
+                        result.userId,
+                        "Declined"
+                      );
+                      console.log(res);
+                      if (res) {
+                        Swal.fire({
+                          icon: "success",
+                          title: "Match Declined",
+                          text:
+                            "The match request has been declined from " +
+                            result.fullName,
+                        }).then((result) => {
+                          if (result.isConfirmed) {
+                            window.location.href = "/matches";
+                          }
+                        });
                       }
-                    });
-                  }
+                    }
+                  });
                 } finally {
                   btn.disabled = false;
                 }
