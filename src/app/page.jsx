@@ -68,11 +68,16 @@ const SliderSection = () => {
   return (
     <>
       <div className={`relative ${!modalOpened ? "hidden" : ""}`}>
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-filter backdrop-blur-sm md:backdrop-blur-xl text-white">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-no-repeat bg-center"
+          style={{
+            backgroundImage: "url(/img/wallpaper.jpg)",
+          }}
+        >
           <div className="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:items-center lg:px-8">
             <div className="flex items-center justify-center flex-col text-center ltr:sm:text-left rtl:sm:text-right w-full">
               <div className="w-full flex flex-col items-center justify-center">
-                <div className="border border-white/30 rounded-xl p-4">
+                <div className="border bg-[#e2e0e0] border-white/30 rounded-xl p-4">
                   <h1 className="text-xl font-extrabold pb-2">
                     Let's find your match
                   </h1>

@@ -33,7 +33,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex flex-col gap-2 min-h-screen items-center justify-center bg-gray-100 p-2">
+    <div
+      style={{ backgroundImage: "url(/img/wallpaper.jpg)" }}
+      className="flex flex-col gap-2 min-h-screen items-center justify-center bg-no-repeat bg-cover bg-center"
+    >
       <button
         className="bg-white p-4 rounded-lg shadow-md w-full max-w-96"
         onClick={() => {
