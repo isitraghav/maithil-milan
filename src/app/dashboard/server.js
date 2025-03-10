@@ -2,6 +2,7 @@
 import { prisma } from "@/prisma";
 import { getuserdata, getUserProfile } from "../profile/server";
 import { getUserId } from "@/components/server";
+import moment from "moment";
 
 export async function getRecommendations() {
   try {
@@ -9,10 +10,7 @@ export async function getRecommendations() {
     const data = await getUserProfile();
     if (!data) return [];
 
-    const age = Math.floor(
-      (new Date().getTime() - new Date(data.dateOfBirth).getTime()) /
-        (1000 * 60 * 60 * 24 * 365.25)
-    );
+    const age = moment().diff(moment(data.dateOfBirth), "years");
 
     console.log(`Current age: ${age}`);
 

@@ -11,6 +11,7 @@ import { getreceivedmatches } from "@/app/receivedmatches/server";
 import { handleMatchingRequest } from "@/components/server";
 import Swal from "sweetalert2";
 import { getAcceptedMatches } from "@/app/matches/server";
+import moment from "moment";
 
 export default function UserProfilePage({ params }) {
   const [userid, setUserId] = useState();
@@ -243,14 +244,9 @@ export default function UserProfilePage({ params }) {
 
   const calculateAge = (dateOfBirth) => {
     if (!dateOfBirth) return "N/A";
-    const dob = new Date(dateOfBirth);
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const monthDiff = today.getMonth() - dob.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
-    return age;
+    const dob = moment(dateOfBirth);
+    const today = moment();
+    return today.diff(dob, "years");
   };
 
   const convertHeightToFeetInches = (height) => {

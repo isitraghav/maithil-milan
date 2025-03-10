@@ -7,6 +7,7 @@ import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
 import { PiSpinnerLight, PiStarFill } from "react-icons/pi";
 import Swal from "sweetalert2";
 import { getCoreInfo } from "../server";
+import moment from "moment";
 export default function UserProfilePage({ params }) {
   const [emblaRef, elembaApi] = useEmblaCarousel({ loop: false }, [
     Autoplay({ delay: 2000 }),
@@ -46,12 +47,8 @@ export default function UserProfilePage({ params }) {
                 <dt className="font-medium text-gray-900 pl-2">Age</dt>
                 <dd className="text-gray-700 sm:col-span-2 pl-2 md:pl-0">
                   {userData.profile.dateOfBirth
-                    ? Math.floor(
-                        (new Date().getTime() -
-                          new Date(userData.profile.dateOfBirth).getTime()) /
-                          (1000 * 60 * 60 * 24 * 365.25)
-                      )
-                    : "-"}{" "}
+                    ? moment(userData.profile.dateOfBirth).fromNow(true)
+                    : "-"}
                   years old
                 </dd>
               </div>

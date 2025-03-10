@@ -10,13 +10,14 @@ import {
 import { IoMdClose } from "react-icons/io";
 import Swal from "sweetalert2";
 import { handleMatchingRequest } from "./server";
+import moment from "moment";
 
 export default function CardSearch({ result, mode }) {
   const formatAge = (dob) => {
-    const birthDate = new Date(dob);
-    const ageDifMs = Date.now() - birthDate.getTime();
-    const ageDate = new Date(ageDifMs);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+    if (!dob) return "N/A";
+    let date = new Date(dob);
+    let year = date.getFullYear();
+    return new Date().getFullYear() - year;
   };
 
   const simpleHeight = (cm) => {
