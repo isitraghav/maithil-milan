@@ -468,12 +468,39 @@ const ProfilePage = () => {
                       id="motherTongue"
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     >
-                      <option value="Maithili">Maithili</option>
-                      <option value="Hindi">Hindi</option>
-                      <option value="Nepali">Nepali</option>
-                      <option value="Bhojpuri">Bhojpuri</option>
-                      <option value="Magahi">Magahi</option>
-                      <option value="English">English</option>
+                      {[
+                        "Hindi",
+                        "Maithili",
+                        "Punjabi",
+                        "Marathi",
+                        "Dogri",
+                        "Sindhi",
+                        "Ladakhi",
+                        "Magahi",
+                        "Gujarati",
+                        "Garhwali",
+                        "Kumaoni",
+                        "Kashmiri",
+                        "Rajasthani",
+                        "Odia",
+                        "Chhattisgarhi",
+                        "Bhojpuri",
+                        "Bangla",
+                        "Assamese",
+                        "Meitei (Manipuri)",
+                        "Mizo",
+                        "Nagamese",
+                        "Telugu",
+                        "Kannada",
+                        "Konkani",
+                        "Tulu",
+                        "Tamil",
+                        "Malayalam",
+                      ].map((language) => (
+                        <option key={language} value={language}>
+                          {language}
+                        </option>
+                      ))}
                     </select>
                   </div>
 
@@ -911,11 +938,39 @@ const ProfilePage = () => {
                       onChange={(e) => setpartnermotherTongue(e.target.value)}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
                     >
-                      <option value="">Select Mother Tongue</option>
-                      <option>Maithili</option>
-                      <option>Hindi</option>
-                      <option>English</option>
-                      <option>Other</option>
+                      {[
+                        "Hindi",
+                        "Maithili",
+                        "Punjabi",
+                        "Marathi",
+                        "Dogri",
+                        "Sindhi",
+                        "Ladakhi",
+                        "Magahi",
+                        "Gujarati",
+                        "Garhwali",
+                        "Kumaoni",
+                        "Kashmiri",
+                        "Rajasthani",
+                        "Odia",
+                        "Chhattisgarhi",
+                        "Bhojpuri",
+                        "Bangla",
+                        "Assamese",
+                        "Meitei (Manipuri)",
+                        "Mizo",
+                        "Nagamese",
+                        "Telugu",
+                        "Kannada",
+                        "Konkani",
+                        "Tulu",
+                        "Tamil",
+                        "Malayalam",
+                      ].map((language) => (
+                        <option key={language} value={language}>
+                          {language}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div>
