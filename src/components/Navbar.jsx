@@ -102,8 +102,7 @@ export default function Navbar() {
                       <div className="p-2">
                         <button
                           onClick={() => {
-                            signOut();
-                            location.href = "/";
+                            signOut({ redirectTo: "/" });
                           }}
                           type="submit"
                           className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50"
