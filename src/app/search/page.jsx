@@ -83,8 +83,8 @@ export default function Search() {
     if (searchParams.size > 0) {
       let awd = {
         name: searchParams.get("name") || "",
-        age: searchParams.get("age"),
-        age2: searchParams.get("age2"),
+        age: Number(searchParams.get("age")),
+        age2: Number(searchParams.get("age2")),
         gender: searchParams.get("gender"),
         religion: searchParams.get("religion") || "Hindu",
         gotra: searchParams.get("gotra") || "Vatsya",

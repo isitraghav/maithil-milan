@@ -252,7 +252,7 @@ const SliderSection = () => {
                 </h1>
 
                 <p className="mt-4 max-w-lg sm:text-xl/relaxed">
-                  Start your search for your perfect match with Maithil Milan.
+                  Start the search for your perfect match with Maithil Milan.
                 </p>
               </div>
 
