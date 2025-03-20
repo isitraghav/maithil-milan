@@ -80,7 +80,7 @@ export default function Footer() {
                 <li>
                   <Link
                     target="_blank"
-                    href="mailto:admin@maithilmilan.com"
+                    href="mailto:support@maithilmilan.com"
                     className="text-gray-700 transition hover:opacity-75"
                   >
                     Contact

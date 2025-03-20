@@ -138,7 +138,7 @@ export async function sendMatchingRequest(receiverId) {
                       color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: bold;">
               View Matching Request
             </a>
-            <p>Questions? Contact <a href="mailto:info@maithilmilan.com">info@maithilmilan.com</a></p>
+            <p>Questions? Contact <a href="mailto:support@maithilmilan.com">support@maithilmilan.com</a></p>
             <p>Thanks, <br><strong>The Maithil Milan Team</strong></p>
           </body>
         </html>
@@ -153,6 +153,9 @@ export async function sendMatchingRequest(receiverId) {
         subject: "Sent connection request to " + userData.name,
         htmlContent: `
           <div style="max-width: 600px; margin: 20px auto; font-family: Arial, sans-serif; color: #333333;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <img src="https://maithilmilan.com/img/logo.png" alt="Company Logo" style="max-width: 150px;">
+            </div>
             <table style="width: 100%; border-collapse: collapse; background-color: #f5f5f5; padding: 20px;">
               <tbody>
                 <tr>
@@ -226,10 +229,7 @@ export async function sendMatchingRequest(receiverId) {
                     Marital Status
                   </th>
                   <td style="border: 1px solid #e0e0e0; padding: 12px 15px; background-color: #ffffff;">
-                    ${
-                      userData.profile?.maritalStatus?.toLowerCase() ||
-                      "Unmarried"
-                    }
+                    ${userData.profile?.maritalStatus?.toLowerCase() || "Unmarried"}
                   </td>
                 </tr>
               </tbody>
@@ -242,7 +242,7 @@ export async function sendMatchingRequest(receiverId) {
                 <tr>
                   <td style="padding: 15px; font-size: 12px; text-align: center; color: #666666;">
                     If you have any questions or need support, you can contact us
-                    <a href="mailto:support@maithilmilan.com" style="color: #2c3e50; text-decoration: none;">here</a>.
+                    <strong><a href="mailto:support@maithilmilan.com" style="color: #2c3e50; text-decoration: none;">here</a></strong>.
                   </td>
                 </tr>
               </tbody>

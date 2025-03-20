@@ -27,12 +27,18 @@ export default function AcceptedMatchCard({ result }) {
         </div>
         <div></div>
         <div className="ml-0 md:ml-auto flex justify-center gap-2 items-center">
-          <a
-            href={result.phone.startsWith("+") ? `tel:${result.phone}` : `tel:+91${result.phone}`}
-            className="bg-[#007bff] flex gap-2 center-all text-white mr-auto px-2.5 py-1 rounded-lg"
-          >
-            <PiPhoneCall size={20} /> Call
-          </a>
+          {result.phone && (
+            <a
+              href={
+                result.phone.startsWith("+")
+                  ? `tel:${result.phone}`
+                  : `tel:+91${result.phone}`
+              }
+              className="bg-[#007bff] flex gap-2 center-all text-white mr-auto px-2.5 py-1 rounded-lg"
+            >
+              <PiPhoneCall size={20} /> Call
+            </a>
+          )}
           <Link
             href={`/profile/${result.userId}`}
             className="bg-[#007bff] flex gap-2 center-all text-white px-2.5 py-1 rounded-lg"

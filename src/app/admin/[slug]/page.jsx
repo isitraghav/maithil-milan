@@ -4,10 +4,12 @@ import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import { IoMdArrowBack, IoMdArrowForward } from "react-icons/io";
-import { PiSpinnerLight, PiStarFill } from "react-icons/pi";
+import { PiSpinnerLight } from "react-icons/pi";
 import Swal from "sweetalert2";
 import { getCoreInfo } from "../server";
 import moment from "moment";
+import { getMatches } from "./adminrender";
+import Minimatch from "./minimatch";
 export default function UserProfilePage({ params }) {
   const [emblaRef, elembaApi] = useEmblaCarousel({ loop: false }, [
     Autoplay({ delay: 2000 }),
@@ -101,11 +103,9 @@ export default function UserProfilePage({ params }) {
                 <div className="grid grid-cols-1 gap-1 py-3 even:bg-gray-50 sm:grid-cols-3 sm:gap-4">
                   <dt className="font-medium text-gray-900 pl-2">Matches</dt>
                   <br />
-                  <dd className="text-gray-700 ml-2 sm:col-span-2 pl-2 md:pl-0">
+                  <dd className="text-gray-700 ml-2 sm:col-span-2 pl-2 md:pl-0 flex flex-col justify-center gap-3">
                     {userData.matches.map((match, index) => (
-                      <div key={index}>
-                        Match ID: {match.id}, Status: {match.status}
-                      </div>
+                      <Minimatch key={index} match={match} userid={userid} />
                     ))}
                   </dd>
                 </div>
@@ -118,12 +118,12 @@ export default function UserProfilePage({ params }) {
                   </dt>
                   <br />
                   <dd className="text-gray-700 ml-2 sm:col-span-2 pl-2 md:pl-0">
-                    {userData.matchedWith.map((matchedUser, index) => (
-                      <div key={index}>
-                        Matched User ID: {matchedUser.id}, Name:{" "}
-                        {matchedUser.fullName}, Status: {matchedUser.status}
-                      </div>
-                    ))}
+                    {userData.matchedWith.map((match, index) => {
+                      console.log("match: ", match);
+                      return (
+                        <Minimatch key={index} match={match} userid={userid} />
+                      );
+                    })}
                   </dd>
                 </div>
               )}

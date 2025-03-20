@@ -102,7 +102,7 @@ export default function Sidebar({ children }) {
                 >
                   <span className="text-sm flex gap-2 font-medium">
                     <LuCheck size={20} />
-                    <div className="hidden md:block">Sucessful Matches</div>
+                    <div className="hidden md:block">Successful Matches</div>
                   </span>
                   {userData.matches > 0 && (
                     <span className="shrink-0 rounded-full bg-red-500 px-3 py-0.5 text-xs text-white">
