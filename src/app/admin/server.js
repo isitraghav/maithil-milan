@@ -3,8 +3,13 @@
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 
+const isAdmin = await isAdminServer();
 export async function getDataServerAdmin() {
   return new Promise(async (resolve, reject) => {
+    console.log("Is admin:", isAdmin);
+    if (!isAdmin) {
+      return reject(new Error("Not authorized"));
+    }
     const userCount = await prisma.user.count();
     const matchCount = await prisma.match.count();
     const profileCount = await prisma.profile.count();
@@ -15,11 +20,17 @@ export async function getDataServerAdmin() {
         },
       },
     });
-    resolve({ userCount, matchCount, profileCount, newUsers });
+    const genderStats = await prisma.profile.groupBy({
+      by: ["gender"],
+      _count: {
+        gender: true,
+      },
+    });
+    resolve({ userCount, matchCount, profileCount, newUsers, genderStats });
   });
 }
 
-export async function searchAdmin(q) {
+export async function searchAdmin(q, page) {
   console.log("Searching for user with query:", q);
   const users = await prisma.user.findMany({
     where: {
@@ -31,6 +42,8 @@ export async function searchAdmin(q) {
       email: true,
       profile: true,
     },
+    skip: (page - 1) * 10,
+    take: 9,
   });
   console.log("Search results:", users);
   return users;
@@ -99,5 +112,15 @@ export async function isAdminServer() {
     } catch (error) {
       reject(error);
     }
+  });
+}
+
+export async function getAllUsers(page = 1, perPage = 10) {
+  return new Promise(async (resolve, reject) => {
+    const users = await prisma.user.findMany({
+      skip: (page - 1) * perPage,
+      take: perPage,
+    });
+    resolve(users);
   });
 }

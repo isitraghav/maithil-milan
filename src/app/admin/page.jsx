@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import Swal from "sweetalert2";
 import Image from "next/image";
+import { PiGenderFemale, PiGenderMale } from "react-icons/pi";
 
 export default function AdminDashboard() {
   const [data, setData] = useState({
@@ -20,19 +21,22 @@ export default function AdminDashboard() {
   });
   const [searchResults, setSearchResults] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    getDataServerAdmin().then(
-      ({ userCount, matchCount, profileCount, newUsers }) => {
-        setData({ userCount, matchCount, profileCount, newUsers });
-      }
-    );
+    getDataServerAdmin().then((data) => {
+      console.log("Data fetched:", data);
+      const { userCount, matchCount, profileCount, newUsers, genderStats } =
+        data;
+      setData({ userCount, matchCount, profileCount, newUsers, genderStats });
+    });
   }, []);
 
   const handleSearch = async (e) => {
+    setPage(1);
     e.preventDefault();
     try {
-      const users = await searchAdmin(searchQuery);
+      const users = await searchAdmin(searchQuery, page);
       setSearchResults(users);
     } catch (error) {
       console.error("Search failed:", error);
@@ -66,6 +70,17 @@ export default function AdminDashboard() {
           value={data.newUsers}
           subtitle="last month"
         />
+
+        {data.genderStats?.map((stat) => (
+          <MetricCard
+            key={stat.gender + " Members"}
+            icon={
+              stat.gender === "Male" ? <PiGenderMale /> : <PiGenderFemale />
+            }
+            title={stat.gender + " Members"}
+            value={stat._count.gender}
+          />
+        ))}
       </div>
 
       {/* Search Section */}
@@ -86,11 +101,48 @@ export default function AdminDashboard() {
             type="submit"
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
           >
-            Search
+            {searchQuery ? "Search" : "Show All Users"}
           </button>
         </form>
 
         {/* Search Results */}
+        {searchResults.length > 0 && (
+          <>
+            <div className="flex items-center justify-between mb-4">
+              <button
+                onClick={async () => {
+                  await searchAdmin(searchQuery, page - 1).then((val) => {
+                    setSearchResults(val);
+                  });
+                  setPage(page - 1);
+                }}
+                disabled={page === 1}
+                className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                Previous
+              </button>
+              <span className="text-sm font-semibold">Page {page}</span>
+              <button
+                onClick={async () => {
+                  await searchAdmin(searchQuery, page + 1).then((val) => {
+                    console.log(val);
+                    if (val.length !== 0) {
+                      setPage(page + 1);
+                      setSearchResults(val);
+                    }
+                  });
+                }}
+                className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          </>
+        )}
+        {searchResults.length === 0 && (
+          <p className="text-gray-600">No results found.</p>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {searchResults.map((user) => (
             <UserCard

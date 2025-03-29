@@ -10,6 +10,7 @@ import Swal from "sweetalert2";
 import Link from "next/link";
 import { sendMatchingRequest } from "../profile/[slug]/server";
 import { PlusCircle } from "lucide-react";
+import { isAdminServer } from "../admin/server";
 
 export default function Dashboard() {
   const [userData, setUserData] = useState({});
@@ -33,6 +34,11 @@ export default function Dashboard() {
     });
     getUserMatchStatus().then((data) => {
       setMatches(data);
+    });
+    isAdminServer().then((data) => {
+      if (data) {
+        location.href = "/admin";
+      }
     });
   }, []);
 
@@ -158,7 +164,8 @@ export default function Dashboard() {
                   </div>
                 </Link>
                 <p className="text-gray-600 mb-4">
-                {Math.floor(profile?.height / 30.48)} ft {Math.round(profile?.height % 30.48)} in, {profile.education}
+                  {Math.floor(profile?.height / 30.48)} ft{" "}
+                  {Math.round(profile?.height % 30.48)} in, {profile.education}
                 </p>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center"></div>
