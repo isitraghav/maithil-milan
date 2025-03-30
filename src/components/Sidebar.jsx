@@ -38,6 +38,7 @@ export default function Sidebar({ children }) {
       });
     }
     isAdminServer().then((data) => {
+      console.log("Is admin?", data);
       setIsAdmin(data);
     });
   }, [status, session, hasRun]);

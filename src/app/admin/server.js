@@ -3,12 +3,13 @@
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 
-const isAdmin = await isAdminServer();
 export async function getDataServerAdmin() {
   return new Promise(async (resolve, reject) => {
-    console.log("Is admin:", isAdmin);
-    if (!isAdmin) {
-      return reject(new Error("Not authorized"));
+    if (!(await isAdminServer())) {
+      return {
+        status: 403,
+        body: JSON.stringify({ error: "Not authorized" }),
+      };
     }
     const userCount = await prisma.user.count();
     const matchCount = await prisma.match.count();
@@ -31,6 +32,12 @@ export async function getDataServerAdmin() {
 }
 
 export async function searchAdmin(q, page) {
+  if (!(await isAdminServer())) {
+    return {
+      status: 403,
+      body: JSON.stringify({ error: "Not authorized" }),
+    };
+  }
   console.log("Searching for user with query:", q);
   const users = await prisma.user.findMany({
     where: {
@@ -45,7 +52,6 @@ export async function searchAdmin(q, page) {
     skip: (page - 1) * 10,
     take: 9,
   });
-  console.log("Search results:", users);
   return users;
 }
 
@@ -100,16 +106,21 @@ export async function getCoreInfo(id) {
 import info from "../../info.js";
 export async function isAdminServer() {
   return new Promise(async (resolve, reject) => {
+    console.log("Checking if user is admin...");
     let user = await auth();
     if (!user) {
+      console.log("User not found, returning false");
       resolve(false);
       return;
     }
     user = user?.user;
     try {
+      console.log("Checking if user is in admin list...");
       const isAdmin = info.admins.includes(user.email);
+      console.log("Is user admin?", isAdmin);
       resolve(isAdmin);
     } catch (error) {
+      console.error("Error checking if user is admin:", error);
       reject(error);
     }
   });
@@ -117,6 +128,12 @@ export async function isAdminServer() {
 
 export async function getAllUsers(page = 1, perPage = 10) {
   return new Promise(async (resolve, reject) => {
+    if (!(await isAdminServer())) {
+      return {
+        status: 403,
+        body: JSON.stringify({ error: "Not authorized" }),
+      };
+    }
     const users = await prisma.user.findMany({
       skip: (page - 1) * perPage,
       take: perPage,
