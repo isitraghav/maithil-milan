@@ -193,10 +193,10 @@ const UserCard = ({ user, onDelete }) => {
     <div className="bg-white rounded-lg border border-gray-100 p-4 hover:shadow-sm transition-all">
       <div className="flex items-center mb-4">
         <div className="relative w-12 h-12 mr-3">
-          <Image
+          <img
             src={profile.image || "/img/user.webp"}
-            alt={profile.fullName}
-            fill
+            alt={profile.fullName || "User"}
+            fill="true"
             className="rounded-full object-cover border-2 border-white"
           />
         </div>
